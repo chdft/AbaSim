@@ -8,9 +8,9 @@ namespace AbaSim.Core.Virtualization
 {
 	public interface IMemoryProvider<Word> where Word : IWord
 	{
-		uint Size { get; }
+		int Size { get; }
 
-		Word this[uint index] { get; set; }
+		Word this[int index] { get; set; }
 
 		void Flush();
 	}

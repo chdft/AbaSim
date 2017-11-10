@@ -11,6 +11,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		protected RegisterIndex DestinationRegister { get; private set; }
 
 		protected RegisterIndex LeftRegister { get; private set; }
+
 		protected RegisterIndex RightRegister { get; private set; }
 
 		public void Decode(Word instruction)
@@ -33,7 +34,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			get { throw new NotImplementedException(); }
 		}
 
-		public uint? UpdateMemoryAddress
+		public int? UpdateMemoryAddress
 		{
 			get { throw new NotImplementedException(); }
 		}

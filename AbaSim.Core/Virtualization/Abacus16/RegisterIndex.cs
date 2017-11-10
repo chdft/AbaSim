@@ -12,7 +12,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		private RegisterIndex(byte source)
 		{
-			Value = source;
+			Value = (byte)(source % 8);
 		}
 
 		private byte Value;
@@ -35,27 +35,50 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		{
 			return a.Value < b.Value;
 		}
+
 		public static bool operator >(RegisterIndex a, RegisterIndex b)
 		{
 			return a.Value > b.Value;
 		}
+
 		public static bool operator ==(RegisterIndex a, RegisterIndex b)
 		{
 			return a.Value == b.Value;
 		}
+
 		public static bool operator !=(RegisterIndex a, RegisterIndex b)
 		{
 			return a.Value != b.Value;
 		}
+
 		public static explicit operator RegisterIndex(byte source)
 		{
-			var r = new RegisterIndex();
-			r.Value = source;
-			return r;
+			return new RegisterIndex(source);
 		}
+
 		public static implicit operator byte(RegisterIndex source)
 		{
 			return source.Value;
+		}
+
+		public static explicit operator RegisterIndex(ushort source)
+		{
+			return new RegisterIndex((byte)source);
+		}
+
+		public static implicit operator ushort(RegisterIndex source)
+		{
+			return source.Value;
+		}
+
+		public static explicit operator RegisterIndex(Word source)
+		{
+			return new RegisterIndex((byte)source.UnsignedValue);
+		}
+
+		public static implicit operator Word(RegisterIndex source)
+		{
+			return (Word)(ushort)source.Value;
 		}
 	}
 }

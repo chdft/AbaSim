@@ -8,14 +8,15 @@ namespace AbaSim.Core.Virtualization
 {
 	public class MemoryAggregator<Word> : IMemoryProvider<Word> where Word : IWord
 	{
-		public MemoryAggregator(uint size)
+		public MemoryAggregator(int size)
 		{
+			if (size < 0) { throw new ArgumentException("size must be greater than or equal to 0."); }
 			Size = size;
 		}
 
 		private readonly List<MemoryMapping> Mappings = new List<MemoryMapping>();
 
-		public Word this[uint index]
+		public Word this[int index]
 		{
 			get
 			{
@@ -29,7 +30,7 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
-		public uint Size
+		public int Size
 		{
 			get;
 			private set;
@@ -43,7 +44,7 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
-		public void AddMapping(uint startIndex, IMemoryProvider<Word> provider)
+		public void AddMapping(int startIndex, IMemoryProvider<Word> provider)
 		{
 			Mappings.Add(new MemoryMapping(startIndex, provider));
 		}
@@ -53,21 +54,21 @@ namespace AbaSim.Core.Virtualization
 			Mappings.RemoveAll(mapping => mapping.Provider == provider);
 		}
 
-		private MemoryMapping ResolveMapping(uint index) {
+		private MemoryMapping ResolveMapping(int index) {
 			return Mappings.First(mapping => mapping.StartIndex <= index && mapping.EndIndex > index);
 		}
 
 		private struct MemoryMapping
 		{
-			public MemoryMapping(uint startIndex, IMemoryProvider<Word> provider)
+			public MemoryMapping(int startIndex, IMemoryProvider<Word> provider)
 			{
 				StartIndex = startIndex;
 				Provider = provider;
 			}
 
-			public readonly uint StartIndex;
+			public readonly int StartIndex;
 			public readonly IMemoryProvider<Word> Provider;
-			public uint EndIndex
+			public int EndIndex
 			{
 				get
 				{

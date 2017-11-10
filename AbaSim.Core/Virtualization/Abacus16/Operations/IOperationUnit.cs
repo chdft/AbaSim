@@ -16,7 +16,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		Vector[] UpadtedVRegisters { get; }
 
-		uint? UpdateMemoryAddress { get; }
+		int? UpdateMemoryAddress { get; }
 
 		Word UpdateMemoryValue { get; }
 	}

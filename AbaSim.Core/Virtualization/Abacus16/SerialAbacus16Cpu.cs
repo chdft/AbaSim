@@ -12,7 +12,10 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		public SerialAbacus16Cpu()
 		{
-
+			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>()
+			{
+				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, Register)}
+			};
 		}
 
 		public virtual void ClockCycle()
@@ -41,7 +44,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected IMemoryProvider<Word> ProgramMemory;
 
-		protected uint ProgramCounter;
+		protected int ProgramCounter;
 
 		private Operations.IOperationUnit OperationUnit;
 

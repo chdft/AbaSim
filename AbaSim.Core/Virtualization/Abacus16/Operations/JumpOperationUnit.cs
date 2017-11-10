@@ -28,7 +28,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			get { throw new NotImplementedException(); }
 		}
 
-		public uint? UpdateMemoryAddress
+		public int? UpdateMemoryAddress
 		{
 			get { throw new NotImplementedException(); }
 		}

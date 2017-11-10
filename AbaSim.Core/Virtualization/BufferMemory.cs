@@ -12,7 +12,7 @@ namespace AbaSim.Core.Virtualization
 		{
 			if (buffer.Length % 2 != 0) { throw new ArgumentException("buffer must contain an integer amount of Words"); }
 
-			Buffer = new Abacus16.Word[buffer.Length/2];
+			Buffer = new Abacus16.Word[buffer.Length / 2];
 			for (int i = 0; i < Buffer.Length; i++)
 			{
 				Buffer[i] = BitConverter.ToInt16(buffer, i);
@@ -25,9 +25,9 @@ namespace AbaSim.Core.Virtualization
 
 		public Abacus16.Word[] Buffer { get; private set; }
 
-		public uint Size
+		public int Size
 		{
-			get { return (uint)Buffer.LongLength; }
+			get { return Buffer.Length; }
 		}
 
 		public void Flush() { }
@@ -38,7 +38,7 @@ namespace AbaSim.Core.Virtualization
 		}
 
 
-		public Abacus16.Word this[uint index]
+		public Abacus16.Word this[int index]
 		{
 			get
 			{
