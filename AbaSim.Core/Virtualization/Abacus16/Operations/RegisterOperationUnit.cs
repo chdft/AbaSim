@@ -44,7 +44,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		}
 		private Word?[] _UpdatedRegisters = new Word?[8];
 
-		public Vector[] UpadtedVRegisters
+		public Vector[] UpdatedVRegisters
 		{
 			get { return _UpdatedVRegisters; }
 		}

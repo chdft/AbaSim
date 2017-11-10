@@ -10,8 +10,11 @@ namespace AbaSim.Core.Virtualization.Abacus16
 	{
 		private const int InstructionLength = 6;
 
-		public SerialAbacus16Cpu()
+		public SerialAbacus16Cpu(IMemoryProvider<Word> programMemory, IMemoryProvider<Word> dataMemory)
 		{
+			ProgramMemory = programMemory;
+			DataMemory = dataMemory;
+
 			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>()
 			{
 				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, Register)}
@@ -59,7 +62,10 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			Operations.IOperationUnit unit;
 			if (OperationRegistry.TryGetValue(opCode, out unit))
 			{
+				unit.Reset();
+
 				unit.Decode(CurrentInstruction);
+
 				OperationUnit = unit;
 			}
 			else
@@ -75,7 +81,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected virtual void MemoryAccess()
 		{
-			if (OperationUnit.UpdateMemoryAddress!=null)
+			if (OperationUnit.UpdateMemoryAddress != null)
 			{
 				DataMemory[OperationUnit.UpdateMemoryAddress.Value] = OperationUnit.UpdateMemoryValue;
 			}
@@ -83,7 +89,20 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected virtual void WriteBack()
 		{
-
+			for (int i = 0; i < OperationUnit.UpdatedRegisters.Length; i++)
+			{
+				if (OperationUnit.UpdatedRegisters[i] != null)
+				{
+					Register[i] = OperationUnit.UpdatedRegisters[i].Value;
+				}
+			}
+			for (int i = 0; i < OperationUnit.UpdatedVRegisters.Length; i++)
+			{
+				if (OperationUnit.UpdatedVRegisters[i] != null)
+				{
+					VRegister[i] = OperationUnit.UpdatedVRegisters[i];
+				}
+			}
 		}
 	}
 }

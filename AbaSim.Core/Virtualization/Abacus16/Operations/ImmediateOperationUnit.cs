@@ -29,7 +29,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			get { throw new NotImplementedException(); }
 		}
 
-		public Vector[] UpadtedVRegisters
+		public Vector[] UpdatedVRegisters
 		{
 			get { throw new NotImplementedException(); }
 		}

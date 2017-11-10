@@ -12,9 +12,11 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		void Execute();
 
+		void Reset();
+
 		Word?[] UpdatedRegisters { get; }
 
-		Vector[] UpadtedVRegisters { get; }
+		Vector[] UpdatedVRegisters { get; }
 
 		int? UpdateMemoryAddress { get; }
 
