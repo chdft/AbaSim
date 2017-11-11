@@ -15,7 +15,7 @@ namespace AbaSim.Core.Virtualization
 			Buffer = new Abacus16.Word[buffer.Length / 2];
 			for (int i = 0; i < Buffer.Length; i++)
 			{
-				Buffer[i] = BitConverter.ToInt16(buffer, i);
+				Buffer[i] = BitConverter.ToInt16(buffer, i*2);
 			}
 		}
 		public BufferMemory16(uint size)

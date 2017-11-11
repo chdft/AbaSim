@@ -29,7 +29,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		public void Reset()
 		{
-			Store = new T[RegisterIndex.MaxValue + 1];
+			Store = new T[Size];
+		}
+
+		public int Size
+		{
+			get { return RegisterIndex.MaxValue + 1; }
 		}
 	}
 }

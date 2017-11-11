@@ -19,6 +19,8 @@ namespace AbaSim.Core.Virtualization
 
 		private State HostState;
 
+		private object WorkerSynchronization = new object();
+
 		public void Start()
 		{
 			HostState = State.Running;
@@ -52,7 +54,7 @@ namespace AbaSim.Core.Virtualization
 
 		private void StartBackgroundProcessing()
 		{
-			lock (Worker)
+			lock (WorkerSynchronization)
 			{
 				if (Worker == null)
 				{
