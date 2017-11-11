@@ -14,8 +14,6 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private static readonly byte LeftRegisterShift = Word.Size - 6 - 3 - 3;
 		private static readonly Word ConstantMask = (short)(2 ^ 1 + 2 ^ 2 + 2 ^ 3);
 		private static readonly byte ConstantShift = Word.Size - 6 - 3 - 3 - 3;
-		private static readonly Word VectorBitMask = (short)(2 ^ 0);
-		private static readonly byte VectorBitShift = Word.Size - 6 - 3 - 3 - 1;
 
 		public ImmediateOperationUnit(Word[] register)
 		{
@@ -30,8 +28,6 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected byte UnsignedConstant { get; private set; }
 
-		protected bool VectorBit { get; private set; }
-
 		protected Word[] Registers { get; private set; }
 
 		public override void Decode(Word instruction)
@@ -40,7 +36,6 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			LeftRegister = (RegisterIndex)((instruction & LeftRegisterMask) >> LeftRegisterShift);
 			SignedConstant = (sbyte)((instruction & ConstantMask) >> ConstantShift);
 			UnsignedConstant = (byte)((instruction & ConstantMask) >> ConstantShift);
-			VectorBit = ((instruction & VectorBitMask) >> VectorBitShift) != 0;
 		}
 	}
 }

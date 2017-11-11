@@ -14,15 +14,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			if (VectorBit)
-			{
-				throw new NotImplementedException();
-			}
-			else
-			{
-				//CHECK: where is the overflow written to?
-				UpdateRegister(DestinationRegister, (Word)(Registers[LeftRegister].SignedValue + UnsignedConstant));
-			}
+			//CHECK: where is the overflow written to?
+			UpdateRegister(DestinationRegister, (Word)(Registers[LeftRegister].SignedValue + UnsignedConstant));
 		}
 	}
 }

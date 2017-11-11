@@ -6,36 +6,33 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	abstract class StoreOperationUnit : IOperationUnit
+	abstract class StoreOperationUnit : OperationUnit
 	{
-		public void Decode(Word instruction)
+		private static readonly Word DestinationRegisterMask = (short)(2 ^ 7 + 2 ^ 8 + 2 ^ 9);
+		private static readonly byte DestinationRegisterShift = Word.Size - 6 - 3;
+		private static readonly Word ConstantMask = (short)(2 ^ 0 + 2 ^ 1 + 2 ^ 2 + 2 ^ 3 + 2 ^ 4 + 2 ^ 5 + 2 ^ 6);
+		private static readonly byte ConstantShift = Word.Size - 6 - 3 - 7;
+
+		public StoreOperationUnit(Word[] register)
 		{
-			throw new NotImplementedException();
+			Registers = register;
 		}
 
-		public void Execute()
-		{
-			throw new NotImplementedException();
-		}
+		protected RegisterIndex DestinationRegister { get; private set; }
 
-		public Word?[] UpdatedRegisters
-		{
-			get { throw new NotImplementedException(); }
-		}
+		protected RegisterIndex LeftRegister { get; private set; }
 
-		public Vector[] UpdatedVRegisters
-		{
-			get { throw new NotImplementedException(); }
-		}
+		protected sbyte SignedConstant { get; private set; }
 
-		public uint? UpdateMemoryAddress
-		{
-			get { throw new NotImplementedException(); }
-		}
+		protected byte UnsignedConstant { get; private set; }
 
-		public Word UpdateMemoryValue
+		protected Word[] Registers { get; private set; }
+
+		public override void Decode(Word instruction)
 		{
-			get { throw new NotImplementedException(); }
+			DestinationRegister = (RegisterIndex)((instruction & DestinationRegisterMask) >> DestinationRegisterShift);
+			SignedConstant = (sbyte)((instruction & ConstantMask) >> ConstantShift);
+			UnsignedConstant = (byte)((instruction & ConstantMask) >> ConstantShift);
 		}
 	}
 }

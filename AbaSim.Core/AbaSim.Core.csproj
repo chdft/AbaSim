@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\StoreOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\MoveOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SubIOperation.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SubIUOperation.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\AddIUOperation.cs" />
@@ -57,7 +59,7 @@
     <Compile Include="Virtualization\Abacus16\Operations\JumpOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\IOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\RegisterOperationUnit.cs" />
-    <Compile Include="Virtualization\Abacus16\Operations\StoreOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\StoreValueOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Vector.cs" />
     <Compile Include="Virtualization\Abacus16\Word.cs" />
     <Compile Include="Virtualization\BufferMemory.cs" />

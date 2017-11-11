@@ -8,21 +8,14 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	class AddIOperationUnit : ImmediateOperationUnit
 	{
-		public const byte OpCode = 2^2;
+		public const byte OpCode = 2 ^ 2;
 
 		public AddIOperationUnit(Word[] registers) : base(registers) { }
 
 		protected override void InternalExecute()
 		{
-			if (VectorBit)
-			{
-				throw new NotImplementedException();
-			}
-			else
-			{
-				//CHECK: where is the overflow written to?
-				UpdateRegister(DestinationRegister, (Word)(Registers[LeftRegister].SignedValue + SignedConstant));
-			}
+			//CHECK: where is the overflow written to?
+			UpdateRegister(DestinationRegister, (Word)(Registers[LeftRegister].SignedValue + SignedConstant));
 		}
 	}
 }
