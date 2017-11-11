@@ -8,7 +8,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	class StoreValueOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = 2 ^ 6 + 2 ^ 5 + 2 ^ 0;
+		public const byte OpCode = Bit.B6 + Bit.B5 + Bit.B0;
 
 		public StoreValueOperationUnit(IMemoryProvider<Word> memory, Word[] registers)
 			: base(registers)
@@ -23,7 +23,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			if (VectorBit)
 			{
 				//UpdateVRegister(DestinationRegister, Memory[Registers[LeftRegister] + Registers[RightRegister]]);
-				throw new IllegalOperationArgumentException("Vectors are not supported for store operations");
+				throw new IllegalOperationArgumentException("Vectors are not supported for store operations", Instruction);
 			}
 			else
 			{

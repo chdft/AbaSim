@@ -8,9 +8,9 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	abstract class StoreOperationUnit : OperationUnit
 	{
-		private static readonly Word DestinationRegisterMask = (short)(2 ^ 7 + 2 ^ 8 + 2 ^ 9);
+		private static readonly Word DestinationRegisterMask = (short)(Bit.S7 + Bit.S8 + Bit.S9);
 		private static readonly byte DestinationRegisterShift = Word.Size - 6 - 3;
-		private static readonly Word ConstantMask = (short)(2 ^ 0 + 2 ^ 1 + 2 ^ 2 + 2 ^ 3 + 2 ^ 4 + 2 ^ 5 + 2 ^ 6);
+		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6);
 		private static readonly byte ConstantShift = Word.Size - 6 - 3 - 7;
 
 		public StoreOperationUnit(Word[] register)

@@ -116,6 +116,13 @@ namespace AbaSim.Core.Virtualization.Abacus16
 					VRegister[i] = OperationUnit.UpdatedVRegisters[i];
 				}
 			}
+			ProgramCounter += OperationUnit.ProgramCounterChange;
+		}
+
+
+		public void Synchronize()
+		{
+			DataMemory.Flush();
 		}
 	}
 }

@@ -10,11 +10,21 @@ namespace AbaSim.Core.Virtualization.Abacus16
 	public class ExecutionException : CpuException
 	{
 		public ExecutionException() { }
-		public ExecutionException(string message) : base(message) { }
-		public ExecutionException(string message, Exception inner) : base(message, inner) { }
+		public ExecutionException(string message, Word instruction)
+			: base(message)
+		{
+			Instruction = instruction;
+		}
+		public ExecutionException(string message, Exception inner, Word instruction)
+			: base(message, inner)
+		{
+			Instruction = instruction;
+		}
 		protected ExecutionException(
 		  System.Runtime.Serialization.SerializationInfo info,
 		  System.Runtime.Serialization.StreamingContext context)
 			: base(info, context) { }
+
+		public Word Instruction { get; private set; }
 	}
 }

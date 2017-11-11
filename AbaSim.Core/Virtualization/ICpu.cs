@@ -11,5 +11,7 @@ namespace AbaSim.Core
 		void ClockCycle();
 
 		void Reset();
+
+		void Synchronize();
 	}
 }

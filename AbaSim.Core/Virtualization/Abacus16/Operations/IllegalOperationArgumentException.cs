@@ -10,8 +10,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	public class IllegalOperationArgumentException : ExecutionException
 	{
 		public IllegalOperationArgumentException() { }
-		public IllegalOperationArgumentException(string message) : base(message) { }
-		public IllegalOperationArgumentException(string message, Exception inner) : base(message, inner) { }
+		public IllegalOperationArgumentException(string message, Word instruction) : base(message, instruction) { }
+		public IllegalOperationArgumentException(string message, Exception inner, Word instruction) : base(message, inner, instruction) { }
 		protected IllegalOperationArgumentException(
 		  System.Runtime.Serialization.SerializationInfo info,
 		  System.Runtime.Serialization.StreamingContext context)

@@ -13,13 +13,17 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			Reset();
 		}
 
-		public virtual void Decode(Word instruction) { }
+		public virtual void Decode(Word instruction)
+		{
+			Instruction = instruction;
+		}
 
 		public virtual void Reset()
 		{
 			_UpdatedRegisters = new Word?[8];
 			_UpdatedVRegisters = new Vector[8];
 			_UpdateMemoryAddress = null;
+			ProgramCounterChange = 1;
 		}
 
 		public void Execute()
@@ -50,6 +54,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			get { return _UpdateMemoryValue; }
 		}
 		private Word _UpdateMemoryValue;
+
+		protected Word Instruction { get; private set; }
 
 		protected void UpdateRegister(RegisterIndex index, Word newValue)
 		{

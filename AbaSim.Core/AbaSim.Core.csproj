@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bit.cs" />
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SpecialMemoryOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\StoreOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MoveOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SubIOperation.cs" />

@@ -8,7 +8,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	class SubOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = 2 ^ 3;
+		public const byte OpCode = Bit.B3;
 
 		public SubOperationUnit(Word[] registers) : base(registers) { }
 
