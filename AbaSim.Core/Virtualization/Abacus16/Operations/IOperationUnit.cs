@@ -21,5 +21,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		int? UpdateMemoryAddress { get; }
 
 		Word UpdateMemoryValue { get; }
+
+		int ProgramCounterChange { get; }
 	}
 }

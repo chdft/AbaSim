@@ -17,7 +17,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>()
 			{
-				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, Register)}
+				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, Register)},
+				{Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(Register)},
+				{Operations.AddIOperationUnit.OpCode, new Operations.AddIOperationUnit(Register)},
+				{Operations.AddUOperationUnit.OpCode, new Operations.AddUOperationUnit(Register)},
+				{Operations.AddIUOperationUnit.OpCode, new Operations.AddIUOperationUnit(Register)},
+
 			};
 		}
 

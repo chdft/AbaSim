@@ -146,5 +146,29 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		{
 			return source.SignedValue;
 		}
+
+		public static implicit operator Word(byte source)
+		{
+			var result = new Word();
+			result.UnsignedValue = source;
+			return result;
+		}
+
+		public static explicit operator byte(Word source)
+		{
+			return (byte)source.UnsignedValue;
+		}
+
+		public static implicit operator Word(sbyte source)
+		{
+			var result = new Word();
+			result.SignedValue = source;
+			return result;
+		}
+
+		public static explicit operator sbyte(Word source)
+		{
+			return (sbyte)source.SignedValue;
+		}
 	}
 }

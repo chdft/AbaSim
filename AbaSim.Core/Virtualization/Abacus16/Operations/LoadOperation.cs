@@ -11,14 +11,12 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		public const byte OpCode = 2 ^ 6 + 2 ^ 5;
 
 		public LoadOperationUnit(IMemoryProvider<Word> memory, Word[] registers)
+			: base(registers)
 		{
 			Memory = memory;
-			Registers = registers;
 		}
 
 		protected IMemoryProvider<Word> Memory { get; private set; }
-
-		protected Word[] Registers { get; private set; }
 
 		protected override void InternalExecute()
 		{

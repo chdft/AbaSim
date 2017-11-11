@@ -40,8 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\AddIUOperation .cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\AddIOperation.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\AddUOperation.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\AddOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\IllegalOperationArgumentException.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\LoadOperation.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\OperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\RegisterIndex.cs" />
     <Compile Include="Virtualization\Abacus16\SerialAbacus16Cpu.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\ImmediateOperationUnit.cs" />
