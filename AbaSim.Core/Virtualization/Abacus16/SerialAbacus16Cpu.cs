@@ -34,6 +34,10 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(_Register)},
 				{Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(_Register)},
 				{Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(_Register)},
+				{Operations.MultiplyOperationUnit.OpCode, new Operations.MultiplyOperationUnit(_Register)},
+				{Operations.MultiplyIOperationUnit.OpCode, new Operations.MultiplyIOperationUnit(_Register)},
+				{Operations.MultiplyUOperationUnit.OpCode, new Operations.MultiplyUOperationUnit(_Register)},
+				{Operations.MultiplyIUOperationUnit.OpCode, new Operations.MultiplyIUOperationUnit(_Register)},
 				//Jump
 				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()}
 			};

@@ -20,7 +20,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			UpdateRegister(DestinationRegister, Memory[Registers.Scalar[LeftRegister] + SignedConstant]);
+			UpdateRegister(DestinationRegister, Memory[Registers.Scalar[LeftRegister] + UnsignedConstant]);
 		}
 	}
 }
