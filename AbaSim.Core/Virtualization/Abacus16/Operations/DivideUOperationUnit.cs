@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	class MultiplyUOperationUnit : RegisterOperationUnit
+	class DivideUOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = Bit.B3 + Bit.B0;
+		public const byte OpCode = Bit.B3 + Bit.B2 + Bit.B1 + Bit.B0;
 
-		public MultiplyUOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
+		public DivideUOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 
 		protected override void InternalExecute()
 		{
@@ -21,7 +21,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			else
 			{
 				//CHECK: where is the overflow written to?
-				UpdateRegister(DestinationRegister, (Word)(Registers.Scalar[LeftRegister].UnsignedValue * Registers.Scalar[RightRegister].UnsignedValue));
+				UpdateRegister(DestinationRegister, (Word)(Registers.Scalar[LeftRegister].UnsignedValue / Registers.Scalar[RightRegister].UnsignedValue));
 			}
 		}
 	}

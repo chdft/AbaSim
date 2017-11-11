@@ -45,6 +45,10 @@
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\IRegisterBank.cs" />
     <Compile Include="Virtualization\Abacus16\IRegisterGroup.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\DivideIOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\DivideIUOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\DivideOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\DivideUOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyUOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyIUOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyIOperationUnit.cs" />

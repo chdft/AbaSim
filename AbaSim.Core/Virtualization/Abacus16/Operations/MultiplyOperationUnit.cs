@@ -8,7 +8,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	class MultiplyOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = 0;
+		public const byte OpCode = Bit.B3;
 
 		public MultiplyOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 
