@@ -8,6 +8,11 @@ namespace AbaSim.Core.Virtualization
 {
 	public class Host
 	{
+		public Host(ICpu processor)
+		{
+			Cpu = processor;
+		}
+
 		private ICpu Cpu;
 
 		private Task Worker;
@@ -43,6 +48,8 @@ namespace AbaSim.Core.Virtualization
 			StartBackgroundProcessing();
 		}
 
+		public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
+
 		private void StartBackgroundProcessing()
 		{
 			lock (Worker)
@@ -64,10 +71,18 @@ namespace AbaSim.Core.Virtualization
 				}
 				catch (CpuException e)
 				{
-					//TODO: notify someone of the exception
 					HostState = State.Stopped;
+					NotifyExecutionCompleted(e);
 					break;
 				}
+			}
+		}
+
+		private void NotifyExecutionCompleted(Exception reason)
+		{
+			if (ExecutionCompleted != null)
+			{
+				ExecutionCompleted(this, new ExecutionCompletedEventArgs(reason));
 			}
 		}
 

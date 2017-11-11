@@ -73,12 +73,15 @@
     <Compile Include="Virtualization\Abacus16\Word.cs" />
     <Compile Include="Virtualization\BufferMemory.cs" />
     <Compile Include="Virtualization\CpuException.cs" />
+    <Compile Include="Virtualization\ExecutionCompletedEventArgs.cs" />
     <Compile Include="Virtualization\Host.cs" />
     <Compile Include="Virtualization\ICpu.cs" />
     <Compile Include="Virtualization\IMemoryProvider.cs" />
     <Compile Include="Virtualization\IWord.cs" />
     <Compile Include="Virtualization\MemoryAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Virtualization\ProgramCounterOutOfBoundsException.cs" />
+    <Compile Include="Virtualization\SubsetMemory.cs" />
     <Compile Include="Virtualization\UnknownInstructionException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

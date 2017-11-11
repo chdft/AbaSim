@@ -32,6 +32,8 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(_Register)},
 				{Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(_Register)},
 				{Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(_Register)},
+				//Jump
+				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()}
 			};
 		}
 
@@ -53,10 +55,6 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected Word CurrentInstruction;
 
-		//protected Word[] Register = new Word[8];
-
-		//protected Vector[] VRegister = new Vector[8];
-
 		public IRegisterGroup Register
 		{
 			get { return _Register; }
@@ -67,12 +65,16 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected IMemoryProvider<Word> ProgramMemory;
 
-		protected int ProgramCounter;
+		public int ProgramCounter { get; protected set; }
 
 		private Operations.IOperationUnit OperationUnit;
 
 		protected virtual void InstructionFetch()
 		{
+			if (ProgramCounter >= ProgramMemory.Size)
+			{
+				throw new ProgramCounterOutOfBoundsException("The address for the next CPU instruction is out of bounds of the program memory.", ProgramCounter);
+			}
 			CurrentInstruction = ProgramMemory[ProgramCounter];
 		}
 

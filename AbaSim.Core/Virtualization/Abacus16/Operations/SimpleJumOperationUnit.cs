@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	class SimpleJumOperationUnit:JumpOperationUnit
+	class SimpleJumpOperationUnit : JumpOperationUnit
 	{
+		public const byte OpCode = Bit.B0 + Bit.B1 + Bit.B5;
+
 		protected override void InternalExecute()
 		{
 			ProgramCounterChange = SignedConstant;
