@@ -28,11 +28,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		{
 			get
 			{
-				return BitConverter.GetBytes(UnsignedValue);
+				//CHCK: should the swap only happen on LEndian? (source is BE)
+				return Bit.SwapHighLow(BitConverter.GetBytes(UnsignedValue));
 			}
 			set
 			{
-				UnsignedValue = BitConverter.ToUInt16(value, 0);
+				UnsignedValue = BitConverter.ToUInt16(Bit.SwapHighLow(value), 0);
 			}
 		}
 

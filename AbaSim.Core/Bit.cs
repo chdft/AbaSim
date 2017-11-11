@@ -33,5 +33,10 @@ namespace AbaSim.Core
 		public const ushort S13 = 0x2000;
 		public const ushort S14 = 0x4000;
 		public const ushort S15 = 0x8000;
+
+		public static byte[] SwapHighLow(byte[] source)
+		{
+			return new byte[] { source[1], source[0] };
+		}
 	}
 }

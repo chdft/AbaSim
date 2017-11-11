@@ -80,7 +80,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected virtual void InstructionDecode()
 		{
-			var opCode = (byte)(CurrentInstruction.UnsignedValue >> sizeof(ushort) - InstructionLength);
+			var opCode = (byte)(CurrentInstruction.UnsignedValue >> Word.Size - InstructionLength);
 			Operations.IOperationUnit unit;
 			if (OperationRegistry.TryGetValue(opCode, out unit))
 			{

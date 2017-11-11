@@ -17,19 +17,19 @@ namespace AbaSim.Core.Virtualization
 
 		private Task Worker;
 
-		private State HostState;
+		public bool IsRunning { get; private set; }
 
 		private object WorkerSynchronization = new object();
 
 		public void Start()
 		{
-			HostState = State.Running;
+			IsRunning = true;
 			StartBackgroundProcessing();
 		}
 
 		public async Task HardResetAsync()
 		{
-			HostState = State.Stopped;
+			IsRunning = false;
 
 			//wait until processing stopped
 			await Worker;
@@ -40,13 +40,13 @@ namespace AbaSim.Core.Virtualization
 
 		public async Task SuspendAsync()
 		{
-			HostState = State.Stopped;
+			IsRunning = false;
 			await Worker;
 		}
 
 		public void Resume()
 		{
-			HostState = State.Running;
+			IsRunning = true;
 			StartBackgroundProcessing();
 		}
 
@@ -65,7 +65,7 @@ namespace AbaSim.Core.Virtualization
 
 		private void Run()
 		{
-			while (HostState == State.Running)
+			while (IsRunning)
 			{
 				try
 				{
@@ -73,7 +73,7 @@ namespace AbaSim.Core.Virtualization
 				}
 				catch (CpuException e)
 				{
-					HostState = State.Stopped;
+					IsRunning = false;
 					NotifyExecutionCompleted(e);
 					break;
 				}
@@ -86,12 +86,6 @@ namespace AbaSim.Core.Virtualization
 			{
 				ExecutionCompleted(this, new ExecutionCompletedEventArgs(reason));
 			}
-		}
-
-		public enum State
-		{
-			Stopped,
-			Running
 		}
 	}
 }
