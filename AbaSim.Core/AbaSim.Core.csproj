@@ -45,6 +45,7 @@
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\IRegisterBank.cs" />
     <Compile Include="Virtualization\Abacus16\IRegisterGroup.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\StoreValueIOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\LoadIOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SimpleJumOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SpecialMemoryOperationUnit.cs" />

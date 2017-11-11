@@ -21,6 +21,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register)},
 				{Operations.LoadIOperationUnit.OpCode, new Operations.LoadIOperationUnit(DataMemory, _Register)},
 				{Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, _Register)},
+				{Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(DataMemory, _Register)},
 				//register move
 				{Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register)},
 				{Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, _Register)},
