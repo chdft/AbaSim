@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16
 {
-	struct RegisterIndex
+	public struct RegisterIndex
 	{
 		public static readonly RegisterIndex MaxValue = new RegisterIndex(7);
 

@@ -18,20 +18,20 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>()
 			{
 				//memory access
-				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, Register)},
-				{Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, Register)},
+				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register)},
+				{Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, _Register)},
 				//register move
-				{Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(Register)},
-				{Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, Register)},
+				{Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register)},
+				{Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, _Register)},
 				//scalar arithmetic
-				{Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(Register)},
-				{Operations.AddIOperationUnit.OpCode, new Operations.AddIOperationUnit(Register)},
-				{Operations.AddUOperationUnit.OpCode, new Operations.AddUOperationUnit(Register)},
-				{Operations.AddIUOperationUnit.OpCode, new Operations.AddIUOperationUnit(Register)},
-				{Operations.SubOperationUnit.OpCode, new Operations.SubOperationUnit(Register)},
-				{Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(Register)},
-				{Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(Register)},
-				{Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(Register)},
+				{Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(_Register)},
+				{Operations.AddIOperationUnit.OpCode, new Operations.AddIOperationUnit(_Register)},
+				{Operations.AddUOperationUnit.OpCode, new Operations.AddUOperationUnit(_Register)},
+				{Operations.AddIUOperationUnit.OpCode, new Operations.AddIUOperationUnit(_Register)},
+				{Operations.SubOperationUnit.OpCode, new Operations.SubOperationUnit(_Register)},
+				{Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(_Register)},
+				{Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(_Register)},
+				{Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(_Register)},
 			};
 		}
 
@@ -53,9 +53,15 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		protected Word CurrentInstruction;
 
-		protected Word[] Register = new Word[8];
+		//protected Word[] Register = new Word[8];
 
-		protected Vector[] VRegister = new Vector[8];
+		//protected Vector[] VRegister = new Vector[8];
+
+		public IRegisterGroup Register
+		{
+			get { return _Register; }
+		}
+		private RegisterGroup _Register = new RegisterGroup();
 
 		protected IMemoryProvider<Word> DataMemory;
 
@@ -107,14 +113,14 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			{
 				if (OperationUnit.UpdatedRegisters[i] != null)
 				{
-					Register[i] = OperationUnit.UpdatedRegisters[i].Value;
+					Register.Scalar[(RegisterIndex)i] = OperationUnit.UpdatedRegisters[i].Value;
 				}
 			}
 			for (int i = 0; i < OperationUnit.UpdatedVRegisters.Length; i++)
 			{
 				if (OperationUnit.UpdatedVRegisters[i] != null)
 				{
-					VRegister[i] = OperationUnit.UpdatedVRegisters[i];
+					Register.Vector[(RegisterIndex)i] = OperationUnit.UpdatedVRegisters[i];
 				}
 			}
 			ProgramCounter += OperationUnit.ProgramCounterChange;

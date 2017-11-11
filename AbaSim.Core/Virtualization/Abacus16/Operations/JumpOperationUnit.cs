@@ -6,36 +6,21 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	abstract class JumpOperationUnit : IOperationUnit
+	abstract class JumpOperationUnit : OperationUnit
 	{
-		public void Decode(Word instruction)
-		{
-			throw new NotImplementedException();
-		}
+		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6 + Bit.S7 + Bit.S8 + Bit.S9);
+		private static readonly byte ConstantShift = Word.Size - 6 - 10;
 
-		public void Execute()
-		{
-			throw new NotImplementedException();
-		}
+		public JumpOperationUnit() { }
 
-		public Word?[] UpdatedRegisters
-		{
-			get { throw new NotImplementedException(); }
-		}
+		protected short SignedConstant { get; private set; }
 
-		public Vector[] UpdatedVRegisters
-		{
-			get { throw new NotImplementedException(); }
-		}
+		protected ushort UnsignedConstant { get; private set; }
 
-		public int? UpdateMemoryAddress
+		public override void Decode(Word instruction)
 		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public Word UpdateMemoryValue
-		{
-			get { throw new NotImplementedException(); }
+			SignedConstant = (short)((instruction & ConstantMask) >> ConstantShift);
+			UnsignedConstant = (ushort)((instruction & ConstantMask) >> ConstantShift);
 		}
 	}
 }

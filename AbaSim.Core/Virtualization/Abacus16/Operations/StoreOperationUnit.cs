@@ -13,7 +13,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6);
 		private static readonly byte ConstantShift = Word.Size - 6 - 3 - 7;
 
-		public StoreOperationUnit(Word[] register)
+		public StoreOperationUnit(IReadOnlyRegisterGroup register)
 		{
 			Registers = register;
 		}
@@ -26,7 +26,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected byte UnsignedConstant { get; private set; }
 
-		protected Word[] Registers { get; private set; }
+		protected IReadOnlyRegisterGroup Registers { get; private set; }
 
 		public override void Decode(Word instruction)
 		{

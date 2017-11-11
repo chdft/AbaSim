@@ -41,6 +41,10 @@
   <ItemGroup>
     <Compile Include="Bit.cs" />
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
+    <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterBank.cs" />
+    <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterGroup.cs" />
+    <Compile Include="Virtualization\Abacus16\IRegisterBank.cs" />
+    <Compile Include="Virtualization\Abacus16\IRegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SpecialMemoryOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\StoreOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MoveOperationUnit.cs" />
@@ -55,6 +59,8 @@
     <Compile Include="Virtualization\Abacus16\Operations\IllegalOperationArgumentException.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\LoadOperation.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\OperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\RegisterBank.cs" />
+    <Compile Include="Virtualization\Abacus16\RegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\RegisterIndex.cs" />
     <Compile Include="Virtualization\Abacus16\SerialAbacus16Cpu.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\ImmediateOperationUnit.cs" />

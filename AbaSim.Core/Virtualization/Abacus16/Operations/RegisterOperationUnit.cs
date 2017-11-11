@@ -17,7 +17,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private static readonly Word VectorBitMask = (short)(Bit.S0);
 		private static readonly byte VectorBitShift = Word.Size - 6 - 3 - 3 - 1;
 
-		public RegisterOperationUnit(Word[] register)
+		public RegisterOperationUnit(IReadOnlyRegisterGroup register)
 		{
 			Registers = register;
 		}
@@ -30,7 +30,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected bool VectorBit { get; private set; }
 
-		protected Word[] Registers { get; private set; }
+		protected IReadOnlyRegisterGroup Registers { get; private set; }
 
 		public override void Decode(Word instruction)
 		{
