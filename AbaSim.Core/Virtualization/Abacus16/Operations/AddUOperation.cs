@@ -10,7 +10,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("vaddu", OpCode, Compiler.Parsing.InstructionType.VRegister)]
 	class AddUOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = 2^0;
+		public const byte OpCode = Bit.B0;
 
 		public AddUOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 

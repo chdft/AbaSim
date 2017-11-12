@@ -9,7 +9,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("addiu", OpCode, Compiler.Parsing.InstructionType.Immediate)]
 	class AddIUOperationUnit : ImmediateOperationUnit
 	{
-		public const byte OpCode = Bit.B2 + Bit.B1;
+		public const byte OpCode = Bit.B1 + Bit.B0;
 
 		public AddIUOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 

@@ -9,7 +9,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("subi", OpCode, Compiler.Parsing.InstructionType.Immediate)]
 	class SubIOperationUnit : ImmediateOperationUnit
 	{
-		public const byte OpCode = Bit.B3 + Bit.B2;
+		public const byte OpCode = Bit.B2 + Bit.B1;
 
 		public SubIOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 

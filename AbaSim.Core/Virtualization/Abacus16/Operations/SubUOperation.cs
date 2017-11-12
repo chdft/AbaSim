@@ -9,7 +9,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("subu", OpCode, Compiler.Parsing.InstructionType.Register)]
 	class SubUOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = Bit.B3 + Bit.B0;
+		public const byte OpCode = Bit.B2 + Bit.B0;
 
 		public SubUOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
 
