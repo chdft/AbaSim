@@ -52,6 +52,10 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.SetNotEqualOperationUnit.OpCode, new Operations.SetNotEqualOperationUnit(_Register)},
 				//bitwise logic
 				{Operations.LeftShiftOperationUnit.OpCode, new Operations.LeftShiftOperationUnit(_Register)},
+				{Operations.BitwiseAndOperationUnit.OpCode, new Operations.BitwiseAndOperationUnit(_Register)},
+				{Operations.BitwiseOrOperationUnit.OpCode, new Operations.BitwiseOrOperationUnit(_Register)},
+				{Operations.BitwiseXorOperationUnit.OpCode, new Operations.BitwiseXorOperationUnit(_Register)},
+				{Operations.BitwiseNotOperationUnit.OpCode, new Operations.BitwiseNotOperationUnit(_Register)},
 				//Jump
 				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()},
 				{Operations.BranchNotZeroOperationUnit.OpCode, new Operations.BranchNotZeroOperationUnit(_Register)},

@@ -58,19 +58,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			return result;
 		}
 
-		//public static Word operator >>(Word a, byte b)
-		//{
-		//	var result = new Word();
-		//	result.UnsignedValue = (ushort)(a.UnsignedValue >> b);
-		//	return result;
-		//}
-
-		//public static Word operator <<(Word a, byte b)
-		//{
-		//	var result = new Word();
-		//	result.UnsignedValue = (ushort)(a.UnsignedValue << b);
-		//	return result;
-		//}
+		public static Word operator ^(Word a, Word b)
+		{
+			var result = new Word();
+			result.UnsignedValue = (ushort)(a.UnsignedValue ^ b.UnsignedValue);
+			return result;
+		}
 
 		public static Word operator >>(Word a, int b)
 		{
@@ -85,20 +78,6 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			result.UnsignedValue = (ushort)(a.UnsignedValue << b);
 			return result;
 		}
-
-		//public static Word operator >>(Word a, short b)
-		//{
-		//	var result = new Word();
-		//	result.UnsignedValue = (ushort)(a.UnsignedValue >> b);
-		//	return result;
-		//}
-
-		//public static Word operator <<(Word a, short b)
-		//{
-		//	var result = new Word();
-		//	result.UnsignedValue = (ushort)(a.UnsignedValue << b);
-		//	return result;
-		//}
 
 		public static explicit operator Word(int source)
 		{
