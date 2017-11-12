@@ -12,12 +12,15 @@ namespace AbaSim.ConsoleRunner
 	{
 		static IMemoryProvider<Word> dataMemory;
 		static IMemoryProvider<Word> programMemory;
+		static Host virtualSystem;
 		static SerialAbacus16Cpu cpu;
+		private const string ShowControlFlowFlag = "C";
 
 		static void Main(string[] args)
 		{
 			string programMemoryFile = args[0];
 			string dataMemoryFile = args[1];
+			bool showControlFlow = (args.Length < 3 ? false : args[2].Contains(ShowControlFlowFlag));
 
 			programMemory = new BufferMemory16(System.IO.File.ReadAllBytes(programMemoryFile));
 			dataMemory = new BufferMemory16(System.IO.File.ReadAllBytes(dataMemoryFile));
@@ -26,26 +29,39 @@ namespace AbaSim.ConsoleRunner
 				programMemory,
 				dataMemory);
 
-			Host virtualSystem = new Host(cpu);
+			virtualSystem = new Host(cpu);
 			virtualSystem.ExecutionCompleted += virtualSystem_ExecutionCompleted;
-			virtualSystem.ClockCycleScheduled += virtualSystem_ClockCycleScheduled;
+			if (showControlFlow)
+			{
+				virtualSystem.ClockCycleScheduled += virtualSystem_ClockCycleScheduled;
+			}
 			virtualSystem.Start();
 
 			Console.WriteLine("Press ENTER to cancel execution");
 			Console.ReadLine();
 			if (virtualSystem.IsRunning)
 			{
+				Console.WriteLine("Suspending Execution...");
 				virtualSystem.SuspendAsync().Wait();
 				WriteDumps();
+				Console.WriteLine("Press ENTER to exit.");
+				Console.ReadLine();
 			}
 		}
 
 		static void virtualSystem_ClockCycleScheduled(object sender, ClockCycleScheduledEventArgs e)
 		{
-			Word instruction = programMemory[e.ProgramCounter];
-			string binRepresentation = Convert.ToString(instruction, 2).PadLeft(16, '0');
+			if (e.ProgramCounter < programMemory.Size)
+			{
+				Word instruction = programMemory[e.ProgramCounter];
+				string binRepresentation = Convert.ToString(instruction, 2).PadLeft(16, '0');
 
-			Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+			}
+			else
+			{
+				Console.WriteLine("Executing:  [Out of memory bounds]  @ {0}", e.ProgramCounter);
+			}
 		}
 
 		static void virtualSystem_ExecutionCompleted(object sender, ExecutionCompletedEventArgs e)
@@ -56,6 +72,7 @@ namespace AbaSim.ConsoleRunner
 
 		static void WriteDumps()
 		{
+			Console.WriteLine("Executed {0} Instructions.", virtualSystem.ExecutedClockCycles);
 			Console.WriteLine("Register Dump:");
 			Console.WriteLine("PC:    udec{0,5:D} | uhex{0,4:X}", cpu.ProgramCounter);
 			Console.WriteLine("ovflw: udec{0,5:D} | uhex{0,4:X}", cpu.Register.Overflow.UnsignedValue);

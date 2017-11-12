@@ -19,6 +19,8 @@ namespace AbaSim.Core.Virtualization
 
 		public bool IsRunning { get; private set; }
 
+		public ulong ExecutedClockCycles { get; private set; }
+
 		private object WorkerSynchronization = new object();
 
 		public void Start()
@@ -73,6 +75,7 @@ namespace AbaSim.Core.Virtualization
 				try
 				{
 					Cpu.ClockCycle();
+					ExecutedClockCycles++;
 				}
 				catch (CpuException e)
 				{
