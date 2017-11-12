@@ -16,7 +16,7 @@ namespace AbaSim.Core.Compiler
 
 		protected Dictionary<string, int> Labels = new Dictionary<string, int>();
 
-		protected Dictionary<string, InstructionMapping> Mappings = new Dictionary<string, InstructionMapping>();
+		protected Dictionary<string, InstructionMapping> Mappings;
 
 		public byte[] Compile(string sourceCode)
 		{
@@ -138,16 +138,17 @@ namespace AbaSim.Core.Compiler
 				}
 			}
 
-			byte[] binary = new byte[nativeInstructions.Count * (Word.Size / sizeof(byte))];
+			byte[] binary = new byte[nativeInstructions.Count * (Word.Size / 8)];
 			for (int i = 0; i < nativeInstructions.Count; i++)
 			{
-				nativeInstructions[i].RawValue.CopyTo(binary, i * (Word.Size / sizeof(byte)));
+				nativeInstructions[i].RawValue.CopyTo(binary, i * (Word.Size / 8));
 			}
 			return binary;
 		}
 
-		protected virtual void LoadMappings()
+		public virtual void LoadMappings()
 		{
+			Mappings = new Dictionary<string, InstructionMapping>();
 			foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
 			{
 				foreach (var mappingAttribute in type.GetCustomAttributes<Parsing.AssemblyCodeAttribute>())

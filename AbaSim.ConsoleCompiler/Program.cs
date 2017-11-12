@@ -19,7 +19,7 @@ namespace AbaSim.ConsoleCompiler
 				string line = null;
 				while ((line = Console.ReadLine()) != "")
 				{
-					sourceCode += line;
+					sourceCode += line + "\r\n";
 				}
 			}
 			else
@@ -28,6 +28,7 @@ namespace AbaSim.ConsoleCompiler
 			}
 
 			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler();
+			compiler.LoadMappings();
 			byte[] binary = compiler.Compile(sourceCode);
 
 			if (destinationFile != null)

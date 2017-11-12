@@ -26,7 +26,7 @@ namespace AbaSim.Core.Compiler.Lexing
 			{
 				int offset = 0;
 				int boffset = 0;
-				Stage stage = Stage.Label;
+				Stage stage = Stage.LabelPending;
 				Instruction i = new Instruction();
 				List<string> args = new List<string>();
 				i.Arguments = args;
@@ -34,22 +34,26 @@ namespace AbaSim.Core.Compiler.Lexing
 				while (offset < line.Length)
 				{
 					bool isWhiteSpace = WhiteSpace.Contains(line[offset]);
-					if (isWhiteSpace && stage <= Stage.Label)
+					if (isWhiteSpace && stage <= Stage.LabelPending)
 					{
 						//ignore leading space
 						boffset++;
 					}
-					else if (line[offset] == ':' && stage <= Stage.Label)
+					else if (!isWhiteSpace && stage == Stage.LabelPending)
+					{
+						stage = Stage.LabelRunning;
+					}
+					else if (line[offset] == ':' && stage <= Stage.LabelRunning)
 					{
 						if (offset == 0)
 						{
 							throw new InvalidSymbolException(line[offset].ToString(), lineCounter, offset, "label name");
 						}
-						i.Label = line.Substring(0, offset - 1);
+						i.Label = line.Substring(boffset, offset - boffset);
 						boffset = offset + 1;
-						stage++;
+						stage = Stage.OperationPending;
 					}
-					else if (isWhiteSpace && stage <= Stage.OperationPending)
+					else if (isWhiteSpace && stage == Stage.OperationPending)
 					{
 						//ignore leading space
 						boffset++;
@@ -58,15 +62,15 @@ namespace AbaSim.Core.Compiler.Lexing
 					{
 						stage = Stage.OperationRunning;
 					}
-					else if (isWhiteSpace && stage == Stage.OperationRunning)
+					else if (isWhiteSpace && stage <= Stage.OperationRunning)
 					{
-						i.Operation = line.Substring(boffset, offset - 1);
+						i.Operation = line.Substring(boffset, offset - boffset);
 						if (i.Operation == string.Empty)
 						{
 							throw new InvalidSymbolException(line[offset].ToString(), lineCounter, offset, "operation");
 						}
 						boffset = offset + 1;
-						stage++;
+						stage = Stage.ArgumentsPending;
 					}
 					else if (isWhiteSpace && stage <= Stage.ArgumentsPending)
 					{
@@ -77,12 +81,12 @@ namespace AbaSim.Core.Compiler.Lexing
 					{
 						stage = Stage.ArgumentsRunning;
 					}
-					else if ((line[offset] == ',' || isWhiteSpace) && stage == Stage.ArgumentsRunning)
+					else if ((line[offset] == ',' || isWhiteSpace || line[offset] == '/') && stage == Stage.ArgumentsRunning)
 					{
 						if (boffset < offset)
 						{
 							//argument completed
-							args.Add(line.Substring(boffset, offset - 1));
+							args.Add(line.Substring(boffset, offset - boffset));
 							boffset = offset + 1;
 						}
 						else
@@ -90,21 +94,21 @@ namespace AbaSim.Core.Compiler.Lexing
 							//more than one space
 							boffset++;
 						}
-					}
-					else if (line[offset] == '/' && stage == Stage.ArgumentsRunning)
-					{
-						if (commentFirstSymbolSeenOffset == offset - 1)
+						if (line[offset] == '/')
 						{
-							stage = Stage.CommentRunning;
-							boffset = offset + 1;
-						}
-						else if (commentFirstSymbolSeenOffset == -2)
-						{
-							commentFirstSymbolSeenOffset = offset;
-						}
-						else
-						{
-							throw new InvalidSymbolException("/", lineCounter, offset, "comment start token (\"\")");
+							if (commentFirstSymbolSeenOffset == offset - 1)
+							{
+								stage = Stage.CommentRunning;
+								boffset = offset + 1;
+							}
+							else if (commentFirstSymbolSeenOffset == -2)
+							{
+								commentFirstSymbolSeenOffset = offset;
+							}
+							else
+							{
+								throw new InvalidSymbolException("/", lineCounter, offset, "comment start token (\"\")");
+							}
 						}
 					}
 					offset++;
@@ -112,6 +116,10 @@ namespace AbaSim.Core.Compiler.Lexing
 				if (stage == Stage.CommentRunning)
 				{
 					i.Comment = line.Substring(boffset);
+				}
+				else if (stage == Stage.ArgumentsRunning)
+				{
+					args.Add(line.Substring(boffset, offset - boffset));
 				}
 				i.Index = lineCounter;
 				yield return i;
@@ -121,13 +129,14 @@ namespace AbaSim.Core.Compiler.Lexing
 
 		private enum Stage
 		{
-			Label = 0,
-			OperationPending = 1,
-			OperationRunning = 2,
-			ArgumentsPending = 3,
-			ArgumentsRunning = 4,
-			CommentPending = 5,
-			CommentRunning = 6
+			LabelPending = 0,
+			LabelRunning = 1,
+			OperationPending = 2,
+			OperationRunning = 3,
+			ArgumentsPending = 4,
+			ArgumentsRunning = 5,
+			CommentPending = 6,
+			CommentRunning = 7
 		}
 	}
 }
