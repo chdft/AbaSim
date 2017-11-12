@@ -24,6 +24,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(DataMemory, _Register)},
 				//register move
 				{Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register)},
+				//synchronization
 				{Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, _Register)},
 				//scalar arithmetic
 				{Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(_Register)},
@@ -42,8 +43,15 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.DivideIOperationUnit.OpCode, new Operations.DivideIOperationUnit(_Register)},
 				{Operations.DivideUOperationUnit.OpCode, new Operations.DivideUOperationUnit(_Register)},
 				{Operations.DivideIUOperationUnit.OpCode, new Operations.DivideIUOperationUnit(_Register)},
+				//comparison
+
+				//bitwise logic
+
 				//Jump
-				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()}
+				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()},
+				{Operations.BranchNotZeroOperationUnit.OpCode, new Operations.BranchNotZeroOperationUnit(_Register)},
+				{Operations.BranchZeroOperationUnit.OpCode, new Operations.BranchZeroOperationUnit(_Register)},
+				{Operations.AdvancedJumpOperationUnit.OpCode, new Operations.AdvancedJumpOperationUnit(_Register)},
 			};
 		}
 
