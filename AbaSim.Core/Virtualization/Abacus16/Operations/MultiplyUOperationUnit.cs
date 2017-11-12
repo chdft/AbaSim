@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mulu", OpCode, Compiler.Parsing.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("vmulu", OpCode, Compiler.Parsing.InstructionType.VRegister)]
 	class MultiplyUOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B3 + Bit.B0;

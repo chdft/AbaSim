@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AbaSim.Core.Virtualization.Abacus16;
 
 namespace AbaSim.Core.Compiler.Parsing
 {
@@ -21,5 +22,7 @@ namespace AbaSim.Core.Compiler.Parsing
 		public InstructionType Type { get; private set; }
 
 		public byte OpCode { get; private set; }
+
+		public string Dialect { get; set; }
 	}
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
+	//BUG: add fixed arguments to support this multiplexing instruction
+	//[AbaSim.Core.Compiler.Parsing.AssemblyCode("sync", OpCode, Compiler.Parsing.InstructionType.Store)]
 	class SpecialMemoryOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B7 + Bit.B6 + Bit.B5 + Bit.B4 + Bit.B3 + Bit.B2 + Bit.B1 + Bit.B0;
@@ -27,13 +29,13 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 					Cpu.Synchronize();
 					break;
 				//ovflw
-				case 2 ^ 0:
+				case Bit.B0:
 					throw new NotImplementedException();
 				//mvtm
-				case 2 ^ 1:
+				case Bit.B1:
 					throw new NotImplementedException();
 				//mvtl
-				case 2 ^ 1 + 2 ^ 0:
+				case Bit.B1 + Bit.B0:
 					throw new NotImplementedException();
 				default:
 					throw new IllegalOperationArgumentException("Invalid c argument for special memory instruction.", Instruction);

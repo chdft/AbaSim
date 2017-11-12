@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("muli", OpCode, Compiler.Parsing.InstructionType.Immediate)]
 	class MultiplyIOperationUnit : ImmediateOperationUnit
 	{
 		public const byte OpCode = Bit.B3 + Bit.B1;

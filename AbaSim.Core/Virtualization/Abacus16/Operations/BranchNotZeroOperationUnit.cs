@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("bnz", OpCode, Compiler.Parsing.InstructionType.Store)]
 	class BranchNotZeroOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B0;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("or", OpCode, Compiler.Parsing.InstructionType.Register)]
 	class BitwiseOrOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B4 + Bit.B3 + Bit.B0;
