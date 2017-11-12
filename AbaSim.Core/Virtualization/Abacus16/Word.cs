@@ -37,6 +37,20 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			}
 		}
 
+		public Word SignExtend(int currentValueLength)
+		{
+			bool isNegative = (Bit.S0 & (UnsignedValue >> currentValueLength - 1)) == Bit.S0;
+			ushort result = UnsignedValue;
+			if (isNegative)
+			{
+				for (int i = currentValueLength; i < Size; i++)
+				{
+					result |= (ushort)(Bit.S0 << i);
+				}
+			}
+			return (Word)result;
+		}
+
 		public static Word operator &(Word a, Word b)
 		{
 			var result = new Word();

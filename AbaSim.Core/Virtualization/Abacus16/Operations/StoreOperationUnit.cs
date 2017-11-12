@@ -8,10 +8,12 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	abstract class StoreOperationUnit : OperationUnit
 	{
+		private const int ConstantSize = 7;
+		private const int RegisterSize = 3;
 		private static readonly Word DestinationRegisterMask = (short)(Bit.S7 + Bit.S8 + Bit.S9);
-		private static readonly byte DestinationRegisterShift = Word.Size - 6 - 3;
+		private static readonly byte DestinationRegisterShift = Word.Size - OpCodeSize - RegisterSize;
 		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6);
-		private static readonly byte ConstantShift = Word.Size - 6 - 3 - 7;
+		private static readonly byte ConstantShift = Word.Size - OpCodeSize - RegisterSize - ConstantSize;
 
 		public StoreOperationUnit(IReadOnlyRegisterGroup register)
 		{
@@ -31,8 +33,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		public override void Decode(Word instruction)
 		{
 			DestinationRegister = (RegisterIndex)((instruction & DestinationRegisterMask) >> DestinationRegisterShift);
-			SignedConstant = (sbyte)((instruction & ConstantMask) >> ConstantShift);
-			UnsignedConstant = (byte)((instruction & ConstantMask) >> ConstantShift);
+			SignedConstant = (sbyte)((instruction & ConstantMask) >> ConstantShift).SignExtend(ConstantSize).SignedValue;
+			UnsignedConstant = (byte)((instruction & ConstantMask) >> ConstantShift).UnsignedValue;
 		}
 	}
 }

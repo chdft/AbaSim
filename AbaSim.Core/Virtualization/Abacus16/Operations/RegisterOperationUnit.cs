@@ -8,14 +8,16 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	abstract class RegisterOperationUnit : OperationUnit
 	{
+		private const int RegisterSize = 3;
+		private const int VectorBitSize = 1;
 		private static readonly Word DestinationRegisterMask = (ushort)(Bit.S7 + Bit.S8 + Bit.S9);
-		private static readonly byte DestinationRegisterShift = Word.Size - 6 - 3;
+		private static readonly byte DestinationRegisterShift = Word.Size - OpCodeSize - 1 * RegisterSize;
 		private static readonly Word LeftRegisterMask = (short)(Bit.S4 + Bit.S5 + Bit.S6);
-		private static readonly byte LeftRegisterShift = Word.Size - 6 - 3 - 3;
+		private static readonly byte LeftRegisterShift = Word.Size - OpCodeSize - 2 * RegisterSize;
 		private static readonly Word RightRegisterMask = (short)(Bit.S1 + Bit.S2 + Bit.S3);
-		private static readonly byte RightRegisterShift = Word.Size - 6 - 3 - 3 - 3;
+		private static readonly byte RightRegisterShift = Word.Size - OpCodeSize - 3 * RegisterSize;
 		private static readonly Word VectorBitMask = (short)(Bit.S0);
-		private static readonly byte VectorBitShift = Word.Size - 6 - 3 - 3 - 1;
+		private static readonly byte VectorBitShift = Word.Size - OpCodeSize - 3 * RegisterSize - VectorBitSize;
 
 		public RegisterOperationUnit(IReadOnlyRegisterGroup register)
 		{

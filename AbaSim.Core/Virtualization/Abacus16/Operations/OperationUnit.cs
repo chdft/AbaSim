@@ -8,6 +8,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	abstract class OperationUnit : IOperationUnit
 	{
+		protected const int OpCodeSize = 6;
+
 		public OperationUnit()
 		{
 			Reset();

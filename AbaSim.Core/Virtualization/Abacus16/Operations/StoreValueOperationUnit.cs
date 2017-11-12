@@ -9,7 +9,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("st", OpCode, Compiler.Parsing.InstructionType.Register)]
 	class StoreValueOperationUnit : RegisterOperationUnit
 	{
-		public const byte OpCode = Bit.B6 + Bit.B5 + Bit.B0;
+		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B0;
 
 		public StoreValueOperationUnit(IMemoryProvider<Word> memory, IReadOnlyRegisterGroup registers)
 			: base(registers)
