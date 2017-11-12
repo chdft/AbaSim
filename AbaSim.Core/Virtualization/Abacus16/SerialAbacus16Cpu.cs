@@ -15,53 +15,52 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			ProgramMemory = programMemory;
 			DataMemory = dataMemory;
 
-			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>()
-			{
-				//memory access
-				{Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register)},
-				{Operations.LoadIOperationUnit.OpCode, new Operations.LoadIOperationUnit(DataMemory, _Register)},
-				{Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, _Register)},
-				{Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(DataMemory, _Register)},
-				//register move
-				{Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register)},
-				//synchronization
-				{Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, _Register)},
-				//scalar arithmetic
-				{Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(_Register)},
-				{Operations.AddIOperationUnit.OpCode, new Operations.AddIOperationUnit(_Register)},
-				{Operations.AddUOperationUnit.OpCode, new Operations.AddUOperationUnit(_Register)},
-				{Operations.AddIUOperationUnit.OpCode, new Operations.AddIUOperationUnit(_Register)},
-				{Operations.SubOperationUnit.OpCode, new Operations.SubOperationUnit(_Register)},
-				{Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(_Register)},
-				{Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(_Register)},
-				{Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(_Register)},
-				{Operations.MultiplyOperationUnit.OpCode, new Operations.MultiplyOperationUnit(_Register)},
-				{Operations.MultiplyIOperationUnit.OpCode, new Operations.MultiplyIOperationUnit(_Register)},
-				{Operations.MultiplyUOperationUnit.OpCode, new Operations.MultiplyUOperationUnit(_Register)},
-				{Operations.MultiplyIUOperationUnit.OpCode, new Operations.MultiplyIUOperationUnit(_Register)},
-				{Operations.DivideOperationUnit.OpCode, new Operations.DivideOperationUnit(_Register)},
-				{Operations.DivideIOperationUnit.OpCode, new Operations.DivideIOperationUnit(_Register)},
-				{Operations.DivideUOperationUnit.OpCode, new Operations.DivideUOperationUnit(_Register)},
-				{Operations.DivideIUOperationUnit.OpCode, new Operations.DivideIUOperationUnit(_Register)},
-				//comparison
-				{Operations.SetLessThanOperationUnit.OpCode, new Operations.SetLessThanOperationUnit(_Register)},
-				{Operations.SetLessThanUOperationUnit.OpCode, new Operations.SetLessThanUOperationUnit(_Register)},
-				{Operations.SetLessThanEqualOperationUnit.OpCode, new Operations.SetLessThanEqualOperationUnit(_Register)},
-				{Operations.SetLessThanEqualUOperationUnit.OpCode, new Operations.SetLessThanEqualUOperationUnit(_Register)},
-				{Operations.SetEqualOperationUnit.OpCode, new Operations.SetEqualOperationUnit(_Register)},
-				{Operations.SetNotEqualOperationUnit.OpCode, new Operations.SetNotEqualOperationUnit(_Register)},
-				//bitwise logic
-				{Operations.LeftShiftOperationUnit.OpCode, new Operations.LeftShiftOperationUnit(_Register)},
-				{Operations.BitwiseAndOperationUnit.OpCode, new Operations.BitwiseAndOperationUnit(_Register)},
-				{Operations.BitwiseOrOperationUnit.OpCode, new Operations.BitwiseOrOperationUnit(_Register)},
-				{Operations.BitwiseXorOperationUnit.OpCode, new Operations.BitwiseXorOperationUnit(_Register)},
-				{Operations.BitwiseNotOperationUnit.OpCode, new Operations.BitwiseNotOperationUnit(_Register)},
-				//Jump
-				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()},
-				{Operations.BranchNotZeroOperationUnit.OpCode, new Operations.BranchNotZeroOperationUnit(_Register)},
-				{Operations.BranchZeroOperationUnit.OpCode, new Operations.BranchZeroOperationUnit(_Register)},
-				{Operations.AdvancedJumpOperationUnit.OpCode, new Operations.AdvancedJumpOperationUnit(_Register)},
-			};
+			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>();
+			//memory access
+			OperationRegistry.Add(Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register));
+			OperationRegistry.Add(Operations.LoadIOperationUnit.OpCode, new Operations.LoadIOperationUnit(DataMemory, _Register));
+			OperationRegistry.Add(Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, _Register));
+			OperationRegistry.Add(Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(DataMemory, _Register));
+			//register move
+			OperationRegistry.Add(Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register));
+			//synchronization
+			OperationRegistry.Add(Operations.SpecialMemoryOperationUnit.OpCode, new Operations.SpecialMemoryOperationUnit(this, _Register));
+			//scalar arithmetic
+			OperationRegistry.Add(Operations.AddOperationUnit.OpCode, new Operations.AddOperationUnit(_Register));
+			OperationRegistry.Add(Operations.AddIOperationUnit.OpCode, new Operations.AddIOperationUnit(_Register));
+			OperationRegistry.Add(Operations.AddUOperationUnit.OpCode, new Operations.AddUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.AddIUOperationUnit.OpCode, new Operations.AddIUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SubOperationUnit.OpCode, new Operations.SubOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SubIOperationUnit.OpCode, new Operations.SubIOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SubUOperationUnit.OpCode, new Operations.SubUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SubIUOperationUnit.OpCode, new Operations.SubIUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.MultiplyOperationUnit.OpCode, new Operations.MultiplyOperationUnit(_Register));
+			OperationRegistry.Add(Operations.MultiplyIOperationUnit.OpCode, new Operations.MultiplyIOperationUnit(_Register));
+			OperationRegistry.Add(Operations.MultiplyUOperationUnit.OpCode, new Operations.MultiplyUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.MultiplyIUOperationUnit.OpCode, new Operations.MultiplyIUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.DivideOperationUnit.OpCode, new Operations.DivideOperationUnit(_Register));
+			OperationRegistry.Add(Operations.DivideIOperationUnit.OpCode, new Operations.DivideIOperationUnit(_Register));
+			OperationRegistry.Add(Operations.DivideUOperationUnit.OpCode, new Operations.DivideUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.DivideIUOperationUnit.OpCode, new Operations.DivideIUOperationUnit(_Register));
+			//comparison
+			OperationRegistry.Add(Operations.SetLessThanOperationUnit.OpCode, new Operations.SetLessThanOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SetLessThanUOperationUnit.OpCode, new Operations.SetLessThanUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SetLessThanEqualOperationUnit.OpCode, new Operations.SetLessThanEqualOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SetLessThanEqualUOperationUnit.OpCode, new Operations.SetLessThanEqualUOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SetEqualOperationUnit.OpCode, new Operations.SetEqualOperationUnit(_Register));
+			OperationRegistry.Add(Operations.SetNotEqualOperationUnit.OpCode, new Operations.SetNotEqualOperationUnit(_Register));
+			//bitwise logic
+			OperationRegistry.Add(Operations.LeftShiftOperationUnit.OpCode, new Operations.LeftShiftOperationUnit(_Register));
+			OperationRegistry.Add(Operations.BitwiseAndOperationUnit.OpCode, new Operations.BitwiseAndOperationUnit(_Register));
+			OperationRegistry.Add(Operations.BitwiseOrOperationUnit.OpCode, new Operations.BitwiseOrOperationUnit(_Register));
+			OperationRegistry.Add(Operations.BitwiseXorOperationUnit.OpCode, new Operations.BitwiseXorOperationUnit(_Register));
+			OperationRegistry.Add(Operations.BitwiseNotOperationUnit.OpCode, new Operations.BitwiseNotOperationUnit(_Register));
+			//Jump
+			OperationRegistry.Add(Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit());
+			OperationRegistry.Add(Operations.BranchNotZeroOperationUnit.OpCode, new Operations.BranchNotZeroOperationUnit(_Register));
+			OperationRegistry.Add(Operations.BranchZeroOperationUnit.OpCode, new Operations.BranchZeroOperationUnit(_Register));
+			OperationRegistry.Add(Operations.AdvancedJumpOperationUnit.OpCode, new Operations.AdvancedJumpOperationUnit(_Register));
+
 		}
 
 		public virtual void ClockCycle()

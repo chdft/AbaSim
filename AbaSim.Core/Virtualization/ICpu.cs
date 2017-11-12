@@ -8,6 +8,8 @@ namespace AbaSim.Core
 {
 	public interface ICpu
 	{
+		int ProgramCounter { get; }
+
 		void ClockCycle();
 
 		void Reset();

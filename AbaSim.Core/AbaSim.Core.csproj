@@ -102,6 +102,7 @@
     <Compile Include="Virtualization\Abacus16\Vector.cs" />
     <Compile Include="Virtualization\Abacus16\Word.cs" />
     <Compile Include="Virtualization\BufferMemory.cs" />
+    <Compile Include="Virtualization\ClockCycleScheduledEventArgs.cs" />
     <Compile Include="Virtualization\CpuException.cs" />
     <Compile Include="Virtualization\ExecutionCompletedEventArgs.cs" />
     <Compile Include="Virtualization\Host.cs" />

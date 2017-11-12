@@ -28,6 +28,7 @@ namespace AbaSim.ConsoleRunner
 
 			Host virtualSystem = new Host(cpu);
 			virtualSystem.ExecutionCompleted += virtualSystem_ExecutionCompleted;
+			virtualSystem.ClockCycleScheduled += virtualSystem_ClockCycleScheduled;
 			virtualSystem.Start();
 
 			Console.WriteLine("Press ENTER to cancel execution");
@@ -37,6 +38,14 @@ namespace AbaSim.ConsoleRunner
 				virtualSystem.SuspendAsync().Wait();
 				WriteDumps();
 			}
+		}
+
+		static void virtualSystem_ClockCycleScheduled(object sender, ClockCycleScheduledEventArgs e)
+		{
+			Word instruction = programMemory[e.ProgramCounter];
+			string binRepresentation = Convert.ToString(instruction, 2).PadLeft(16, '0');
+
+			Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
 		}
 
 		static void virtualSystem_ExecutionCompleted(object sender, ExecutionCompletedEventArgs e)

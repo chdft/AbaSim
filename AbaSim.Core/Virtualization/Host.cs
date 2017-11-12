@@ -52,6 +52,8 @@ namespace AbaSim.Core.Virtualization
 
 		public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
 
+		public event EventHandler<ClockCycleScheduledEventArgs> ClockCycleScheduled;
+
 		private void StartBackgroundProcessing()
 		{
 			lock (WorkerSynchronization)
@@ -67,6 +69,7 @@ namespace AbaSim.Core.Virtualization
 		{
 			while (IsRunning)
 			{
+				NotifyClockCycleScheduled();
 				try
 				{
 					Cpu.ClockCycle();
@@ -85,6 +88,14 @@ namespace AbaSim.Core.Virtualization
 			if (ExecutionCompleted != null)
 			{
 				ExecutionCompleted(this, new ExecutionCompletedEventArgs(reason));
+			}
+		}
+
+		private void NotifyClockCycleScheduled()
+		{
+			if (ClockCycleScheduled != null)
+			{
+				ClockCycleScheduled(this, new ClockCycleScheduledEventArgs(Cpu.ProgramCounter));
 			}
 		}
 	}
