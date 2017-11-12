@@ -10,16 +10,7 @@ namespace AbaSim.Core.Compiler
 {
 	public class AssemblerCompiler
 	{
-		public AssemblerCompiler()
-		{
-			SourceEncoding = Encoding.UTF8;
-		}
-
-		public string SourceFile { get; set; }
-
-		public string DestinationFile { get; set; }
-
-		public Encoding SourceEncoding { get; set; }
+		public AssemblerCompiler() { }
 
 		public string LineSperator { get; set; }
 
@@ -27,10 +18,8 @@ namespace AbaSim.Core.Compiler
 
 		protected Dictionary<string, InstructionMapping> Mappings = new Dictionary<string, InstructionMapping>();
 
-		public void Compile()
+		public byte[] Compile(string sourceCode)
 		{
-			string sourceCode = System.IO.File.ReadAllText(SourceFile, SourceEncoding);
-
 			Lexing.AssemblerLexer lexer = new Lexing.AssemblerLexer();
 
 			List<Lexing.Instruction> instructions = lexer.Lex(sourceCode).ToList();
@@ -148,6 +137,13 @@ namespace AbaSim.Core.Compiler
 					instructionCounter++;
 				}
 			}
+
+			byte[] binary = new byte[nativeInstructions.Count * (Word.Size / sizeof(byte))];
+			for (int i = 0; i < nativeInstructions.Count; i++)
+			{
+				nativeInstructions[i].RawValue.CopyTo(binary, i * (Word.Size / sizeof(byte)));
+			}
+			return binary;
 		}
 
 		protected virtual void LoadMappings()
