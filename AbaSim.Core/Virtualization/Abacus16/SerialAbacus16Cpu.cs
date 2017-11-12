@@ -44,9 +44,14 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				{Operations.DivideUOperationUnit.OpCode, new Operations.DivideUOperationUnit(_Register)},
 				{Operations.DivideIUOperationUnit.OpCode, new Operations.DivideIUOperationUnit(_Register)},
 				//comparison
-
+				{Operations.SetLessThanOperationUnit.OpCode, new Operations.SetLessThanOperationUnit(_Register)},
+				{Operations.SetLessThanUOperationUnit.OpCode, new Operations.SetLessThanUOperationUnit(_Register)},
+				{Operations.SetLessThanEqualOperationUnit.OpCode, new Operations.SetLessThanEqualOperationUnit(_Register)},
+				{Operations.SetLessThanEqualUOperationUnit.OpCode, new Operations.SetLessThanEqualUOperationUnit(_Register)},
+				{Operations.SetEqualOperationUnit.OpCode, new Operations.SetEqualOperationUnit(_Register)},
+				{Operations.SetNotEqualOperationUnit.OpCode, new Operations.SetNotEqualOperationUnit(_Register)},
 				//bitwise logic
-
+				{Operations.LeftShiftOperationUnit.OpCode, new Operations.LeftShiftOperationUnit(_Register)},
 				//Jump
 				{Operations.SimpleJumpOperationUnit.OpCode, new Operations.SimpleJumpOperationUnit()},
 				{Operations.BranchNotZeroOperationUnit.OpCode, new Operations.BranchNotZeroOperationUnit(_Register)},

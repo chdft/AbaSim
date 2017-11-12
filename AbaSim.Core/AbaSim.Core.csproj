@@ -56,6 +56,13 @@
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyIUOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyIOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\MultiplyOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\LeftShiftOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetNotEqualOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetEqualOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetLessThanEqualUOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetLessThanEqualOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetLessThanUOperationUnit.cs" />
+    <Compile Include="Virtualization\Abacus16\Operations\SetLessThanOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\StoreValueIOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\LoadIOperationUnit.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\SimpleJumOperationUnit.cs" />
