@@ -29,7 +29,18 @@ namespace AbaSim.ConsoleCompiler
 
 			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler();
 			compiler.LoadMappings();
-			byte[] binary = compiler.Compile(sourceCode);
+			byte[] binary;
+			try
+			{
+				binary = compiler.Compile(sourceCode);
+			}
+			catch (Core.Compiler.CompilerException e)
+			{
+				Console.WriteLine("Compiling failed: {0}", e.GetType());
+				Console.WriteLine(e.Message);
+				Environment.ExitCode = 2;
+				return;
+			}
 
 			if (destinationFile != null)
 			{
