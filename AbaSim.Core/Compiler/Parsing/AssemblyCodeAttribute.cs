@@ -24,5 +24,9 @@ namespace AbaSim.Core.Compiler.Parsing
 		public byte OpCode { get; private set; }
 
 		public string Dialect { get; set; }
+
+		public ValueRestriction ConstantRestriction { get; set; }
+
+		public byte FixedConstantValue { get; set; }
 	}
 }

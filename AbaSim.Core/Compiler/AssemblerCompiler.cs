@@ -14,6 +14,8 @@ namespace AbaSim.Core.Compiler
 
 		public string LineSperator { get; set; }
 
+		public string Dialect { get; set; }
+
 		protected Dictionary<string, int> Labels = new Dictionary<string, int>();
 
 		protected Dictionary<string, InstructionMapping> Mappings;
@@ -24,115 +26,139 @@ namespace AbaSim.Core.Compiler
 
 			List<Lexing.Instruction> instructions = lexer.Lex(sourceCode).ToList();
 
-			int instructionCounter = 0;
 			List<Word> nativeInstructions = new List<Word>();
 
-			foreach (var instruction in instructions)
-			{
-				if (!string.IsNullOrWhiteSpace(instruction.Label))
-				{
-					Labels.Add(instruction.Label.Trim(), instructionCounter);
-				}
-				if (!string.IsNullOrWhiteSpace(instruction.Operation))
-				{
-					instructionCounter++;
-				}
-			}
+			IndexInstructions(instructions);
 
-			instructionCounter = 0;
+			int instructionCounter = 0;
 			foreach (var instruction in instructions)
 			{
 				if (!string.IsNullOrWhiteSpace(instruction.Operation))
 				{
-					Word nativeInstruction = Word.Empty;
-
-					//TODO: handle unknown instructions
 					//TODO: handle pseudo instructions
-					InstructionMapping mapping = Mappings[instruction.Operation.Trim()];
+					InstructionMapping mapping;
 
-					nativeInstruction |= ((Word)mapping.OpCode) << 10;
-
-					switch (mapping.Type)
+					if (Mappings.TryGetValue(instruction.Operation.Trim(), out mapping))
 					{
-						case AbaSim.Core.Compiler.Parsing.InstructionType.Register:
-						case AbaSim.Core.Compiler.Parsing.InstructionType.VRegister:
-							if (instruction.Arguments.Count == 3)
-							{
-								//rd
-								int rd = ParseRawRegister(instruction.Arguments[0]);
-								nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+						Word nativeInstruction = Word.Empty;
 
-								//rl
-								int rl = ParseRawRegister(instruction.Arguments[1]);
-								nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
+						nativeInstruction |= ((Word)mapping.OpCode) << 10;
 
-								//rr
-								int rr = ParseRawRegister(instruction.Arguments[1]);
-								nativeInstruction |= (((Word)rr) & ((Word)(Bit.S1 + Bit.S2 + Bit.S3)));
-
-								if (mapping.Type == Parsing.InstructionType.VRegister)
+						switch (mapping.Type)
+						{
+							case AbaSim.Core.Compiler.Parsing.InstructionType.Register:
+							case AbaSim.Core.Compiler.Parsing.InstructionType.VRegister:
+								if (instruction.Arguments.Count == 3)
 								{
-									nativeInstruction |= ((Word)Bit.S0);
+									//rd
+									int rd = ParseRawRegister(instruction.Arguments[0]);
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+
+									//rl
+									int rl = ParseRawRegister(instruction.Arguments[1]);
+									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
+
+									//rr
+									int rr = ParseRawRegister(instruction.Arguments[1]);
+									nativeInstruction |= (((Word)rr) & ((Word)(Bit.S1 + Bit.S2 + Bit.S3)));
+
+									if (mapping.Type == Parsing.InstructionType.VRegister)
+									{
+										nativeInstruction |= ((Word)Bit.S0);
+									}
 								}
-							}
-							else
-							{
-								//TODO: throw
-							}
-							break;
-						case AbaSim.Core.Compiler.Parsing.InstructionType.Store:
-							if (instruction.Arguments.Count == 2)
-							{
-								//c
-								int constant = ParseRawConstant(instruction.Arguments[1], instructionCounter);
-								nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6)));
+								else
+								{
+									throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+								}
+								break;
+							case AbaSim.Core.Compiler.Parsing.InstructionType.Store:
+								{
+									int constant;
+									int rd;
+									if (mapping.ConstantRestriction == Parsing.ValueRestriction.Fixed)
+									{
+										constant = mapping.FixedConstantValue;
+										rd = 0;
+									}
+									else if (instruction.Arguments.Count == 2)
+									{
+										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter);
+										rd = ParseRawRegister(instruction.Arguments[0]);
+									}
+									else
+									{
+										throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+									}
 
-								//rd
-								int rd = ParseRawRegister(instruction.Arguments[0]);
-								nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
-							}
-							else
-							{
-								//TODO: throw
-							}
-							break;
-						case AbaSim.Core.Compiler.Parsing.InstructionType.Immediate:
-							if (instruction.Arguments.Count == 3)
-							{
-								//c
-								int constant = ParseRawConstant(instruction.Arguments[2], instructionCounter);
-								nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3)));
+									//TODO: bound validation on constant
 
-								//rd
-								int rd = ParseRawRegister(instruction.Arguments[0]);
-								nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+									nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6)));
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
 
-								//rl
-								int rl = ParseRawRegister(instruction.Arguments[1]);
-								nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
-							}
-							else
-							{
-								//TODO: throw
-							}
-							break;
-						case AbaSim.Core.Compiler.Parsing.InstructionType.Jump:
-							if (instruction.Arguments.Count == 1)
-							{
-								int constant = ParseRawConstant(instruction.Arguments[0], instructionCounter);
-								nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6 + Bit.S7 + Bit.S8 + Bit.S9)));
-							}
-							else
-							{
-								//TODO: throw
-							}
-							break;
-						default:
-							//TODO: should not happen
-							break;
+								}
+								break;
+							case AbaSim.Core.Compiler.Parsing.InstructionType.Immediate:
+								{
+									int constant;
+									int rd;
+									int rl;
+									if (mapping.ConstantRestriction == Parsing.ValueRestriction.Fixed)
+									{
+										constant = mapping.FixedConstantValue;
+										rd = 0;
+										rl = 0;
+									}
+									else if (instruction.Arguments.Count == 3)
+									{
+										constant = ParseRawConstant(instruction.Arguments[2], instructionCounter);
+										rd = ParseRawRegister(instruction.Arguments[0]);
+										rl = ParseRawRegister(instruction.Arguments[1]);
+									}
+									else
+									{
+										throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+									}
+
+									Word constantMask = ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3));
+
+									//bounds validation
+									int constantMin = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? 0 : -1 * constantMask / 2);
+									int constantMax = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? constantMask : constantMask / 2);
+									if (constant < constantMin || constant > constantMax)
+									{
+										throw new ValueOutOfBoundsException(constant, constantMin, constantMax);
+									}
+
+									nativeInstruction |= (((Word)constant) & constantMask);
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
+								}
+								break;
+							case AbaSim.Core.Compiler.Parsing.InstructionType.Jump:
+								if (instruction.Arguments.Count == 1)
+								{
+									int constant = ParseRawConstant(instruction.Arguments[0], instructionCounter);
+									nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6 + Bit.S7 + Bit.S8 + Bit.S9)));
+									//TODO: bound validation on constant
+								}
+								else
+								{
+									throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+								}
+								break;
+							default:
+								//should not happen
+								throw new CompilerException("Unknown Instruction Type");
+						}
+
+						nativeInstructions.Add(nativeInstruction);
 					}
-
-					nativeInstructions.Add(nativeInstruction);
+					else
+					{
+						//unmapped instruction
+						throw new UnmappedOperationException(instruction.Operation);
+					}
 
 					instructionCounter++;
 				}
@@ -153,11 +179,17 @@ namespace AbaSim.Core.Compiler
 			{
 				foreach (var mappingAttribute in type.GetCustomAttributes<Parsing.AssemblyCodeAttribute>())
 				{
-					Mappings.Add(mappingAttribute.FriendlyName, new InstructionMapping()
+					if (mappingAttribute.Dialect == null || mappingAttribute.Dialect == Dialect)
 					{
-						Type = mappingAttribute.Type,
-						OpCode = mappingAttribute.OpCode
-					});
+						Mappings.Add(mappingAttribute.FriendlyName, new InstructionMapping()
+						{
+							Type = mappingAttribute.Type,
+							OpCode = mappingAttribute.OpCode,
+							Dialect = mappingAttribute.Dialect,
+							ConstantRestriction = mappingAttribute.ConstantRestriction,
+							FixedConstantValue = mappingAttribute.FixedConstantValue
+						});
+					}
 				}
 			}
 		}
@@ -167,13 +199,25 @@ namespace AbaSim.Core.Compiler
 			rawRegister = rawRegister.Trim();
 			if (string.IsNullOrWhiteSpace(rawRegister))
 			{
-				//TODO: throw
+				throw new IllegalRegisterReferenceException(rawRegister);
 			}
 			if (rawRegister.StartsWith("$"))
 			{
 				rawRegister = rawRegister.Substring(1);
 			}
-			return int.Parse(rawRegister);
+			int registerIndex;
+			if (int.TryParse(rawRegister, out registerIndex))
+			{
+				if (registerIndex > 7 || registerIndex < 0)
+				{
+					throw new IllegalRegisterReferenceException(rawRegister);
+				}
+				return registerIndex;
+			}
+			else
+			{
+				throw new IllegalRegisterReferenceException(rawRegister);
+			}
 		}
 
 		protected virtual int ParseRawConstant(string rawConstant, int instructionCounter)
@@ -182,18 +226,48 @@ namespace AbaSim.Core.Compiler
 			int constant;
 			if (!int.TryParse(rawConstant, out constant))
 			{
-				constant = Labels[rawConstant] - instructionCounter;
-				//TODO: handle missing labels
+				int targetInstruction;
+				if (Labels.TryGetValue(rawConstant, out targetInstruction))
+				{
+					constant = targetInstruction - instructionCounter;
+				}
+				else
+				{
+					throw new IllegalLabelReferenceException(rawConstant);
+				}
 			}
-			//TODO: bounds validation
-			//BUG: constant is always assumed singed, is that guaranteed?
 			return constant;
+		}
+
+		private void IndexInstructions(List<Lexing.Instruction> instructions)
+		{
+			int instructionCounter = 0;
+			Labels.Clear();
+
+			foreach (var instruction in instructions)
+			{
+				if (!string.IsNullOrWhiteSpace(instruction.Label))
+				{
+					Labels.Add(instruction.Label.Trim(), instructionCounter);
+				}
+				if (!string.IsNullOrWhiteSpace(instruction.Operation))
+				{
+					instructionCounter++;
+				}
+			}
 		}
 
 		protected struct InstructionMapping
 		{
 			public Parsing.InstructionType Type { get; set; }
+
 			public byte OpCode { get; set; }
+
+			public string Dialect { get; set; }
+
+			public Parsing.ValueRestriction ConstantRestriction { get; set; }
+
+			public byte FixedConstantValue { get; set; }
 		}
 	}
 }

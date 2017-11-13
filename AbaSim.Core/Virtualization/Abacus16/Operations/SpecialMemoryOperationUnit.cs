@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	//BUG: add fixed arguments to support this multiplexing instruction
-	//[AbaSim.Core.Compiler.Parsing.AssemblyCode("sync", OpCode, Compiler.Parsing.InstructionType.Store)]
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sync", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = SyncConstant)]
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("ovf", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = OverflowConstant)]
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mvtm", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = MoveToMaskRegisterConstant)]
+	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mvtl", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = MoveToVectorLengthRegisterConstant)]
 	class SpecialMemoryOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B3 + Bit.B2 + Bit.B1 + Bit.B0;
+		private const byte SyncConstant = 0;
+		private const byte OverflowConstant = Bit.B0;
+		private const byte MoveToMaskRegisterConstant = Bit.B1;
+		private const byte MoveToVectorLengthRegisterConstant = Bit.B1 + Bit.B0;
 
 		public SpecialMemoryOperationUnit(SerialAbacus16Cpu cpu, IReadOnlyRegisterGroup registers)
 			: base(registers)
@@ -25,17 +31,17 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			switch (UnsignedConstant)
 			{
 				//sync
-				case 0:
+				case SyncConstant:
 					Cpu.Synchronize();
 					break;
-				//ovflw
-				case Bit.B0:
+				//ovf
+				case OverflowConstant:
 					throw new NotImplementedException();
 				//mvtm
-				case Bit.B1:
+				case MoveToMaskRegisterConstant:
 					throw new NotImplementedException();
 				//mvtl
-				case Bit.B1 + Bit.B0:
+				case MoveToVectorLengthRegisterConstant:
 					throw new NotImplementedException();
 				default:
 					throw new IllegalOperationArgumentException("Invalid c argument for special memory instruction.", Instruction);

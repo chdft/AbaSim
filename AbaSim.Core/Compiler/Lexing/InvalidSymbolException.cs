@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AbaSim.Core.Compiler.Lexing
 {
 	[Serializable]
-	public class InvalidSymbolException : Exception
+	public class InvalidSymbolException : LexerException
 	{
 		protected const string Message = "The symbol \"{0}\" was not expected at line {1} offset {2}. Expected {3}.";
 

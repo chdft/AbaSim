@@ -41,11 +41,20 @@
   <ItemGroup>
     <Compile Include="Bit.cs" />
     <Compile Include="Compiler\AssemblerCompiler.cs" />
+    <Compile Include="Compiler\CompilerException.cs" />
+    <Compile Include="Compiler\IllegalArgumentListException.cs" />
+    <Compile Include="Compiler\IllegalLabelReferenceException.cs" />
+    <Compile Include="Compiler\IllegalRegisterReferenceException.cs" />
+    <Compile Include="Compiler\IllegalValueException.cs" />
     <Compile Include="Compiler\Lexing\InvalidSymbolException.cs" />
     <Compile Include="Compiler\Lexing\Instruction.cs" />
     <Compile Include="Compiler\Lexing\AssemblerLexer.cs" />
+    <Compile Include="Compiler\Lexing\LexerException.cs" />
     <Compile Include="Compiler\Parsing\AssemblyCodeAttribute.cs" />
+    <Compile Include="Compiler\Parsing\ConstantRestriction.cs" />
     <Compile Include="Compiler\Parsing\InstructionType.cs" />
+    <Compile Include="Compiler\UnmappedOperationException.cs" />
+    <Compile Include="Compiler\IllegalReferenceException.cs" />
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterBank.cs" />
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterGroup.cs" />
