@@ -120,7 +120,14 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			{
 				throw new ProgramCounterOutOfBoundsException("The address for the next CPU instruction is out of bounds of the program memory.", ProgramCounter);
 			}
-			CurrentInstruction = ProgramMemory[ProgramCounter];
+			try
+			{
+				CurrentInstruction = ProgramMemory[ProgramCounter];
+			}
+			catch (MemoryAccessViolationException e)
+			{
+				throw new ProgramCounterOutOfBoundsException("The address for the next CPU instruction is in an inaccessible area of program memory.", e, ProgramCounter);
+			}
 		}
 
 		protected virtual void InstructionDecode()
