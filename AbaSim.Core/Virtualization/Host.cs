@@ -8,30 +8,64 @@ namespace AbaSim.Core.Virtualization
 {
 	public class Host
 	{
+		private const int RunningContinuously = -1;
+
 		public Host(ICpu processor)
 		{
 			Cpu = processor;
 		}
 
-		private ICpu Cpu;
+		public Task WorkerTask
+		{
+			get { return Worker; }
+		}
 
-		private Task Worker;
+		public bool IsRunning
+		{
+			get
+			{
+				return _RemainingCycles > 0 || _RemainingCycles == RunningContinuously;
+			}
+		}
 
-		public bool IsRunning { get; private set; }
+		/// <summary>
+		/// Positive values represent the count of clock cycles which will be scheduled before automatically suspend execution.
+		/// Negative values indicate, that no cycle based auto-suspending behavior is currently active.
+		/// </summary>
+		/// <seealso cref="IsRunning"/>
+		public int RemainingCycles
+		{
+			get { return _RemainingCycles; }
+		}
+		private volatile int _RemainingCycles;
 
 		public ulong ExecutedClockCycles { get; private set; }
 
 		private object WorkerSynchronization = new object();
 
+		private ICpu Cpu;
+
+		private Task Worker;
+
 		public void Start()
 		{
-			IsRunning = true;
+			if (IsRunning) { throw new InvalidOperationException("The host can not be started if it is already running."); }
+
+			_RemainingCycles = RunningContinuously;
+			StartBackgroundProcessing();
+		}
+
+		public void Step(int cycleCount)
+		{
+			if (IsRunning) { throw new InvalidOperationException("The host can not be started in stepping mode if it is already running."); }
+
+			_RemainingCycles = cycleCount;
 			StartBackgroundProcessing();
 		}
 
 		public async Task HardResetAsync()
 		{
-			IsRunning = false;
+			SetCycleCounter(0);
 
 			//wait until processing stopped
 			await Worker;
@@ -40,21 +74,38 @@ namespace AbaSim.Core.Virtualization
 			Cpu.Reset();
 		}
 
+		/// <summary>
+		/// Suspends execution.
+		/// </summary>
+		/// <returns>A Task which completes when the last already schedules cycle has completed.</returns>
 		public async Task SuspendAsync()
 		{
-			IsRunning = false;
+			SetCycleCounter(0);
 			await Worker;
-		}
-
-		public void Resume()
-		{
-			IsRunning = true;
-			StartBackgroundProcessing();
 		}
 
 		public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
 
 		public event EventHandler<ClockCycleScheduledEventArgs> ClockCycleScheduled;
+
+		private void DecrementCycleCounter()
+		{
+			lock (WorkerSynchronization)
+			{
+				if (_RemainingCycles > 0)
+				{
+					_RemainingCycles--;
+				}
+			}
+		}
+
+		private void SetCycleCounter(int remainingCycls)
+		{
+			lock (WorkerSynchronization)
+			{
+				_RemainingCycles = remainingCycls;
+			}
+		}
 
 		private void StartBackgroundProcessing()
 		{
@@ -62,24 +113,25 @@ namespace AbaSim.Core.Virtualization
 			{
 				if (Worker == null)
 				{
-					Worker = Task.Run((Action)Run);
+					Worker = Task.Run(() => Run(Cpu));
 				}
 			}
 		}
 
-		private void Run()
+		private void Run(ICpu cpu)
 		{
+			//we intentionally use unsynchronized access for performance (this does no cause a race condition)
 			while (IsRunning)
 			{
-				NotifyClockCycleScheduled();
+				NotifyClockCycleScheduled(cpu);
 				try
 				{
-					Cpu.ClockCycle();
+					cpu.ClockCycle();
 					ExecutedClockCycles++;
 				}
 				catch (CpuException e)
 				{
-					IsRunning = false;
+					SetCycleCounter(0);
 					NotifyExecutionCompleted(e);
 					break;
 				}
@@ -94,11 +146,11 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
-		private void NotifyClockCycleScheduled()
+		private void NotifyClockCycleScheduled(ICpu cpu)
 		{
 			if (ClockCycleScheduled != null)
 			{
-				ClockCycleScheduled(this, new ClockCycleScheduledEventArgs(Cpu.ProgramCounter));
+				ClockCycleScheduled(this, new ClockCycleScheduledEventArgs(cpu));
 			}
 		}
 	}

@@ -63,13 +63,30 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		}
 
+
+		/// <summary>
+		/// Number representing the state generation. This value will change during a call to <see cref="ClockCycle()"/> if and only if changes to state (ignoring the <see cref="ProgramCounter"/>) occurred.
+		/// </summary>
+		/// <remarks>
+		/// This value may be used by debuggers to identify infinite loops.
+		/// Note that only state changes initiated by this CPU are considered, externally managed memory changes and other CPUs within the same Host are not considered.
+		/// </remarks>
+		public ulong StateGeneration { get; private set; }
+
 		public virtual void ClockCycle()
 		{
+			StateChanged = false;
+
 			InstructionFetch();
 			InstructionDecode();
 			Execute();
 			MemoryAccess();
 			WriteBack();
+
+			if (StateChanged)
+			{
+				StateGeneration++;
+			}
 		}
 
 		public void Reset()
@@ -94,6 +111,8 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		public int ProgramCounter { get; protected set; }
 
 		private Operations.IOperationUnit OperationUnit;
+
+		private bool StateChanged = false;
 
 		protected virtual void InstructionFetch()
 		{
@@ -132,6 +151,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			if (OperationUnit.UpdateMemoryAddress != null)
 			{
 				DataMemory[OperationUnit.UpdateMemoryAddress.Value] = OperationUnit.UpdateMemoryValue;
+				StateChanged = true;
 			}
 		}
 
@@ -142,6 +162,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				if (OperationUnit.UpdatedRegisters[i] != null)
 				{
 					Register.Scalar[(RegisterIndex)i] = OperationUnit.UpdatedRegisters[i].Value;
+					StateChanged = true;
 				}
 			}
 			for (int i = 0; i < OperationUnit.UpdatedVRegisters.Length; i++)
@@ -149,6 +170,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 				if (OperationUnit.UpdatedVRegisters[i] != null)
 				{
 					Register.Vector[(RegisterIndex)i] = OperationUnit.UpdatedVRegisters[i];
+					StateChanged = true;
 				}
 			}
 			ProgramCounter += OperationUnit.ProgramCounterChange;
@@ -157,6 +179,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		public void Synchronize()
 		{
+			//we treat program memory as read-only => no flush required
 			DataMemory.Flush();
 		}
 	}

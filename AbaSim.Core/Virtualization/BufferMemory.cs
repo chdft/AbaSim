@@ -51,7 +51,11 @@ namespace AbaSim.Core.Virtualization
 			Buffer = new Abacus16.Word[Size];
 		}
 
-
+		/// <summary>
+		/// Gets or sets the value at <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index">0 based offset</param>
+		/// <returns>value at <paramref name="index"/></returns>
 		public Abacus16.Word this[int index]
 		{
 			get

@@ -118,6 +118,7 @@
     <Compile Include="Virtualization\ICpu.cs" />
     <Compile Include="Virtualization\IMemoryProvider.cs" />
     <Compile Include="Virtualization\IWord.cs" />
+    <Compile Include="Virtualization\MemoryAccessViolationException.cs" />
     <Compile Include="Virtualization\MemoryAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Virtualization\ProgramCounterOutOfBoundsException.cs" />

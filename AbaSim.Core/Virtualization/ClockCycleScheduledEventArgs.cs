@@ -8,11 +8,11 @@ namespace AbaSim.Core.Virtualization
 {
 	public class ClockCycleScheduledEventArgs : EventArgs
 	{
-		public ClockCycleScheduledEventArgs(int programCounter)
+		public ClockCycleScheduledEventArgs(ICpu cpu)
 		{
-			ProgramCounter = programCounter;
+			Cpu = cpu;
 		}
 
-		public int ProgramCounter { get; private set; }
+		public ICpu Cpu { get; private set; }
 	}
 }

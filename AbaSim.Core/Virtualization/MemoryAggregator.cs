@@ -16,16 +16,26 @@ namespace AbaSim.Core.Virtualization
 
 		private readonly List<MemoryMapping> Mappings = new List<MemoryMapping>();
 
+		/// <summary>
+		/// Gets or sets the value at <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index">0 based offset</param>
+		/// <returns>value at <paramref name="index"/></returns>
+		/// <exception cref="MemoryAccessException">When <paramref name="index"/> is not mapped to a value.</exception>
 		public Word this[int index]
 		{
 			get
 			{
 				var mapping = ResolveMapping(index);
+				if (mapping == null) { throw new MemoryAccessViolationException(); }
+
 				return mapping.Provider[index - mapping.StartIndex];
 			}
 			set
 			{
 				var mapping = ResolveMapping(index);
+				if (mapping == null) { throw new MemoryAccessViolationException(); }
+
 				mapping.Provider[index - mapping.StartIndex] = value;
 			}
 		}
@@ -55,10 +65,10 @@ namespace AbaSim.Core.Virtualization
 		}
 
 		private MemoryMapping ResolveMapping(int index) {
-			return Mappings.First(mapping => mapping.StartIndex <= index && mapping.EndIndex > index);
+			return Mappings.FirstOrDefault(mapping => mapping.StartIndex <= index && mapping.EndIndex > index);
 		}
 
-		private struct MemoryMapping
+		private class MemoryMapping
 		{
 			public MemoryMapping(int startIndex, IMemoryProvider<Word> provider)
 			{

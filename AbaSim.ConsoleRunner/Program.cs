@@ -51,16 +51,16 @@ namespace AbaSim.ConsoleRunner
 
 		static void virtualSystem_ClockCycleScheduled(object sender, ClockCycleScheduledEventArgs e)
 		{
-			if (e.ProgramCounter < programMemory.Size)
+			if (e.Cpu.ProgramCounter < programMemory.Size)
 			{
-				Word instruction = programMemory[e.ProgramCounter];
+				Word instruction = programMemory[e.Cpu.ProgramCounter];
 				string binRepresentation = Convert.ToString(instruction, 2).PadLeft(16, '0');
 
-				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.Cpu, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
 			}
 			else
 			{
-				Console.WriteLine("Executing:  [Out of memory bounds]  @ {0}", e.ProgramCounter);
+				Console.WriteLine("Executing:  [Out of memory bounds]  @ {0}", e.Cpu);
 			}
 		}
 
