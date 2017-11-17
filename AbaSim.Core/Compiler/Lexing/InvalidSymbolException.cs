@@ -9,18 +9,18 @@ namespace AbaSim.Core.Compiler.Lexing
 	[Serializable]
 	public class InvalidSymbolException : LexerException
 	{
-		protected const string Message = "The symbol \"{0}\" was not expected at line {1} offset {2}. Expected {3}.";
+		protected const string MessageTemplate = "The symbol \"{0}\" was not expected at line {1} offset {2}. Expected {3}.";
 
 		public InvalidSymbolException() { }
 		public InvalidSymbolException(string symbol, int line, int offset, string expected)
-			: base(string.Format(Message, symbol, line, offset, expected))
+			: base(string.Format(MessageTemplate, symbol, line, offset, expected))
 		{
 			Symbol = symbol;
 			Line = line;
 			Offset = offset;
 		}
 		public InvalidSymbolException(string symbol, int line, int offset, string expected, Exception inner)
-			: base(string.Format(Message, symbol, line, offset, expected), inner)
+			: base(string.Format(MessageTemplate, symbol, line, offset, expected), inner)
 		{
 			Symbol = symbol;
 			Line = line;

@@ -9,16 +9,16 @@ namespace AbaSim.Core.Compiler
 	[Serializable]
 	public class UnmappedOperationException : CompilerException
 	{
-		private const string Message = "The assembler operation \"{0}\" is not mapped to a native operation.";
+		private const string MessageTemplate = "The assembler operation \"{0}\" is not mapped to a native operation.";
 
 		public UnmappedOperationException() { }
 		public UnmappedOperationException(string assmeblerOperation)
-			: base(string.Format(Message, assmeblerOperation))
+			: base(string.Format(MessageTemplate, assmeblerOperation))
 		{
 			AssemblerOperation = assmeblerOperation;
 		}
 		public UnmappedOperationException(string assmeblerOperation, Exception inner)
-			: base(string.Format(Message, assmeblerOperation), inner)
+			: base(string.Format(MessageTemplate, assmeblerOperation), inner)
 		{
 			AssemblerOperation = assmeblerOperation;
 		}

@@ -9,16 +9,16 @@ namespace AbaSim.Core.Compiler
 	[Serializable]
 	public class IllegalRegisterReferenceException : IllegalReferenceException
 	{
-		private const string Message = "\"{0}\" does not refer to a valid register.";
+		private const string MessageTemplate = "\"{0}\" does not refer to a valid register.";
 
 		public IllegalRegisterReferenceException() { }
 		public IllegalRegisterReferenceException(string reference)
-			: base(string.Format(Message, reference))
+			: base(string.Format(MessageTemplate, reference))
 		{
 			Reference = reference;
 		}
 		public IllegalRegisterReferenceException(string reference, Exception inner)
-			: base(string.Format(Message, reference), inner)
+			: base(string.Format(MessageTemplate, reference), inner)
 		{
 			Reference = reference;
 		}
