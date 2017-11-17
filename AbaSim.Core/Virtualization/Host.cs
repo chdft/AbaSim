@@ -17,14 +17,22 @@ namespace AbaSim.Core.Virtualization
 
 		public Task WorkerTask
 		{
-			get { return Worker; }
+			get
+			{
+				Task worker = Worker;
+				if (worker == null)
+				{
+					worker = Task.FromResult(0);
+				}
+				return worker;
+			}
 		}
 
 		public bool IsRunning
 		{
 			get
 			{
-				return Worker!=null;
+				return Worker != null;
 			}
 		}
 
@@ -93,7 +101,7 @@ namespace AbaSim.Core.Virtualization
 		public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
 
 		public event EventHandler<ClockCycleScheduledEventArgs> ClockCycleScheduled;
-		
+
 		protected bool GetSouldScheduleNewCycles()
 		{
 			lock (WorkerSynchronization)
