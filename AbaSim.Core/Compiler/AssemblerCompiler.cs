@@ -24,14 +24,19 @@ namespace AbaSim.Core.Compiler
 		{
 			Lexing.AssemblerLexer lexer = new Lexing.AssemblerLexer();
 
-			List<Lexing.Instruction> instructions = lexer.Lex(sourceCode).ToList();
+			return Compile(lexer.Lex(sourceCode));
+		}
+
+		public byte[] Compile(IEnumerable<Lexing.Instruction> instructions)
+		{
+			List<Lexing.Instruction> instructionsList = instructions.ToList();
 
 			List<Word> nativeInstructions = new List<Word>();
 
-			IndexInstructions(instructions);
+			IndexInstructions(instructionsList);
 
 			int instructionCounter = 0;
-			foreach (var instruction in instructions)
+			foreach (var instruction in instructionsList)
 			{
 				if (!string.IsNullOrWhiteSpace(instruction.Operation))
 				{
