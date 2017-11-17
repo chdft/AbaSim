@@ -15,12 +15,14 @@ namespace AbaSim.ConsoleRunner
 		static Host virtualSystem;
 		static SerialAbacus16Cpu cpu;
 		private const string ShowControlFlowFlag = "C";
+		private const string StartPausedFlag = "P";
 
 		static void Main(string[] args)
 		{
 			string programMemoryFile = args[0];
 			string dataMemoryFile = args[1];
 			bool showControlFlow = (args.Length < 3 ? false : args[2].Contains(ShowControlFlowFlag));
+			bool startPaused = (args.Length < 3 ? false : args[2].Contains(StartPausedFlag));
 
 			programMemory = new BufferMemory16(System.IO.File.ReadAllBytes(programMemoryFile));
 			dataMemory = new BufferMemory16(System.IO.File.ReadAllBytes(dataMemoryFile));
@@ -34,18 +36,60 @@ namespace AbaSim.ConsoleRunner
 			if (showControlFlow)
 			{
 				virtualSystem.ClockCycleScheduled += virtualSystem_ClockCycleScheduled;
+				Console.WriteLine("Press ESC to cancel execution");
 			}
-			virtualSystem.Start();
-
-			Console.WriteLine("Press ENTER to cancel execution");
-			Console.ReadLine();
-			if (virtualSystem.IsRunning)
+			if (!startPaused)
 			{
-				Console.WriteLine("Suspending Execution...");
-				virtualSystem.SuspendAsync().Wait();
-				WriteDumps();
-				Console.WriteLine("Press ENTER to exit.");
-				Console.ReadLine();
+				virtualSystem.Start();
+			}
+
+			while (true)
+			{
+				ConsoleKeyInfo input = Console.ReadKey(true);
+				switch (input.Key)
+				{
+					case ConsoleKey.Escape:
+						if (virtualSystem.IsRunning)
+						{
+							Console.WriteLine("Suspending Execution...");
+							virtualSystem.SuspendAsync().Wait();
+							WriteDumps();
+							Console.WriteLine("Execution suspended. Press ENTER to exit.");
+							Console.ReadLine();
+						}
+						return;
+					case ConsoleKey.P:
+						Console.WriteLine("Suspending execution...");
+						virtualSystem.SuspendAsync().Wait();
+						Console.WriteLine("Execution suspended. Press H for help.");
+						break;
+					case ConsoleKey.R:
+						if (!virtualSystem.IsRunning)
+						{
+							virtualSystem.Start();
+						}
+						else
+						{
+							Console.WriteLine("Already running.");
+						}
+						break;
+					case ConsoleKey.S:
+						if (!virtualSystem.IsRunning)
+						{
+							virtualSystem.Step(1);
+						}
+						else
+						{
+							Console.WriteLine("Already running.");
+						}
+						break;
+					case ConsoleKey.D:
+						WriteDumps();
+						break;
+					case ConsoleKey.H:
+						Console.WriteLine("ESC: exit | P: pause execution | S: single step | D: dump | H: help");
+						break;
+				}
 			}
 		}
 
@@ -56,11 +100,11 @@ namespace AbaSim.ConsoleRunner
 				Word instruction = programMemory[e.Cpu.ProgramCounter];
 				string binRepresentation = Convert.ToString(instruction, 2).PadLeft(16, '0');
 
-				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.Cpu, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0}", e.Cpu.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
 			}
 			else
 			{
-				Console.WriteLine("Executing:  [Out of memory bounds]  @ {0}", e.Cpu);
+				Console.WriteLine("Executing:  [Out of memory bounds]  @ {0}", e.Cpu.ProgramCounter);
 			}
 		}
 
@@ -68,6 +112,7 @@ namespace AbaSim.ConsoleRunner
 		{
 			Console.WriteLine("Execution ended due to \"{0}\".", e.Reason.Message);
 			WriteDumps();
+			Console.WriteLine("Press any key to exit.");
 		}
 
 		static void WriteDumps()

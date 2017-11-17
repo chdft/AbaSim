@@ -24,7 +24,7 @@ namespace AbaSim.Core.Virtualization
 		{
 			get
 			{
-				return _RemainingCycles > 0 || _RemainingCycles == RunningContinuously;
+				return Worker!=null;
 			}
 		}
 
@@ -68,7 +68,10 @@ namespace AbaSim.Core.Virtualization
 			SetCycleCounter(0);
 
 			//wait until processing stopped
-			await Worker;
+			if (Worker != null)
+			{
+				await Worker;
+			}
 
 			//reset cpu
 			Cpu.Reset();
@@ -81,12 +84,23 @@ namespace AbaSim.Core.Virtualization
 		public async Task SuspendAsync()
 		{
 			SetCycleCounter(0);
-			await Worker;
+			if (Worker != null)
+			{
+				await Worker;
+			}
 		}
 
 		public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
 
 		public event EventHandler<ClockCycleScheduledEventArgs> ClockCycleScheduled;
+		
+		protected bool GetSouldScheduleNewCycles()
+		{
+			lock (WorkerSynchronization)
+			{
+				return _RemainingCycles > 0 || _RemainingCycles == RunningContinuously;
+			}
+		}
 
 		private void DecrementCycleCounter()
 		{
@@ -113,7 +127,11 @@ namespace AbaSim.Core.Virtualization
 			{
 				if (Worker == null)
 				{
-					Worker = Task.Run(() => Run(Cpu));
+					Worker = Task.Run(() =>
+					{
+						Run(Cpu);
+						Worker = null;
+					});
 				}
 			}
 		}
@@ -121,13 +139,14 @@ namespace AbaSim.Core.Virtualization
 		private void Run(ICpu cpu)
 		{
 			//we intentionally use unsynchronized access for performance (this does no cause a race condition)
-			while (IsRunning)
+			while (GetSouldScheduleNewCycles())
 			{
 				NotifyClockCycleScheduled(cpu);
 				try
 				{
 					cpu.ClockCycle();
 					ExecutedClockCycles++;
+					DecrementCycleCounter();
 				}
 				catch (CpuException e)
 				{
