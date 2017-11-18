@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("AbaSim.ConsoleCompiler")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A simple and console based compiler for abacus assembler source code")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ChDF T")]
 [assembly: AssemblyProduct("AbaSim.ConsoleCompiler")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
