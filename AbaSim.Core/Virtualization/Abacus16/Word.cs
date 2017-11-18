@@ -51,6 +51,11 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			return (Word)result;
 		}
 
+		public override string ToString()
+		{
+			return Convert.ToString(UnsignedValue, 2).PadLeft(Size, '0');
+		}
+
 		public static Word operator &(Word a, Word b)
 		{
 			var result = new Word();

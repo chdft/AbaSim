@@ -56,6 +56,7 @@
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
+    <Compile Include="Virtualization\Abacus16\InstructionPendingEventArgs.cs" />
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterBank.cs" />
     <Compile Include="Virtualization\Abacus16\IReadOnlyRegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\IRegisterBank.cs" />

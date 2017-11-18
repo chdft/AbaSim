@@ -16,7 +16,7 @@ If sourceFile is missing, the application reads from stdin. If destinationFile t
 
 `AbaSim.ConsoleRunner programMemoryDump dataMemoryDump [Flags]`
 
-Where programMemoryDump is a binary file containing the initial program memory and dataMemoryDump is a binary file containing the initial data memory. Specify flag `C` for control flow monitoring - this may impact execution speed. Specify flag `P` to start with paused execution.
+Where programMemoryDump is a binary file containing the initial program memory and dataMemoryDump is a binary file containing the initial data memory. Specify flag `C` for control flow monitoring - this may impact execution speed. Specify flag `P` to start with paused execution. Specify `F` to enable program flow analysis - this may impact execution speed, but enables endless loop detection.
 
 You can press ESC at any time to cancel the program execution. Press H for help.
 
