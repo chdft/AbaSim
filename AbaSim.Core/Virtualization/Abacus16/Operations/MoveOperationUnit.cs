@@ -11,11 +11,11 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B2 + Bit.B1;
 
-		public MoveOperationUnit(IReadOnlyRegisterGroup registers) : base(registers) { }
+		public MoveOperationUnit(IRegisterGroup registers) : base(registers) { }
 
 		protected override void InternalExecute()
 		{
-			UpdateRegister(DestinationRegister, UnsignedConstant);
+			Destination =  UnsignedConstant;
 		}
 	}
 }

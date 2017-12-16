@@ -8,6 +8,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 {
 	class RegisterGroup : IRegisterGroup, IReadOnlyRegisterGroup
 	{
+		public RegisterGroup()
+		{
+			_Scalar = new ScalarRegisterBank(() => StateGeneration++);
+			_Vector = new VectorRegisterBank(() => StateGeneration++);
+		}
+
 		public IRegisterBank<Word> Scalar
 		{
 			get { return _Scalar; }
@@ -16,7 +22,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		{
 			get { return _Scalar; }
 		}
-		private RegisterBank<Word> _Scalar = new RegisterBank<Word>();
+		private ScalarRegisterBank _Scalar;
 
 		public IRegisterBank<Vector> Vector
 		{
@@ -26,7 +32,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		{
 			get { return _Vector; }
 		}
-		private RegisterBank<Vector> _Vector = new RegisterBank<Vector>();
+		private VectorRegisterBank _Vector;
 
 		public Word Overflow { get; set; }
 
@@ -35,6 +41,12 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		public Word VectorLength { get; set; }
 
 		public Word VectorMask { get; set; }
+
+		public ulong StateGeneration
+		{
+			get;
+			private set;
+		}
 
 		public void Reset()
 		{

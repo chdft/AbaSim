@@ -100,7 +100,8 @@
     <Compile Include="Virtualization\Abacus16\Operations\IllegalOperationArgumentException.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\LoadOperation.cs" />
     <Compile Include="Virtualization\Abacus16\Operations\OperationUnit.cs" />
-    <Compile Include="Virtualization\Abacus16\RegisterBank.cs" />
+    <Compile Include="Virtualization\Abacus16\VectorRegisterBank.cs" />
+    <Compile Include="Virtualization\Abacus16\ScalarRegisterBank.cs" />
     <Compile Include="Virtualization\Abacus16\RegisterGroup.cs" />
     <Compile Include="Virtualization\Abacus16\RegisterIndex.cs" />
     <Compile Include="Virtualization\Abacus16\SerialAbacus16Cpu.cs" />

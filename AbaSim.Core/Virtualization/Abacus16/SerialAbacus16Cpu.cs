@@ -15,6 +15,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			ProgramMemory = programMemory;
 			DataMemory = dataMemory;
 
+			//Initialize Operation Units
 			OperationRegistry = new Dictionary<byte, Operations.IOperationUnit>();
 			//memory access
 			OperationRegistry.Add(Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register));
@@ -119,6 +120,11 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		private bool StateChanged = false;
 
+		private ulong LastRegisterStateGeneration = 0;
+
+		/// <summary>
+		/// Reads the upcoming instruction based on the current <see cref="ProgramCounter"/>
+		/// </summary>
 		protected virtual void InstructionFetch()
 		{
 			if (ProgramCounter >= ProgramMemory.Size)
@@ -135,6 +141,11 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			}
 		}
 
+		/// <summary>
+		/// Parses the upcoming instruction and selects the appropriate OperationUnit from <see cref="OperationRegistry"/>
+		/// Note that parameters for the executed instruction are obtained at this point in time.
+		/// </summary>
+		/// <seealso cref="Operations.IOperationUnit"/>
 		protected virtual void InstructionDecode()
 		{
 			var opCode = (byte)(CurrentInstruction.UnsignedValue >> Word.Size - InstructionLength);
@@ -153,11 +164,17 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			}
 		}
 
+		/// <summary>
+		/// Execute the operation as defined by the selected OperationUnit
+		/// </summary>
 		protected virtual void Execute()
 		{
 			OperationUnit.Execute();
 		}
 
+		/// <summary>
+		/// Perform any required data memory access
+		/// </summary>
 		protected virtual void MemoryAccess()
 		{
 			if (OperationUnit.UpdateMemoryAddress != null && DataMemory[OperationUnit.UpdateMemoryAddress.Value] != OperationUnit.UpdateMemoryValue)
@@ -167,24 +184,13 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			}
 		}
 
+		/// <summary>
+		/// Perform any required writes to registers
+		/// </summary>
 		protected virtual void WriteBack()
 		{
-			for (int i = 0; i < OperationUnit.UpdatedRegisters.Length; i++)
-			{
-				if (OperationUnit.UpdatedRegisters[i] != null && Register.Scalar[(RegisterIndex)i] != OperationUnit.UpdatedRegisters[i].Value)
-				{
-					Register.Scalar[(RegisterIndex)i] = OperationUnit.UpdatedRegisters[i].Value;
-					StateChanged = true;
-				}
-			}
-			for (int i = 0; i < OperationUnit.UpdatedVRegisters.Length; i++)
-			{
-				if (OperationUnit.UpdatedVRegisters[i] != null && Register.Vector[(RegisterIndex)i] != OperationUnit.UpdatedVRegisters[i])
-				{
-					Register.Vector[(RegisterIndex)i] = OperationUnit.UpdatedVRegisters[i];
-					StateChanged = true;
-				}
-			}
+			OperationUnit.WriteRegisterChanges();
+			StateChanged = StateChanged || LastRegisterStateGeneration != Register.StateGeneration;
 			ProgramCounter += OperationUnit.ProgramCounterChange;
 		}
 
@@ -198,6 +204,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		public void Synchronize()
 		{
+			//BUG: sync cache
 			//we treat program memory as read-only => no flush required
 			DataMemory.Flush();
 		}

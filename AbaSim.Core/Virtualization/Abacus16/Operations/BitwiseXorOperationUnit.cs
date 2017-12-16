@@ -15,7 +15,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			UpdateRegister(DestinationRegister, Registers.Scalar[LeftRegister] ^ Registers.Scalar[RightRegister]);
+			Destination =  Left ^ Right;
 		}
 	}
 }

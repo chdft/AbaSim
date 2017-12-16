@@ -10,5 +10,6 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		IRegisterBank<Vector> Vector { get; }
 		Word VectorLength { get; set; }
 		Word VectorMask { get; set; }
+		ulong StateGeneration { get; }
 	}
 }

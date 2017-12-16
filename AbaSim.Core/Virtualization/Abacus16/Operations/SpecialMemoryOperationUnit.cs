@@ -18,7 +18,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private const byte MoveToMaskRegisterConstant = Bit.B1;
 		private const byte MoveToVectorLengthRegisterConstant = Bit.B1 + Bit.B0;
 
-		public SpecialMemoryOperationUnit(SerialAbacus16Cpu cpu, IReadOnlyRegisterGroup registers)
+		public SpecialMemoryOperationUnit(SerialAbacus16Cpu cpu, IRegisterGroup registers)
 			: base(registers)
 		{
 			Cpu = cpu;

@@ -15,7 +15,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			UpdateRegister(DestinationRegister, (Registers.Scalar[LeftRegister].UnsignedValue < Registers.Scalar[RightRegister].UnsignedValue ? Word.True : Word.False));
+			Destination =  (Left.UnsignedValue < Right.UnsignedValue ? Word.True : Word.False);
 		}
 	}
 }

@@ -15,8 +15,15 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			//BUG: spec is not clear on wheter rr is interpreted as signed or unsigned
-			UpdateRegister(DestinationRegister, Registers.Scalar[LeftRegister] << Registers.Scalar[RightRegister].SignedValue);
+			//CHECK: should this be a NOP for a 0 shift value?
+			if (Right.SignedValue >= 0)
+			{
+				Destination =  Left << Right.SignedValue;
+			}
+			else
+			{
+				Destination =  Left >> -Right.SignedValue;
+			}
 		}
 	}
 }

@@ -15,26 +15,36 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6);
 		private static readonly byte ConstantShift = Word.Size - OpCodeSize - RegisterSize - ConstantSize;
 
-		public StoreOperationUnit(IReadOnlyRegisterGroup register)
+		public StoreOperationUnit(IRegisterGroup register)
 		{
 			Registers = register;
 		}
 
-		protected RegisterIndex DestinationRegister { get; private set; }
+		protected Word Destination { get; set; }
 
-		protected RegisterIndex LeftRegister { get; private set; }
+		private RegisterIndex DestinationIndex { get; set; }
 
 		protected sbyte SignedConstant { get; private set; }
 
 		protected byte UnsignedConstant { get; private set; }
 
-		protected IReadOnlyRegisterGroup Registers { get; private set; }
+		protected IRegisterGroup Registers { get; private set; }
 
-		public override void Decode(Word instruction)
+		protected override void InternalDecode()
 		{
-			DestinationRegister = (RegisterIndex)((instruction & DestinationRegisterMask) >> DestinationRegisterShift);
-			SignedConstant = (sbyte)((instruction & ConstantMask) >> ConstantShift).SignExtend(ConstantSize).SignedValue;
-			UnsignedConstant = (byte)((instruction & ConstantMask) >> ConstantShift).UnsignedValue;
+			DestinationIndex = (RegisterIndex)((Instruction & DestinationRegisterMask) >> DestinationRegisterShift);
+
+			Destination = Registers.Scalar[DestinationIndex];
+
+			SignedConstant = (sbyte)((Instruction & ConstantMask) >> ConstantShift).SignExtend(ConstantSize).SignedValue;
+			UnsignedConstant = (byte)((Instruction & ConstantMask) >> ConstantShift).UnsignedValue;
+		}
+
+		protected override void InternalReset() { }
+
+		protected override void InternalWriteRegisterChanges()
+		{
+			Registers.Scalar[DestinationIndex] = Destination;
 		}
 	}
 }

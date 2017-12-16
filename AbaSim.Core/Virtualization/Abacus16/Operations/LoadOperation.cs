@@ -11,7 +11,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4;
 
-		public LoadOperationUnit(IMemoryProvider<Word> memory, IReadOnlyRegisterGroup registers)
+		public LoadOperationUnit(IMemoryProvider<Word> memory, IRegisterGroup registers)
 			: base(registers)
 		{
 			Memory = memory;
@@ -28,7 +28,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			}
 			else
 			{
-				UpdateRegister(DestinationRegister, Memory[Registers.Scalar[LeftRegister] + Registers.Scalar[RightRegister]]);
+				Destination =  Memory[Left + Right];
 			}
 		}
 	}

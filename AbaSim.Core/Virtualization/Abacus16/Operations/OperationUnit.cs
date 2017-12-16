@@ -15,17 +15,17 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			Reset();
 		}
 
-		public virtual void Decode(Word instruction)
+		public void Decode(Word instruction)
 		{
 			Instruction = instruction;
+			InternalDecode();
 		}
 
-		public virtual void Reset()
+		public void Reset()
 		{
-			_UpdatedRegisters = new Word?[8];
-			_UpdatedVRegisters = new Vector[8];
 			_UpdateMemoryAddress = null;
 			ProgramCounterChange = 1;
+			InternalReset();
 		}
 
 		public void Execute()
@@ -33,17 +33,10 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			InternalExecute();
 		}
 
-		public Word?[] UpdatedRegisters
+		public void WriteRegisterChanges()
 		{
-			get { return _UpdatedRegisters; }
+			InternalWriteRegisterChanges();
 		}
-		private Word?[] _UpdatedRegisters;
-
-		public Vector[] UpdatedVRegisters
-		{
-			get { return _UpdatedVRegisters; }
-		}
-		private Vector[] _UpdatedVRegisters;
 
 		public int? UpdateMemoryAddress
 		{
@@ -59,23 +52,29 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected Word Instruction { get; private set; }
 
+		[Obsolete("Write values directly when WriteRegisterChanges() is called", true)]
 		protected void UpdateRegister(RegisterIndex index, Word newValue)
 		{
-			_UpdatedRegisters[index] = newValue;
 		}
 
+		[Obsolete("Write values directly when WriteRegisterChanges() is called", true)]
 		protected void UpdateVRegister(RegisterIndex index, Vector newValue)
 		{
-			_UpdatedVRegisters[index] = newValue;
 		}
 
-		protected void UpdateMemory(int address, Word newValue)
+		protected void ScheduleMemoryChange(int address, Word newValue)
 		{
 			_UpdateMemoryAddress = address;
 			_UpdateMemoryValue = newValue;
 		}
 
 		protected abstract void InternalExecute();
+
+		protected abstract void InternalDecode();
+
+		protected abstract void InternalReset();
+
+		protected abstract void InternalWriteRegisterChanges();
 
 		public int ProgramCounterChange
 		{

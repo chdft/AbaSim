@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	[AbaSim.Core.Compiler.Parsing.AssemblyCode("jmp", OpCode, Compiler.Parsing.InstructionType.Store)]
-	class AdvancedJumpOperationUnit:StoreOperationUnit
+	class AdvancedJumpOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B1;
 
@@ -15,7 +15,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			ProgramCounterChange = Registers.Scalar[DestinationRegister];
+			ProgramCounterChange = Destination;
 		}
 	}
 }

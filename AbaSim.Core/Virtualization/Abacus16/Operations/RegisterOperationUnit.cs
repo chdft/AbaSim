@@ -19,27 +19,45 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		private static readonly Word VectorBitMask = (short)(Bit.S0);
 		private static readonly byte VectorBitShift = Word.Size - OpCodeSize - 3 * RegisterSize - VectorBitSize;
 
-		public RegisterOperationUnit(IReadOnlyRegisterGroup register)
+		public RegisterOperationUnit(IRegisterGroup register)
 		{
 			Registers = register;
 		}
 
-		protected RegisterIndex DestinationRegister { get; private set; }
+		private RegisterIndex DestinationIndex { get; set; }
 
-		protected RegisterIndex LeftRegister { get; private set; }
+		private RegisterIndex LeftIndex { get; set; }
 
-		protected RegisterIndex RightRegister { get; private set; }
+		private RegisterIndex RightIndex { get; set; }
+
+		protected Word Destination { get; set; }
+
+		protected Word Left { get; private set; }
+
+		protected Word Right { get; private set; }
 
 		protected bool VectorBit { get; private set; }
 
-		protected IReadOnlyRegisterGroup Registers { get; private set; }
+		protected IRegisterGroup Registers { get; private set; }
 
-		public override void Decode(Word instruction)
+		protected override void InternalDecode()
 		{
-			DestinationRegister = (RegisterIndex)((instruction & DestinationRegisterMask) >> DestinationRegisterShift);
-			LeftRegister = (RegisterIndex)((instruction & LeftRegisterMask) >> LeftRegisterShift);
-			RightRegister = (RegisterIndex)((instruction & RightRegisterMask) >> RightRegisterShift);
-			VectorBit = ((instruction & VectorBitMask) >> VectorBitShift) != 0;
+			DestinationIndex = (RegisterIndex)((Instruction & DestinationRegisterMask) >> DestinationRegisterShift);
+			LeftIndex = (RegisterIndex)((Instruction & LeftRegisterMask) >> LeftRegisterShift);
+			RightIndex = (RegisterIndex)((Instruction & RightRegisterMask) >> RightRegisterShift);
+
+			Destination = Registers.Scalar[DestinationIndex];
+			Left = Left;
+			Right = Right;
+
+			VectorBit = ((Instruction & VectorBitMask) >> VectorBitShift) != 0;
+		}
+
+		protected override void InternalReset() { }
+
+		protected override void InternalWriteRegisterChanges()
+		{
+			Registers.Scalar[DestinationIndex] = Destination;
 		}
 	}
 }
