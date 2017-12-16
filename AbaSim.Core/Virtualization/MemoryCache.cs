@@ -24,6 +24,8 @@ namespace AbaSim.Core.Virtualization
 			set;
 		}
 
+		public ulong Misses { get; private set; }
+
 		protected IMemoryProvider<Word> BackingMemoryProvider { get; private set; }
 
 		public void Flush()
@@ -33,5 +35,10 @@ namespace AbaSim.Core.Virtualization
 		}
 
 		protected abstract void FlushToBackingMemory();
+
+		protected void NotifyCacheMiss()
+		{
+			Misses++;
+		}
 	}
 }

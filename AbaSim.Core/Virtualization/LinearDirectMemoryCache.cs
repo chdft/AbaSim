@@ -26,6 +26,7 @@ namespace AbaSim.Core.Virtualization
 				else
 				{
 					var value = BackingMemoryProvider[index];
+					NotifyCacheMiss();
 					item.Value = value;
 					item.SourceAddress = index;
 					item.Valid = true;
@@ -45,6 +46,8 @@ namespace AbaSim.Core.Virtualization
 					if (item.Valid)
 					{
 						BackingMemoryProvider[item.SourceAddress] = item.Value;
+						//CHECK: count this, even for invalid values?
+						NotifyCacheMiss();
 					}
 					item.Value = value;
 					item.SourceAddress = index;
