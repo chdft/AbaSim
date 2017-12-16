@@ -15,8 +15,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			//CHECK: where is the overflow written to?
 			Destination =  (Word)(Left.SignedValue * SignedConstant);
+			Overflow = (Word)((Left.SignedValue * SignedConstant) - short.MaxValue);
 		}
 	}
 }

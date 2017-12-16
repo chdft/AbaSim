@@ -22,8 +22,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			}
 			else
 			{
-				//CHECK: where is the overflow written to?
-				Destination =  (Word)(Left.SignedValue * Right.SignedValue);
+				Destination = (Word)(Left.SignedValue * Right.SignedValue);
+				Overflow = (Word)((Left.SignedValue * Right.SignedValue) - short.MaxValue);
 			}
 		}
 	}
