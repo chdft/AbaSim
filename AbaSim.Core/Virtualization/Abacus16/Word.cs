@@ -33,6 +33,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			}
 			set
 			{
+				//CHCK: should the swap only happen on LEndian? (source is BE)
 				UnsignedValue = BitConverter.ToUInt16(Bit.SwapHighLow(value), 0);
 			}
 		}
