@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Virtualization.Abacus16
+namespace AbaSim.Core.Virtualization
 {
 	public abstract class MemoryCache<Word> : IMemoryProvider<Word> where Word : IWord
 	{

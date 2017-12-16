@@ -55,6 +55,7 @@
     <Compile Include="Compiler\Parsing\InstructionType.cs" />
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
+    <Compile Include="Virtualization\LinearDirectMemoryCache.cs" />
     <Compile Include="Virtualization\MemoryCache.cs" />
     <Compile Include="Virtualization\Abacus16\ExecutionException.cs" />
     <Compile Include="Virtualization\Abacus16\InstructionPendingEventArgs.cs" />
