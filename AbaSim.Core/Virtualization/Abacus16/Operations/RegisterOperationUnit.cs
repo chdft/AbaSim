@@ -36,6 +36,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected Word Right { get; private set; }
 
+		protected Word Overflow { get; set; }
+
 		protected bool VectorBit { get; private set; }
 
 		protected IRegisterGroup Registers { get; private set; }
@@ -48,7 +50,9 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 			Destination = Registers.Scalar[DestinationIndex];
 			Left = Registers.Scalar[LeftIndex];
-			Right = Right;
+			Right = Registers.Scalar[RightIndex];
+
+			Overflow = Registers.Overflow;
 
 			VectorBit = ((Instruction & VectorBitMask) >> VectorBitShift) != 0;
 		}
@@ -58,6 +62,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		protected override void InternalWriteRegisterChanges()
 		{
 			Registers.Scalar[DestinationIndex] = Destination;
+			Registers.Overflow = Overflow;
 		}
 	}
 }
