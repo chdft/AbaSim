@@ -47,7 +47,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			RightIndex = (RegisterIndex)((Instruction & RightRegisterMask) >> RightRegisterShift);
 
 			Destination = Registers.Scalar[DestinationIndex];
-			Left = Left;
+			Left = Registers.Scalar[LeftIndex];
 			Right = Right;
 
 			VectorBit = ((Instruction & VectorBitMask) >> VectorBitShift) != 0;

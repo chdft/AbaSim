@@ -26,6 +26,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected Word Left { get; private set; }
 
+		protected Word Overflow { get; set; }
+
 		private RegisterIndex DestinationIndex { get; set; }
 
 		private RegisterIndex LeftIndex { get; set; }
@@ -34,7 +36,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected byte UnsignedConstant { get; private set; }
 
-		protected IRegisterGroup Registers { get; private set; }
+		private IRegisterGroup Registers { get; set; }
 
 		protected override void InternalDecode()
 		{
@@ -42,7 +44,9 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			LeftIndex = (RegisterIndex)((Instruction & LeftRegisterMask) >> LeftRegisterShift);
 
 			Destination = Registers.Scalar[DestinationIndex];
-			Left = Left;
+			Left = Registers.Scalar[LeftIndex];
+
+			Overflow = Registers.Overflow;
 
 			SignedConstant = (sbyte)((Instruction & ConstantMask) >> ConstantShift).SignExtend(ConstantSize).SignedValue;
 			UnsignedConstant = (byte)((Instruction & ConstantMask) >> ConstantShift).UnsignedValue;
@@ -53,6 +57,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		protected override void InternalWriteRegisterChanges()
 		{
 			Registers.Scalar[DestinationIndex] = Destination;
+			//CHECK: will always rewriting overflow (even for instructions not setting it per spec) cause problems?
+			Registers.Overflow = Overflow;
 		}
 	}
 }
