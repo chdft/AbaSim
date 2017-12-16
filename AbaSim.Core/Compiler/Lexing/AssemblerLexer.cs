@@ -24,6 +24,11 @@ namespace AbaSim.Core.Compiler.Lexing
 			int lineCounter = 0;
 			foreach (var line in lines)
 			{
+				var codeLine = line.TrimStart(WhiteSpace);
+				if (codeLine.StartsWith("//") || codeLine.StartsWith("#"))
+				{
+					continue;
+				}
 				int offset = 0;
 				int boffset = 0;
 				Stage stage = Stage.LabelPending;
@@ -31,9 +36,9 @@ namespace AbaSim.Core.Compiler.Lexing
 				List<string> args = new List<string>();
 				i.Arguments = args;
 				int commentFirstSymbolSeenOffset = -2;
-				while (offset < line.Length)
+				while (offset < codeLine.Length)
 				{
-					bool isWhiteSpace = WhiteSpace.Contains(line[offset]);
+					bool isWhiteSpace = WhiteSpace.Contains(codeLine[offset]);
 					if (isWhiteSpace && stage <= Stage.LabelPending)
 					{
 						//ignore leading space
@@ -43,13 +48,13 @@ namespace AbaSim.Core.Compiler.Lexing
 					{
 						stage = Stage.LabelRunning;
 					}
-					else if (line[offset] == ':' && stage <= Stage.LabelRunning)
+					else if (codeLine[offset] == ':' && stage <= Stage.LabelRunning)
 					{
 						if (offset == 0)
 						{
-							throw new InvalidSymbolException(line[offset].ToString(), lineCounter, offset, "label name");
+							throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "label name");
 						}
-						i.Label = line.Substring(boffset, offset - boffset);
+						i.Label = codeLine.Substring(boffset, offset - boffset);
 						boffset = offset + 1;
 						stage = Stage.OperationPending;
 					}
@@ -64,10 +69,10 @@ namespace AbaSim.Core.Compiler.Lexing
 					}
 					else if (isWhiteSpace && stage <= Stage.OperationRunning)
 					{
-						i.Operation = line.Substring(boffset, offset - boffset);
+						i.Operation = codeLine.Substring(boffset, offset - boffset);
 						if (i.Operation == string.Empty)
 						{
-							throw new InvalidSymbolException(line[offset].ToString(), lineCounter, offset, "operation");
+							throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "operation");
 						}
 						boffset = offset + 1;
 						stage = Stage.ArgumentsPending;
@@ -81,12 +86,12 @@ namespace AbaSim.Core.Compiler.Lexing
 					{
 						stage = Stage.ArgumentsRunning;
 					}
-					else if ((line[offset] == ',' || isWhiteSpace || line[offset] == '/') && stage == Stage.ArgumentsRunning)
+					else if ((codeLine[offset] == ',' || isWhiteSpace || codeLine[offset] == '/') && stage == Stage.ArgumentsRunning)
 					{
 						if (boffset < offset)
 						{
 							//argument completed
-							args.Add(line.Substring(boffset, offset - boffset));
+							args.Add(codeLine.Substring(boffset, offset - boffset));
 							boffset = offset + 1;
 						}
 						else
@@ -94,7 +99,7 @@ namespace AbaSim.Core.Compiler.Lexing
 							//more than one space
 							boffset++;
 						}
-						if (line[offset] == '/')
+						if (codeLine[offset] == '/')
 						{
 							if (commentFirstSymbolSeenOffset == offset - 1)
 							{
@@ -115,11 +120,11 @@ namespace AbaSim.Core.Compiler.Lexing
 				}
 				if (stage == Stage.CommentRunning)
 				{
-					i.Comment = line.Substring(boffset);
+					i.Comment = codeLine.Substring(boffset);
 				}
 				else if (stage == Stage.ArgumentsRunning)
 				{
-					args.Add(line.Substring(boffset, offset - boffset));
+					args.Add(codeLine.Substring(boffset, offset - boffset));
 				}
 				i.Index = lineCounter;
 				yield return i;
