@@ -18,11 +18,15 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected ushort UnsignedConstant { get; private set; }
 
-		public override void Decode(Word instruction)
+		protected override void InternalDecode()
 		{
-			Word constant = ((instruction & ConstantMask) >> ConstantShift);
+			Word constant = ((Instruction & ConstantMask) >> ConstantShift);
 			SignedConstant = constant.SignExtend(ConstantSize).SignedValue;
 			UnsignedConstant = constant.UnsignedValue;
 		}
+
+		protected override void InternalReset() { }
+
+		protected override void InternalWriteRegisterChanges() { }
 	}
 }
