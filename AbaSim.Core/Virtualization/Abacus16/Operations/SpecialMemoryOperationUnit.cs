@@ -36,7 +36,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 					break;
 				//ovf
 				case OverflowConstant:
-					throw new NotImplementedException();
+					Destination = Overflow;
+					break;
 				//mvtm
 				case MoveToMaskRegisterConstant:
 					throw new NotImplementedException();

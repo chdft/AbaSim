@@ -24,6 +24,8 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		private RegisterIndex DestinationIndex { get; set; }
 
+		protected Word Overflow { get; set; }
+
 		protected sbyte SignedConstant { get; private set; }
 
 		protected byte UnsignedConstant { get; private set; }
@@ -35,6 +37,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			DestinationIndex = (RegisterIndex)((Instruction & DestinationRegisterMask) >> DestinationRegisterShift);
 
 			Destination = Registers.Scalar[DestinationIndex];
+			Overflow = Registers.Overflow;
 
 			SignedConstant = (sbyte)((Instruction & ConstantMask) >> ConstantShift).SignExtend(ConstantSize).SignedValue;
 			UnsignedConstant = (byte)((Instruction & ConstantMask) >> ConstantShift).UnsignedValue;
@@ -45,6 +48,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 		protected override void InternalWriteRegisterChanges()
 		{
 			Registers.Scalar[DestinationIndex] = Destination;
+			Registers.Overflow = Overflow;
 		}
 	}
 }
