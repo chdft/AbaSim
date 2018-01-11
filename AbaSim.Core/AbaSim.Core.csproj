@@ -41,7 +41,9 @@
   <ItemGroup>
     <Compile Include="Bit.cs" />
     <Compile Include="Compiler\AssemblerCompiler.cs" />
+    <Compile Include="Compiler\CompilePipeline.cs" />
     <Compile Include="Compiler\CompilerException.cs" />
+    <Compile Include="Compiler\ICompileStep.cs" />
     <Compile Include="Compiler\IllegalArgumentListException.cs" />
     <Compile Include="Compiler\IllegalLabelReferenceException.cs" />
     <Compile Include="Compiler\IllegalRegisterReferenceException.cs" />

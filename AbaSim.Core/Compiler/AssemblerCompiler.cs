@@ -8,7 +8,7 @@ using AbaSim.Core.Virtualization.Abacus16;
 
 namespace AbaSim.Core.Compiler
 {
-	public class AssemblerCompiler
+	public class AssemblerCompiler : ICompileStep<IEnumerable<Lexing.Instruction>, byte[]>, ICompileStep<string, byte[]>
 	{
 		public AssemblerCompiler() { }
 

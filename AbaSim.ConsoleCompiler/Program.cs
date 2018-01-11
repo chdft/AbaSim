@@ -27,12 +27,15 @@ namespace AbaSim.ConsoleCompiler
 				sourceCode = System.IO.File.ReadAllText(sourceFile);
 			}
 
+
 			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler();
 			compiler.LoadMappings();
+			var pipeline = Core.Compiler.CompilePipeline.Start<string, byte[]>(compiler).Complete();
+
 			byte[] binary;
 			try
 			{
-				binary = compiler.Compile(sourceCode);
+				binary = pipeline.Compile(sourceCode);
 			}
 			catch (Core.Compiler.CompilerException e)
 			{
