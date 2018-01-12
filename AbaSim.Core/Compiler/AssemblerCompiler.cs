@@ -114,7 +114,7 @@ namespace AbaSim.Core.Compiler
 										rl = 0;
 										if (instruction.Arguments.Count != 0)
 										{
-											log.Warning(instruction.Index.ToString(), "Ignoring parameters on fixed immediate instruction.", "Fixed immediate instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They do not accept any parameters.");
+											log.Warning(instruction.SourceLine.ToString(), "Ignoring parameters on fixed immediate instruction.", "Fixed immediate instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They do not accept any parameters.");
 										}
 									}
 									else

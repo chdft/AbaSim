@@ -126,7 +126,7 @@ namespace AbaSim.Core.Compiler.Lexing
 				{
 					args.Add(codeLine.Substring(boffset, offset - boffset));
 				}
-				i.Index = lineCounter;
+				i.SourceLine = lineCounter;
 				yield return i;
 				lineCounter++;
 			}
