@@ -11,7 +11,7 @@ namespace AbaSim.Core.Virtualization
 		public LinearDirectMemoryCache(IMemoryProvider<Word> backingMemoryProvider, int cacheSize)
 			: base(backingMemoryProvider)
 		{
-			Cache = new CacheItem<Word>[cacheSize];
+			Cache = new CacheItem[cacheSize];
 		}
 
 		public override Word this[int index]
@@ -65,9 +65,9 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
-		private CacheItem<Word>[] Cache;
+		private CacheItem[] Cache;
 
-		protected struct CacheItem<Word>
+		protected struct CacheItem
 		{
 			public bool Valid;
 			public Word Value;
