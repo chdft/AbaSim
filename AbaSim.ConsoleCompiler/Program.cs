@@ -30,7 +30,10 @@ namespace AbaSim.ConsoleCompiler
 
 			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler();
 			compiler.LoadMappings();
-			var pipeline = Core.Compiler.CompilePipeline.Start<string, byte[]>(compiler).Complete();
+			var pipeline = Core.Compiler.CompilePipeline
+				.Start(new Core.Compiler.Lexing.AssemblerLexer())
+				.Continue(compiler)
+				.Complete();
 
 			byte[] binary;
 			try

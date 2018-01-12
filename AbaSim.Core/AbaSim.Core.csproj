@@ -40,7 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bit.cs" />
+    <Compile Include="Compiler\CompileResult.cs" />
     <Compile Include="Compiler\AssemblerCompiler.cs" />
+    <Compile Include="Compiler\CompileLog.cs" />
+    <Compile Include="Compiler\CompileLogItem.cs" />
+    <Compile Include="Compiler\CompileLogItemSeverity.cs" />
     <Compile Include="Compiler\CompilePipeline.cs" />
     <Compile Include="Compiler\CompilerException.cs" />
     <Compile Include="Compiler\ICompileStep.cs" />

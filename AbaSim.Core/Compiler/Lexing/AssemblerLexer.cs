@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Compiler.Lexing
 {
-	public class AssemblerLexer
+	public class AssemblerLexer : ICompileStep<string, IEnumerable<Instruction>>
 	{
 		public AssemblerLexer()
 		{
@@ -130,6 +130,11 @@ namespace AbaSim.Core.Compiler.Lexing
 				yield return i;
 				lineCounter++;
 			}
+		}
+
+		IEnumerable<Instruction> ICompileStep<string, IEnumerable<Instruction>>.Compile(string input)
+		{
+			return Lex(input);
 		}
 
 		private enum Stage

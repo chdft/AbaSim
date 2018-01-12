@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Compiler
 {
-	public class CompilePipeline
+	public abstract class CompilePipeline
 	{
 		public static ICompilePipelineBuilder<TStepOutput, TStepInput> Start<TStepInput, TStepOutput>(ICompileStep<TStepInput, TStepOutput> step)
 		{
@@ -15,12 +15,12 @@ namespace AbaSim.Core.Compiler
 
 		public interface ICompilePipelineBuilder<TOutput, TInitialInput>
 		{
-			ICompilePipelineBuilder<TNextOutput, TInitialInput> Append<TNextOutput>(ICompileStep<TOutput, TNextOutput> step);
+			ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step);
 
 			CompilePipeline<TInitialInput, TOutput> Complete();
 		}
 
-		protected interface ICompileStepWrapper<TOutput, TInitialInput>
+		internal interface ICompileStepWrapper<TOutput, TInitialInput>
 		{
 			TOutput GetCompilerResult(TInitialInput initialInput);
 		}
@@ -39,12 +39,19 @@ namespace AbaSim.Core.Compiler
 
 			public TOutput GetCompilerResult(TInitialInput initialInput)
 			{
-				return Step.Compile(Previous.GetCompilerResult(initialInput));
+				TInput previousOutput = Previous.GetCompilerResult(initialInput);
+				
+				return Step.Compile(previousOutput);
 			}
 
-			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Append<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
+			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
 			{
 				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInitialInput>(this, step);
+			}
+
+			public CompilePipeline<TInitialInput, TOutput> Complete()
+			{
+				return new CompilePipeline<TInitialInput, TOutput>(this);
 			}
 		}
 
@@ -62,29 +69,32 @@ namespace AbaSim.Core.Compiler
 				return Step.Compile(initialInput);
 			}
 
-			public ICompilePipelineBuilder<TNextOutput, TInput> Append<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
+			public ICompilePipelineBuilder<TNextOutput, TInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
 			{
 				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInput>(this, step);
 			}
 
 			public CompilePipeline<TInput, TOutput> Complete()
 			{
-				throw new NotImplementedException();
+				return new CompilePipeline<TInput, TOutput>(this);
 			}
 		}
 
 	}
 	public class CompilePipeline<TInput, TOutput>:CompilePipeline
 	{
-		public CompilePipeline(ICompileStepWrapper<TOutput, TInput> lastStep)
+		internal CompilePipeline(ICompileStepWrapper<TOutput, TInput> lastStep)
 		{
 			LastStep = lastStep;
 		}
+
+		public bool ContinueOnCritcalError { get; set; }
 
 		private readonly ICompileStepWrapper<TOutput, TInput> LastStep;
 
 		public TOutput Compile(TInput input)
 		{
+			CompileLog log = new CompileLog();
 			return LastStep.GetCompilerResult(input);
 		}
 	}

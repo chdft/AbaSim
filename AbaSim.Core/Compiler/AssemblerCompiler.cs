@@ -8,7 +8,7 @@ using AbaSim.Core.Virtualization.Abacus16;
 
 namespace AbaSim.Core.Compiler
 {
-	public class AssemblerCompiler : ICompileStep<IEnumerable<Lexing.Instruction>, byte[]>, ICompileStep<string, byte[]>
+	public class AssemblerCompiler : ICompileStep<IEnumerable<Lexing.Instruction>, byte[]>
 	{
 		public AssemblerCompiler() { }
 
@@ -20,6 +20,7 @@ namespace AbaSim.Core.Compiler
 
 		protected Dictionary<string, InstructionMapping> Mappings;
 
+		[Obsolete("use Lexing.AssemblerLexer.Lex(string) instead; consider piping the output using a CompilerPipeline", true)]
 		public byte[] Compile(string sourceCode)
 		{
 			Lexing.AssemblerLexer lexer = new Lexing.AssemblerLexer();
