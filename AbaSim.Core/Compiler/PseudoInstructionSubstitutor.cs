@@ -43,7 +43,6 @@ namespace AbaSim.Core.Compiler
 					yield return instruction;
 				}
 			}
-			throw new NotImplementedException();
 		}
 
 		private class InstructionSubstitution
