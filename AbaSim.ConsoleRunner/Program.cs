@@ -110,7 +110,7 @@ namespace AbaSim.ConsoleRunner
 						WriteDumps();
 						break;
 					case ConsoleKey.H:
-						Console.WriteLine("ESC: exit | P: pause | S: single step | D: dump | F: flow info | H: help");
+						Console.WriteLine("ESC: exit | P: pause | S: single step | R: run | D: dump | F: flow info | H: help");
 						break;
 				}
 			}
