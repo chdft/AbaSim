@@ -59,6 +59,7 @@
     <Compile Include="Compiler\Parsing\AssemblyCodeAttribute.cs" />
     <Compile Include="Compiler\Parsing\ConstantRestriction.cs" />
     <Compile Include="Compiler\Parsing\InstructionType.cs" />
+    <Compile Include="Compiler\PseudoInstructionSubstitutor.cs" />
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
     <Compile Include="Virtualization\LinearDirectMemoryCache.cs" />

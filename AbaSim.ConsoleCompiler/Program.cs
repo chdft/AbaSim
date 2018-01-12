@@ -32,6 +32,7 @@ namespace AbaSim.ConsoleCompiler
 			compiler.LoadMappings();
 			var pipeline = Core.Compiler.CompilePipeline
 				.Start(new Core.Compiler.Lexing.AssemblerLexer())
+				.Continue(new Core.Compiler.PseudoInstructionSubstitutor())
 				.Continue(compiler)
 				.Complete();
 
