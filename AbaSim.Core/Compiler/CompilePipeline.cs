@@ -40,15 +40,14 @@ namespace AbaSim.Core.Compiler
 			public TOutput GetCompilerResult(TInitialInput initialInput, CompileLog log, bool continueOnCriticalError)
 			{
 				TInput previousOutput = Previous.GetCompilerResult(initialInput, log, continueOnCriticalError);
-				
-				var output = Step.Compile(previousOutput, log);
 
 				if (log.CriticalErrorOccured && !continueOnCriticalError)
 				{
-					throw new CompilerException("A critical error occurred while compiling. The continuation of the pipeline has therefore been prevented.");
+					//skip this step, because a critical error occurred in a previous step
+					return default(TOutput);
 				}
 
-				return output;
+				return Step.Compile(previousOutput, log);
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
@@ -73,14 +72,7 @@ namespace AbaSim.Core.Compiler
 
 			public TOutput GetCompilerResult(TInput initialInput, CompileLog log, bool continueOnCriticalError)
 			{
-				var output = Step.Compile(initialInput, log);
-
-				if (log.CriticalErrorOccured && !continueOnCriticalError)
-				{
-					throw new CompilerException("A critical error occurred while compiling. The continuation of the pipeline has therefore been prevented.");
-				}
-
-				return output;
+				return Step.Compile(initialInput, log);
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)

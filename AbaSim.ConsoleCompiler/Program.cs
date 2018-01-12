@@ -35,10 +35,20 @@ namespace AbaSim.ConsoleCompiler
 				.Continue(compiler)
 				.Complete();
 
-			byte[] binary;
-			try
+			var result = pipeline.Compile(sourceCode);
+
+			if (result.Log.CriticalErrorOccured)
 			{
-				var result = pipeline.Compile(sourceCode);
+				Console.WriteLine("Compilation failed.");
+			}
+			else
+			{
+				Console.WriteLine("Compilation succeeded.");
+			}
+
+			//only print the log if the output is not printed
+			if (destinationFile != null)
+			{
 				foreach (var item in result.Log.OrderByDescending(i => i.Severity))
 				{
 					Console.WriteLine("{0} | {1}: {2}", item.Severity, item.Location, item.Message);
@@ -47,24 +57,22 @@ namespace AbaSim.ConsoleCompiler
 						Console.WriteLine(item.Description);
 					}
 				}
-				binary = result.Output;
 			}
-			catch (Core.Compiler.CompilerException e)
+
+			if (result.Log.CriticalErrorOccured)
 			{
-				Console.WriteLine("Compiling failed: {0}", e.GetType());
-				Console.WriteLine(e.Message);
 				Environment.ExitCode = 2;
 				return;
 			}
 
 			if (destinationFile != null)
 			{
-				System.IO.File.WriteAllBytes(destinationFile, binary);
+				System.IO.File.WriteAllBytes(destinationFile, result.Output);
 				Console.WriteLine("Done.");
 			}
 			else
 			{
-				Console.OpenStandardOutput().Write(binary, 0, binary.Length);
+				Console.OpenStandardOutput().Write(result.Output, 0, result.Output.Length);
 			}
 		}
 	}
