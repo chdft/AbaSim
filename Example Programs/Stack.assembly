@@ -1,0 +1,8 @@
+mov $1 9
+call hello
+j end
+
+hello: method
+mov $1 4
+end hello
+end:nop

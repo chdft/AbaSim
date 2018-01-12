@@ -10,8 +10,64 @@ namespace AbaSim.Core.Compiler
 	{
 		public PseudoInstructionSubstitutor()
 		{
+			Substitutions = new List<InstructionSubstitution>();
 			//helper
 			Substitutions.Add(new InstructionSubstitution("nop", new ReplacementInstruction("j", "1")));
+			//stack emulation
+			//! Syntax
+			// call a method         call {target method name}
+			// start a method        {method name}: method
+			// return from a method  end {method name}
+			//$0 is used as stack-pointer (memory address of current stack-frame start)
+			//! Stack-Frame Layout
+			// 1Word jump ahead distance (distance between call-site and called method)
+			// 7Word register content (excluding $0) in ascending order of register index
+			Substitutions.Add(new InstructionSubstitution("stackinit", new ReplacementInstruction("mov", "$0", "0")));
+			//TODO: parameters and return values
+			Substitutions.Add(new InstructionSubstitution("call",
+				//point to next stack frame
+				new ReplacementInstruction("addiu", "$0", "$0", "8"),
+				//store register content
+				new ReplacementInstruction("sti", "$1", "$0", "1"),
+				new ReplacementInstruction("sti", "$2", "$0", "2"),
+				new ReplacementInstruction("sti", "$3", "$0", "3"),
+				new ReplacementInstruction("sti", "$4", "$0", "4"),
+				new ReplacementInstruction("sti", "$5", "$0", "5"),
+				new ReplacementInstruction("sti", "$6", "$0", "6"),
+				new ReplacementInstruction("sti", "$7", "$0", "7"),
+				//retrieve jump ahead distance
+				new ReplacementInstruction("mov", "$1", 0),
+				new ReplacementInstruction("sti", "$1", "$0", "0"),
+				new ReplacementInstruction("j", 0),
+				//after control is returned
+				new ReplacementInstruction("ldi", "$1", "$0", "1"),
+				new ReplacementInstruction("ldi", "$2", "$0", "2"),
+				new ReplacementInstruction("ldi", "$3", "$0", "3"),
+				new ReplacementInstruction("ldi", "$4", "$0", "4"),
+				new ReplacementInstruction("ldi", "$5", "$0", "5"),
+				new ReplacementInstruction("ldi", "$6", "$0", "6"),
+				new ReplacementInstruction("ldi", "$7", "$0", "7"),
+				new ReplacementInstruction("subiu", "$0", "$0", "8")
+				));
+			Substitutions.Add(new InstructionSubstitution("method",
+				//reset registers
+				new ReplacementInstruction("mov", "$1", "0"),
+				new ReplacementInstruction("mov", "$2", "0"),
+				new ReplacementInstruction("mov", "$3", "0"),
+				new ReplacementInstruction("mov", "$4", "0"),
+				new ReplacementInstruction("mov", "$5", "0"),
+				new ReplacementInstruction("mov", "$6", "0"),
+				new ReplacementInstruction("mov", "$7", "0")
+				));
+			Substitutions.Add(new InstructionSubstitution("end",
+				//jump back to caller
+				new ReplacementInstruction("ldi", "$1", "$0", "0"),
+				new ReplacementInstruction("muli", "$1", "$1", "-1"),
+				new ReplacementInstruction("mov", "$2", 0),
+				new ReplacementInstruction("add", "$1", "$1", "$2"),
+				new ReplacementInstruction("jmp", "$1")
+				));
+
 			//register management
 			Substitutions.Add(new InstructionSubstitution("movr", new ReplacementInstruction("addiu", 0, 1, "0")));
 			//arithmetic
@@ -38,7 +94,7 @@ namespace AbaSim.Core.Compiler
 			Substitutions.Add(new InstructionSubstitution("bge", new ReplacementInstruction("sge", 0, 1, 2), new ReplacementInstruction("bnz", 0, 3)));
 			Substitutions.Add(new InstructionSubstitution("bgeu", new ReplacementInstruction("sgeu", 0, 1, 2), new ReplacementInstruction("bnz", 0, 3)));
 			//easter egg
-			Substitutions.Add(new InstructionSubstitution("helloworld", 
+			Substitutions.Add(new InstructionSubstitution("helloworld",
 				new ReplacementInstruction("mov", "$4", "0"),
 				new ReplacementInstruction("mov", "$0", "72"),//H
 				new ReplacementInstruction("mov", "$1", "101"),//e
@@ -65,7 +121,7 @@ namespace AbaSim.Core.Compiler
 			//Substitutions.Add(new InstructionSubstitution("", new ReplacementInstruction("")));
 		}
 
-		private List<InstructionSubstitution> Substitutions = new List<InstructionSubstitution>();
+		private List<InstructionSubstitution> Substitutions { get; set; }
 
 		public IEnumerable<Lexing.Instruction> Compile(IEnumerable<Lexing.Instruction> input, CompileLog log)
 		{

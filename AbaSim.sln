@@ -14,6 +14,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbaSim.ConsoleRunner", "Aba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbaSim.ConsoleCompiler", "AbaSim.ConsoleCompiler\AbaSim.ConsoleCompiler.csproj", "{FC4697B5-DF44-4A43-A6BC-6E442C30C940}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example Applications", "Example Applications", "{95F60792-92BF-4615-AFC8-4182338E13DD}"
+	ProjectSection(SolutionItems) = preProject
+		Example Programs\JumpOut.assembly = Example Programs\JumpOut.assembly
+		Example Programs\Stack.assembly = Example Programs\Stack.assembly
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
