@@ -8,6 +8,6 @@ namespace AbaSim.Core.Compiler
 {
 	public interface ICompileStep<TInput, TOutput>
 	{
-		TOutput Compile(TInput input);
+		TOutput Compile(TInput input, CompileLog log);
 	}
 }

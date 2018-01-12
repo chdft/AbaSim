@@ -22,7 +22,7 @@ namespace AbaSim.Core.Compiler
 
 		internal interface ICompileStepWrapper<TOutput, TInitialInput>
 		{
-			TOutput GetCompilerResult(TInitialInput initialInput);
+			TOutput GetCompilerResult(TInitialInput initialInput, CompileLog log, bool continueOnCriticalError);
 		}
 
 		private class IntermediateCompileStepWrapper<TInput, TOutput, TInitialInput> : ICompileStepWrapper<TOutput, TInitialInput>, ICompilePipelineBuilder<TOutput, TInitialInput>
@@ -37,11 +37,18 @@ namespace AbaSim.Core.Compiler
 
 			ICompileStepWrapper<TInput, TInitialInput> Previous;
 
-			public TOutput GetCompilerResult(TInitialInput initialInput)
+			public TOutput GetCompilerResult(TInitialInput initialInput, CompileLog log, bool continueOnCriticalError)
 			{
-				TInput previousOutput = Previous.GetCompilerResult(initialInput);
+				TInput previousOutput = Previous.GetCompilerResult(initialInput, log, continueOnCriticalError);
 				
-				return Step.Compile(previousOutput);
+				var output = Step.Compile(previousOutput, log);
+
+				if (log.CriticalErrorOccured && !continueOnCriticalError)
+				{
+					throw new CompilerException("A critical error occurred while compiling. The continuation of the pipeline has therefore been prevented.");
+				}
+
+				return output;
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
@@ -64,9 +71,16 @@ namespace AbaSim.Core.Compiler
 
 			ICompileStep<TInput, TOutput> Step;
 
-			public TOutput GetCompilerResult(TInput initialInput)
+			public TOutput GetCompilerResult(TInput initialInput, CompileLog log, bool continueOnCriticalError)
 			{
-				return Step.Compile(initialInput);
+				var output = Step.Compile(initialInput, log);
+
+				if (log.CriticalErrorOccured && !continueOnCriticalError)
+				{
+					throw new CompilerException("A critical error occurred while compiling. The continuation of the pipeline has therefore been prevented.");
+				}
+
+				return output;
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
@@ -92,10 +106,13 @@ namespace AbaSim.Core.Compiler
 
 		private readonly ICompileStepWrapper<TOutput, TInput> LastStep;
 
-		public TOutput Compile(TInput input)
+		public CompileResult<TOutput> Compile(TInput input)
 		{
 			CompileLog log = new CompileLog();
-			return LastStep.GetCompilerResult(input);
+
+			var output = LastStep.GetCompilerResult(input, log, ContinueOnCritcalError);
+
+			return new CompileResult<TOutput>(output, log);
 		}
 	}
 }

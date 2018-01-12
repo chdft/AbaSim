@@ -38,7 +38,16 @@ namespace AbaSim.ConsoleCompiler
 			byte[] binary;
 			try
 			{
-				binary = pipeline.Compile(sourceCode);
+				var result = pipeline.Compile(sourceCode);
+				foreach (var item in result.Log.OrderByDescending(i => i.Severity))
+				{
+					Console.WriteLine("{0} | {1}: {2}", item.Severity, item.Location, item.Message);
+					if (!string.IsNullOrEmpty(item.Description))
+					{
+						Console.WriteLine(item.Description);
+					}
+				}
+				binary = result.Output;
 			}
 			catch (Core.Compiler.CompilerException e)
 			{
