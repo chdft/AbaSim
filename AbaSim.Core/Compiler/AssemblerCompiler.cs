@@ -23,12 +23,10 @@ namespace AbaSim.Core.Compiler
 		[Obsolete("use Lexing.AssemblerLexer.Lex(string) instead; consider piping the output using a CompilerPipeline", true)]
 		public byte[] Compile(string sourceCode)
 		{
-			Lexing.AssemblerLexer lexer = new Lexing.AssemblerLexer();
-
-			return Compile(lexer.Lex(sourceCode));
+			throw new NotImplementedException();
 		}
 
-		public byte[] Compile(IEnumerable<Lexing.Instruction> instructions)
+		public byte[] Compile(IEnumerable<Lexing.Instruction> instructions, CompileLog log)
 		{
 			List<Lexing.Instruction> instructionsList = instructions.ToList();
 
@@ -114,16 +112,23 @@ namespace AbaSim.Core.Compiler
 										constant = mapping.FixedConstantValue;
 										rd = 0;
 										rl = 0;
-									}
-									else if (instruction.Arguments.Count == 3)
-									{
-										constant = ParseRawConstant(instruction.Arguments[2], instructionCounter);
-										rd = ParseRawRegister(instruction.Arguments[0]);
-										rl = ParseRawRegister(instruction.Arguments[1]);
+										if (instruction.Arguments.Count != 0)
+										{
+											log.Warning(instruction.Index.ToString(), "Ignoring parameters on fixed immediate instruction.", "Fixed immediate instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They do not accept any parameters.");
+										}
 									}
 									else
 									{
-										throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+										if (instruction.Arguments.Count == 3)
+										{
+											constant = ParseRawConstant(instruction.Arguments[2], instructionCounter);
+											rd = ParseRawRegister(instruction.Arguments[0]);
+											rl = ParseRawRegister(instruction.Arguments[1]);
+										}
+										else
+										{
+											throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
+										}
 									}
 
 									Word constantMask = ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3));

@@ -132,7 +132,7 @@ namespace AbaSim.Core.Compiler.Lexing
 			}
 		}
 
-		IEnumerable<Instruction> ICompileStep<string, IEnumerable<Instruction>>.Compile(string input)
+		IEnumerable<Instruction> ICompileStep<string, IEnumerable<Instruction>>.Compile(string input, CompileLog log)
 		{
 			return Lex(input);
 		}
