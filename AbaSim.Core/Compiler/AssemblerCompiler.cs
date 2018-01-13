@@ -56,15 +56,15 @@ namespace AbaSim.Core.Compiler
 								{
 									//rd
 									int rd = ParseRawRegister(instruction.Arguments[0]);
-									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 7);
 
 									//rl
 									int rl = ParseRawRegister(instruction.Arguments[1]);
-									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
+									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 4);
 
 									//rr
 									int rr = ParseRawRegister(instruction.Arguments[1]);
-									nativeInstruction |= (((Word)rr) & ((Word)(Bit.S1 + Bit.S2 + Bit.S3)));
+									nativeInstruction |= ((((Word)rr) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 1);
 
 									if (mapping.Type == Parsing.InstructionType.VRegister)
 									{
@@ -98,7 +98,7 @@ namespace AbaSim.Core.Compiler
 									//TODO: bound validation on constant
 
 									nativeInstruction |= (((Word)constant) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3 + Bit.S4 + Bit.S5 + Bit.S6)));
-									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 7);
 
 								}
 								break;
@@ -134,16 +134,16 @@ namespace AbaSim.Core.Compiler
 									Word constantMask = ((Word)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3));
 
 									//bounds validation
-									int constantMin = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? 0 : -1 * constantMask / 2);
-									int constantMax = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? constantMask : constantMask / 2);
+									int constantMin = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? 0 : -1 * (int)constantMask / 2);
+									int constantMax = (mapping.ConstantRestriction == Parsing.ValueRestriction.Unsigned ? (int)constantMask : (int)constantMask / 2);
 									if (constant < constantMin || constant > constantMax)
 									{
 										throw new ValueOutOfBoundsException(constant, constantMin, constantMax);
 									}
 
 									nativeInstruction |= (((Word)constant) & constantMask);
-									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S7 + Bit.S8 + Bit.S9))) << 7);
-									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S4 + Bit.S5 + Bit.S6))) << 4);
+									nativeInstruction |= ((((Word)rd) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 7);
+									nativeInstruction |= ((((Word)rl) & ((Word)(Bit.S0 + Bit.S1 + Bit.S2))) << 4);
 								}
 								break;
 							case AbaSim.Core.Compiler.Parsing.InstructionType.Jump:

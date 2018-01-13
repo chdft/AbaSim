@@ -54,7 +54,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 			Overflow = Registers.Overflow;
 
-			VectorBit = ((Instruction & VectorBitMask) >> VectorBitShift) != 0;
+			VectorBit = ((Instruction & VectorBitMask) >> VectorBitShift) != Word.False;
 		}
 
 		protected override void InternalReset() { }

@@ -15,7 +15,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 
 		protected override void InternalExecute()
 		{
-			ProgramCounterChange = Destination;
+			ProgramCounterChange = Destination.SignedValue;
 		}
 	}
 }

@@ -8,13 +8,13 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
 	abstract class ImmediateOperationUnit : OperationUnit
 	{
-		private const int ConstantSize = 3;
+		private const int ConstantSize = 4;
 		private const int RegisterSize = 3;
 		private static readonly Word DestinationRegisterMask = (short)(Bit.S7 + Bit.S8 + Bit.S9);
 		private static readonly byte DestinationRegisterShift = Word.Size - OpCodeSize - 1 * RegisterSize;
 		private static readonly Word LeftRegisterMask = (short)(Bit.S4 + Bit.S5 + Bit.S6);
 		private static readonly byte LeftRegisterShift = Word.Size - OpCodeSize - 2 * RegisterSize;
-		private static readonly Word ConstantMask = (short)(Bit.S1 + Bit.S2 + Bit.S3);
+		private static readonly Word ConstantMask = (short)(Bit.S0 + Bit.S1 + Bit.S2 + Bit.S3);
 		private static readonly byte ConstantShift = Word.Size - OpCodeSize - 2 * RegisterSize - ConstantSize;
 
 		public ImmediateOperationUnit(IRegisterGroup register)

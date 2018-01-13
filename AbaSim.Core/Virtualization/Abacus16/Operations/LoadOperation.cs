@@ -28,7 +28,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			}
 			else
 			{
-				Destination =  Memory[Left + Right];
+				Destination =  Memory[Left.UnsignedValue + Right.UnsignedValue];
 			}
 		}
 	}

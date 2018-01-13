@@ -20,8 +20,8 @@ namespace AbaSim.Core.Virtualization.Abacus16
 			//memory access
 			OperationRegistry.Add(Operations.LoadOperationUnit.OpCode, new Operations.LoadOperationUnit(DataMemory, _Register));
 			OperationRegistry.Add(Operations.LoadIOperationUnit.OpCode, new Operations.LoadIOperationUnit(DataMemory, _Register));
-			OperationRegistry.Add(Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(DataMemory, _Register));
-			OperationRegistry.Add(Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(DataMemory, _Register));
+			OperationRegistry.Add(Operations.StoreValueOperationUnit.OpCode, new Operations.StoreValueOperationUnit(_Register));
+			OperationRegistry.Add(Operations.StoreValueIOperationUnit.OpCode, new Operations.StoreValueIOperationUnit(_Register));
 			//register move
 			OperationRegistry.Add(Operations.MoveOperationUnit.OpCode, new Operations.MoveOperationUnit(_Register));
 			//synchronization

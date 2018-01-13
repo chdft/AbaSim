@@ -11,13 +11,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B0;
 
-		public StoreValueOperationUnit(IMemoryProvider<Word> memory, IRegisterGroup registers)
-			: base(registers)
-		{
-			Memory = memory;
-		}
-
-		protected IMemoryProvider<Word> Memory { get; private set; }
+		public StoreValueOperationUnit(IRegisterGroup registers) : base(registers) { }
 
 		protected override void InternalExecute()
 		{
@@ -28,7 +22,7 @@ namespace AbaSim.Core.Virtualization.Abacus16.Operations
 			}
 			else
 			{
-				ScheduleMemoryChange(Left + Right, Destination);
+				ScheduleMemoryChange(Left.UnsignedValue + Right.UnsignedValue, Destination);
 			}
 		}
 	}

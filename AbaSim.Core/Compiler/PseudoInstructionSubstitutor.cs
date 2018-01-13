@@ -25,8 +25,6 @@ namespace AbaSim.Core.Compiler
 			Substitutions.Add(new InstructionSubstitution("stackinit", new ReplacementInstruction("mov", "$0", "0")));
 			//TODO: parameters and return values
 			Substitutions.Add(new InstructionSubstitution("call",
-				//point to next stack frame
-				new ReplacementInstruction("addiu", "$0", "$0", "8"),
 				//store register content
 				new ReplacementInstruction("sti", "$1", "$0", "1"),
 				new ReplacementInstruction("sti", "$2", "$0", "2"),
@@ -46,10 +44,11 @@ namespace AbaSim.Core.Compiler
 				new ReplacementInstruction("ldi", "$4", "$0", "4"),
 				new ReplacementInstruction("ldi", "$5", "$0", "5"),
 				new ReplacementInstruction("ldi", "$6", "$0", "6"),
-				new ReplacementInstruction("ldi", "$7", "$0", "7"),
-				new ReplacementInstruction("subiu", "$0", "$0", "8")
+				new ReplacementInstruction("ldi", "$7", "$0", "7")
 				));
 			Substitutions.Add(new InstructionSubstitution("method",
+				//point to next stack frame
+				new ReplacementInstruction("addiu", "$0", "$0", "8"),
 				//reset registers
 				new ReplacementInstruction("mov", "$1", "0"),
 				new ReplacementInstruction("mov", "$2", "0"),
@@ -60,6 +59,8 @@ namespace AbaSim.Core.Compiler
 				new ReplacementInstruction("mov", "$7", "0")
 				));
 			Substitutions.Add(new InstructionSubstitution("end",
+				//point to previous stack frame
+				new ReplacementInstruction("subiu", "$0", "$0", "8"),
 				//jump back to caller
 				new ReplacementInstruction("ldi", "$1", "$0", "0"),
 				new ReplacementInstruction("muli", "$1", "$1", "-1"),
