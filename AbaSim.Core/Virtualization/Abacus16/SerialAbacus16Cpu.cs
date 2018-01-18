@@ -190,7 +190,11 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		protected virtual void WriteBack()
 		{
 			OperationUnit.WriteRegisterChanges();
-			StateChanged = StateChanged || LastRegisterStateGeneration != Register.StateGeneration;
+			if (!StateChanged)
+			{
+				StateChanged = LastRegisterStateGeneration != Register.StateGeneration;
+			}
+			LastRegisterStateGeneration = Register.StateGeneration;
 			ProgramCounter += OperationUnit.ProgramCounterChange;
 		}
 
