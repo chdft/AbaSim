@@ -58,6 +58,7 @@
     <Compile Include="Compiler\Lexing\LexerException.cs" />
     <Compile Include="Compiler\Parsing\AssemblyCodeAttribute.cs" />
     <Compile Include="Compiler\Parsing\ConstantRestriction.cs" />
+    <Compile Include="Compiler\Parsing\Dialects.cs" />
     <Compile Include="Compiler\Parsing\InstructionType.cs" />
     <Compile Include="Compiler\Parsing\RegisterReferenceRestriction.cs" />
     <Compile Include="Compiler\PseudoInstructionSubstitutor.cs" />

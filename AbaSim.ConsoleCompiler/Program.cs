@@ -28,7 +28,10 @@ namespace AbaSim.ConsoleCompiler
 			}
 
 
-			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler();
+			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler()
+			{
+				Dialect = Core.Compiler.Parsing.Dialects.ChDFT
+			};
 			compiler.LoadMappings();
 			var pipeline = Core.Compiler.CompilePipeline
 				.Start(new Core.Compiler.Lexing.AssemblerLexer())

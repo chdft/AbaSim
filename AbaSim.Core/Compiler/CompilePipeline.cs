@@ -82,7 +82,15 @@ namespace AbaSim.Core.Compiler
 					return default(TOutput);
 				}
 
-				return Step.Compile(previousOutput, log);
+				try
+				{
+					return Step.Compile(previousOutput, log);
+				}
+				catch (CompilerException e)
+				{
+					log.Error(string.Empty, e.GetType().ToString(), e.Message);
+					return default(TOutput);
+				}
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
@@ -117,7 +125,16 @@ namespace AbaSim.Core.Compiler
 
 			public TOutput GetCompilerResult(TInput initialInput, CompileLog log, bool continueOnCriticalError)
 			{
-				return Step.Compile(initialInput, log);
+				try
+				{
+					return Step.Compile(initialInput, log);
+				}
+				catch (CompilerException e)
+				{
+					log.Error(string.Empty, e.GetType().ToString(), e.Message);
+					return default(TOutput);
+				}
+
 			}
 
 			public ICompilePipelineBuilder<TNextOutput, TInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)

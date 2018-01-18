@@ -16,7 +16,7 @@ namespace AbaSim.Core.Compiler
 
 		public string Dialect { get; set; }
 
-		protected Dictionary<string, int> Labels = new Dictionary<string, int>();
+		//protected Dictionary<string, int> Labels = new Dictionary<string, int>();
 
 		protected Dictionary<string, InstructionMapping> Mappings;
 
@@ -32,7 +32,7 @@ namespace AbaSim.Core.Compiler
 
 			List<Word> nativeInstructions = new List<Word>();
 
-			IndexInstructions(instructionsList);
+			var labels = IndexInstructions(instructionsList, log);
 
 			int instructionCounter = 0;
 			foreach (var instruction in instructionsList)
@@ -108,7 +108,7 @@ namespace AbaSim.Core.Compiler
 									}
 									else if (mapping.ConstantRestriction != Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Parsing.RegisterReferenceRestriction.Fixed)
 									{
-										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter);
+										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter, labels);
 										rd = mapping.FixedDestinationValue;
 										if (instruction.Arguments.Count != 1)
 										{
@@ -119,7 +119,7 @@ namespace AbaSim.Core.Compiler
 									}
 									else if (instruction.Arguments.Count == 2)
 									{
-										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter);
+										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter, labels);
 										rd = ParseRawRegister(instruction.Arguments[0]);
 									}
 									else
@@ -181,7 +181,7 @@ namespace AbaSim.Core.Compiler
 									{
 										if (instruction.Arguments.Count == 1)
 										{
-											constant = ParseRawConstant(instruction.Arguments[0], instructionCounter);
+											constant = ParseRawConstant(instruction.Arguments[0], instructionCounter, labels);
 											rd = mapping.FixedDestinationValue;
 											rl = 0;
 										}
@@ -197,7 +197,7 @@ namespace AbaSim.Core.Compiler
 									{
 										if (instruction.Arguments.Count == 3)
 										{
-											constant = ParseRawConstant(instruction.Arguments[2], instructionCounter);
+											constant = ParseRawConstant(instruction.Arguments[2], instructionCounter, labels);
 											rd = ParseRawRegister(instruction.Arguments[0]);
 											rl = ParseRawRegister(instruction.Arguments[1]);
 										}
@@ -249,7 +249,7 @@ namespace AbaSim.Core.Compiler
 									{
 										if (instruction.Arguments.Count == 1)
 										{
-											constant = ParseRawConstant(instruction.Arguments[0], instructionCounter);
+											constant = ParseRawConstant(instruction.Arguments[0], instructionCounter, labels);
 										}
 										else
 										{
@@ -301,7 +301,7 @@ namespace AbaSim.Core.Compiler
 		public virtual void LoadMappings()
 		{
 			Mappings = new Dictionary<string, InstructionMapping>();
-			foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+			foreach (var type in typeof(AssemblerCompiler).Assembly.GetTypes())
 			{
 				foreach (var mappingAttribute in type.GetCustomAttributes<Parsing.AssemblyCodeAttribute>())
 				{
@@ -333,6 +333,7 @@ namespace AbaSim.Core.Compiler
 			{
 				rawRegister = rawRegister.Substring(1);
 			}
+
 			int registerIndex;
 			if (int.TryParse(rawRegister, out registerIndex))
 			{
@@ -348,14 +349,14 @@ namespace AbaSim.Core.Compiler
 			}
 		}
 
-		protected virtual int ParseRawConstant(string rawConstant, int instructionCounter)
+		protected virtual int ParseRawConstant(string rawConstant, int instructionCounter, Dictionary<string, int> labels)
 		{
 			rawConstant = rawConstant.Trim();
 			int constant;
 			if (!int.TryParse(rawConstant, out constant))
 			{
 				int targetInstruction;
-				if (Labels.TryGetValue(rawConstant, out targetInstruction))
+				if (labels.TryGetValue(rawConstant, out targetInstruction))
 				{
 					constant = targetInstruction - instructionCounter;
 				}
@@ -367,22 +368,41 @@ namespace AbaSim.Core.Compiler
 			return constant;
 		}
 
-		private void IndexInstructions(List<Lexing.Instruction> instructions)
+		private Dictionary<string, int> IndexInstructions(List<Lexing.Instruction> instructions, CompileLog log)
 		{
-			int instructionCounter = 0;
-			Labels.Clear();
+			int instructionCounter = -1;
+			var labels = new Dictionary<string, int>();
 
 			foreach (var instruction in instructions)
 			{
 				if (!string.IsNullOrWhiteSpace(instruction.Label))
 				{
-					Labels.Add(instruction.Label.Trim(), instructionCounter);
+					if (labels.ContainsKey(instruction.Label))
+					{
+						log.Error(instruction.SourceLine.ToString(), 
+							"Ambiguous Label", 
+							string.Format("Labels must be unique, however the label {0} was declared in line {1} and {2}.", instruction.Label, instruction.SourceLine, labels[instruction.Label]));
+					}
+					labels.Add(instruction.Label.Trim(), instructionCounter + 1);
+					if (string.IsNullOrWhiteSpace(instruction.Operation) && Dialect != Parsing.Dialects.ChDFT)
+					{
+						log.Error(instruction.SourceLine.ToString(), 
+							"Labels may only decorate Operations", 
+							"Labels may only be used on lines where an operation is declared. Consider using j 1 or nop if you need to declare a label separately.");
+					}
+					else
+					{
+						log.Information(instruction.SourceLine.ToString(), 
+							"Label without Operation", 
+							"A label was declared on a line without an operation.");
+					}
 				}
 				if (!string.IsNullOrWhiteSpace(instruction.Operation))
 				{
 					instructionCounter++;
 				}
 			}
+			return labels;
 		}
 
 		protected struct InstructionMapping
