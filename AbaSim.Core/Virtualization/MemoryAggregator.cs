@@ -86,5 +86,17 @@ namespace AbaSim.Core.Virtualization
 				}
 			}
 		}
+
+
+		public IEnumerable<KeyValuePair<int, Word>> GetDebugDump()
+		{
+			foreach (var mapping in Mappings)
+			{
+				foreach (var item in mapping.Provider.GetDebugDump())
+				{
+					yield return new KeyValuePair<int, Word>(item.Key + mapping.StartIndex, item.Value);
+				}
+			}
+		}
 	}
 }

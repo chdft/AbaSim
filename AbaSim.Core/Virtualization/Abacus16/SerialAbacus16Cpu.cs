@@ -8,6 +8,8 @@ namespace AbaSim.Core.Virtualization.Abacus16
 {
 	public class SerialAbacus16Cpu : ICpu
 	{
+		public static readonly int MaximumAddressableMemory = Word.UnsignedMaxValue.UnsignedValue;
+
 		private const int InstructionLength = 6;
 
 		public SerialAbacus16Cpu(IMemoryProvider<Word> programMemory, IMemoryProvider<Word> dataMemory)

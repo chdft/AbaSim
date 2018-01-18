@@ -18,6 +18,14 @@ namespace AbaSim.Core.Virtualization.Abacus16
 
 		public static readonly Word True = ~False;
 
+		public static readonly Word UnsignedMaxValue = new Word() { UnsignedValue = ushort.MaxValue };
+
+		public static readonly Word UnsignedMinValue = new Word() { UnsignedValue = ushort.MinValue };
+
+		public static readonly Word SignedMaxValue = new Word() { SignedValue = short.MaxValue };
+
+		public static readonly Word SignedMinValue = new Word() { SignedValue = short.MinValue };
+
 		[FieldOffset(0)]
 		public short SignedValue;
 

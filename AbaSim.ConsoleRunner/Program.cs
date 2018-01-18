@@ -19,20 +19,28 @@ namespace AbaSim.ConsoleRunner
 		private const string StartPausedFlag = "P";
 		private const string MonitorProgramFlowFlag = "F";
 		private const string BenchmarkFlag = "B";
+		private const string ValueFormat = "{0,5:D}: sdec{1,6:D} | udec{2,5:D} | hex{2,4:X} | {3}{4} | {5} {6}";
 
 		static Dictionary<int, FlowInfo> FlowMonitoringMapping;
 
 		static void Main(string[] args)
 		{
 			string programMemoryFile = args[0];
-			string dataMemoryFile = args[1];
+			string dataMemoryFile = (args.Length < 2 ? null : args[1]);
 			bool showControlFlow = (args.Length < 3 ? false : args[2].Contains(ShowControlFlowFlag));
 			bool startPaused = (args.Length < 3 ? false : args[2].Contains(StartPausedFlag));
 			bool monitorProgramFlow = (args.Length < 3 ? false : args[2].Contains(MonitorProgramFlowFlag));
 			bool benchmark = (args.Length < 3 ? false : args[2].Contains(BenchmarkFlag));
 
 			programMemory = new BufferMemory16(System.IO.File.ReadAllBytes(programMemoryFile));
-			dataMemory = new BufferMemory16(System.IO.File.ReadAllBytes(dataMemoryFile));
+			if (!string.IsNullOrEmpty(dataMemoryFile) && dataMemoryFile != "?")
+			{
+				dataMemory = new BufferMemory16(System.IO.File.ReadAllBytes(dataMemoryFile));
+			}
+			else
+			{
+				dataMemory = new SparseMemory<Word>(SerialAbacus16Cpu.MaximumAddressableMemory);
+			}
 
 			cpu = new SerialAbacus16Cpu(
 				programMemory,
@@ -192,14 +200,14 @@ namespace AbaSim.ConsoleRunner
 		{
 			Console.WriteLine("Executed {0} Instructions.", virtualSystem.ExecutedClockCycles);
 			Console.WriteLine("Register Dump:");
-			Console.WriteLine("PC:    udec{0,5:D} | uhex{0,4:X}", cpu.ProgramCounter);
-			Console.WriteLine("ovflw: udec{0,5:D} | uhex{0,4:X}", cpu.Register.Overflow.UnsignedValue);
-			Console.WriteLine("ll:    udec{0,5:D} | uhex{0,4:X}", cpu.Register.LoadLink.UnsignedValue);
+			Console.WriteLine("PC:    udec{0,5:D} | hex{0,4:X}", cpu.ProgramCounter);
+			Console.WriteLine("ovflw: udec{0,5:D} | hex{0,4:X}", cpu.Register.Overflow.UnsignedValue);
+			Console.WriteLine("ll:    udec{0,5:D} | hex{0,4:X}", cpu.Register.LoadLink.UnsignedValue);
 			for (int i = 0; i < cpu.Register.Scalar.Size; i++)
 			{
 				string binRepresentation = cpu.Register.Scalar[(RegisterIndex)i].ToString();
 
-				Console.WriteLine("S${0:D}: sdec{1,6:D} | shex{1,5:X} | udec{2,5:D} | uhex{2,4:X} | {3}{4} | {5} {6}",
+				Console.WriteLine("S${0:D}: sdec{1,6:D} | udec{2,5:D} | hex{2,4:X} | {3}{4} | {5} {6}",
 					i,
 					cpu.Register.Scalar[(RegisterIndex)i].SignedValue,
 					cpu.Register.Scalar[(RegisterIndex)i].UnsignedValue,
@@ -219,17 +227,31 @@ namespace AbaSim.ConsoleRunner
 
 		static void WriteMemoryDump(IMemoryProvider<Word> memory)
 		{
-			for (int address = 0; address < memory.Size; address++)
+			bool written = false;
+			int lastAddress = 0;
+			foreach (var item in memory.GetDebugDump())
 			{
-				string binRepresentation = memory[address].ToString();
-				Console.WriteLine("{0,5:D}: sdec{1,6:D} | shex{1,5:X} | udec{2,5:D} | uhex{2,4:X} | {3}{4} | {5} {6}",
+				int address = item.Key;
+				Word value = item.Value;
+				if (written && address > lastAddress + 1)
+				{
+					Console.WriteLine("  ·  :      ·     ¦     ·     ¦    ·    ¦ ·· ¦     ·    ");
+				}
+				string binRepresentation = value.ToString();
+				Console.WriteLine("{0,5:D}: sdec{1,6:D} | udec{2,5:D} | hex{2,4:X} | {3}{4} | {5} {6}",
 					address,
-					memory[address].SignedValue,
-					memory[address].UnsignedValue,
-					GetTextValue(memory[address].RawValue, 0),
-					GetTextValue(memory[address].RawValue, 1),
+					value.SignedValue,
+					value.UnsignedValue,
+					GetTextValue(value.RawValue, 0),
+					GetTextValue(value.RawValue, 1),
 					binRepresentation.Substring(0, 8),
 					binRepresentation.Substring(8, 8));
+				written = true;
+				lastAddress = address;
+			}
+			if (!written)
+			{
+				Console.WriteLine("---empty---");
 			}
 		}
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization
 {
-	public class SparseMemory<Word> : IMemoryProvider<Word>
+	public class SparseMemory<Word> : IMemoryProvider<Word> where Word : IWord
 	{
 		public SparseMemory(Word[] initialContent, int size)
 		{
