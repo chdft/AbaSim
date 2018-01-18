@@ -22,7 +22,7 @@ namespace AbaSim.Core.Compiler
 			//! Stack-Frame Layout
 			// 1Word jump ahead distance (distance between call-site and called method)
 			// 7Word register content (excluding $0) in ascending order of register index
-			Substitutions.Add(new InstructionSubstitution("stackinit", new ReplacementInstruction("mov", "$0", "0")));
+			Substitutions.Add(new InstructionSubstitution("stackinit", new ReplacementInstruction("mov", "$0", 0)));
 			//TODO: parameters and return values
 			Substitutions.Add(new InstructionSubstitution("call",
 				//store register content
@@ -204,7 +204,7 @@ namespace AbaSim.Core.Compiler
 				{
 					if (Index >= original.Arguments.Count)
 					{
-						log.CriticalError(original.SourceLine.ToString(), string.Format("Pseudo Instruction {0} is missing arguments.", original.Operation), string.Format("Operation {0} expects an argument at index {1}, however only {2} are provided.", original.Operation, Index, original.Arguments.Count));
+						log.Error(original.SourceLine.ToString(), string.Format("Pseudo Instruction {0} is missing arguments.", original.Operation), string.Format("Operation {0} expects an argument at index {1}, however only {2} are provided.", original.Operation, Index, original.Arguments.Count));
 						return string.Empty;
 					}
 					return original.Arguments[Index];

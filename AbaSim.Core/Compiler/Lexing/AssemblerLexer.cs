@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AbaSim.Core.Compiler.Lexing
@@ -12,18 +13,33 @@ namespace AbaSim.Core.Compiler.Lexing
 		{
 			LineSperator = "\r\n";
 			WhiteSpace = new char[] { ' ', '\t' };
+			LabelTerminator = ':';
+			ArgumentSeparator = ',';
+			CommentSeparator = '/';
 		}
 
 		public string LineSperator { get; set; }
 
 		public char[] WhiteSpace { get; set; }
 
-		public IEnumerable<Instruction> Lex(string sourceCode)
+		public char LabelTerminator { get; set; }
+
+		public char ArgumentSeparator { get; set; }
+
+		public char CommentSeparator { get; set; }
+
+		private static readonly Regex InstructionExpression = new Regex(@"^\s*(([^:]+):)?\s*([^\s]+)(\s+([^\s,]+)(\s*,\s*([^\s,]))*)?\s*(\/\/(.*))?$", RegexOptions.CultureInvariant);
+
+		public IEnumerable<Instruction> Lex(string sourceCode, CompileLog log)
 		{
-			string[] lines = sourceCode.Split(new string[] { LineSperator }, StringSplitOptions.RemoveEmptyEntries);
+			string[] lines = sourceCode.Split(new string[] { LineSperator }, StringSplitOptions.None);
 			int lineCounter = 0;
 			foreach (var line in lines)
 			{
+
+				//var match = InstructionExpression.Match(line);
+				//match.Captures[0]
+
 				var codeLine = line.TrimStart(WhiteSpace);
 				if (codeLine.StartsWith("//") || codeLine.StartsWith("#"))
 				{
@@ -31,94 +47,98 @@ namespace AbaSim.Core.Compiler.Lexing
 				}
 				int offset = 0;
 				int boffset = 0;
-				Stage stage = Stage.LabelPending;
+				Stage stage = Stage.LabelRunning;
 				Instruction i = new Instruction();
 				List<string> args = new List<string>();
 				i.Arguments = args;
 				int commentFirstSymbolSeenOffset = -2;
+				bool seenArgumentSeparatorSymbol = true; //set initially to true, as first argument does not need to be comma separated
+
+				string location = null;
 				while (offset < codeLine.Length)
 				{
+					location = lineCounter.ToString() + ":" + offset.ToString();
 					bool isWhiteSpace = WhiteSpace.Contains(codeLine[offset]);
-					if (isWhiteSpace && stage <= Stage.LabelPending)
+					switch (stage)
 					{
-						//ignore leading space
-						boffset++;
-					}
-					else if (!isWhiteSpace && stage == Stage.LabelPending)
-					{
-						stage = Stage.LabelRunning;
-					}
-					else if (codeLine[offset] == ':' && stage <= Stage.LabelRunning)
-					{
-						if (offset == 0)
-						{
-							throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "label name");
-						}
-						i.Label = codeLine.Substring(boffset, offset - boffset);
-						boffset = offset + 1;
-						stage = Stage.OperationPending;
-					}
-					else if (isWhiteSpace && stage == Stage.OperationPending)
-					{
-						//ignore leading space
-						boffset++;
-					}
-					else if (!isWhiteSpace && stage == Stage.OperationPending)
-					{
-						stage = Stage.OperationRunning;
-					}
-					else if (isWhiteSpace && stage <= Stage.OperationRunning)
-					{
-						i.Operation = codeLine.Substring(boffset, offset - boffset);
-						if (i.Operation == string.Empty)
-						{
-							throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "operation");
-						}
-						boffset = offset + 1;
-						stage = Stage.ArgumentsPending;
-					}
-					else if (isWhiteSpace && stage <= Stage.ArgumentsPending)
-					{
-						//ignore leading space
-						boffset++;
-					}
-					else if (!isWhiteSpace && stage == Stage.ArgumentsPending)
-					{
-						stage = Stage.ArgumentsRunning;
-					}
-					else if ((codeLine[offset] == ',' || isWhiteSpace || codeLine[offset] == '/') && stage == Stage.ArgumentsRunning)
-					{
-						if (boffset < offset)
-						{
-							//argument completed
-							args.Add(codeLine.Substring(boffset, offset - boffset));
-							boffset = offset + 1;
-						}
-						else
-						{
-							//more than one space
-							boffset++;
-						}
-						if (codeLine[offset] == '/')
-						{
-							if (commentFirstSymbolSeenOffset == offset - 1)
+						case Stage.LabelRunning:
+							if (codeLine[offset] == LabelTerminator)
 							{
-								stage = Stage.CommentRunning;
-								boffset = offset + 1;
+								i.Label = codeLine.Substring(boffset, offset - boffset);
+								stage = Stage.OperationPending;
 							}
-							else if (commentFirstSymbolSeenOffset == -2)
+							else if (isWhiteSpace)
 							{
-								commentFirstSymbolSeenOffset = offset;
+								i.Operation = codeLine.Substring(boffset, offset - boffset);
+								stage = Stage.ArgumentsPending;
 							}
-							else
+							break;
+						case Stage.OperationPending:
+							if (!isWhiteSpace)
 							{
-								throw new InvalidSymbolException("/", lineCounter, offset, "comment start token (\"\")");
+								boffset = offset;
+								stage = Stage.OperationRunning;
 							}
-						}
+							break;
+						case Stage.OperationRunning:
+							if (isWhiteSpace)
+							{
+								i.Operation = codeLine.Substring(boffset, offset - boffset);
+								stage = Stage.ArgumentsPending;
+							}
+							break;
+						case Stage.ArgumentsPending:
+							if (!isWhiteSpace)
+							{
+								if (codeLine[offset] == ArgumentSeparator)
+								{
+									if (seenArgumentSeparatorSymbol)
+									{
+										args.Add(string.Empty);
+										log.Warning(location, "Empty item in argument list.", null);
+									}
+								}
+								else if (codeLine[offset] == CommentSeparator)
+								{
+									if (commentFirstSymbolSeenOffset == -2)
+									{
+										commentFirstSymbolSeenOffset = offset;
+									}
+									else if (commentFirstSymbolSeenOffset == offset - 1)
+									{
+										stage = Stage.CommentRunning;
+									}
+									else
+									{
+										log.Error(location, "Unexpected comment separator.", "Comments must be started by 2 comment separator characters (\"" + CommentSeparator.ToString() +"\").");
+									}
+								}
+								else
+								{
+									boffset = offset;
+									stage = Stage.ArgumentsRunning;
+									if (!seenArgumentSeparatorSymbol)
+									{
+										log.Warning(location, "Arguments are separated by whitespace instead of \"" + ArgumentSeparator.ToString() + "\"", "According to the language standard, arguments must be separated by an argument separator character and optionally additional whitespace.");
+									}
+								}
+							}
+							break;
+						case Stage.ArgumentsRunning:
+							if (isWhiteSpace)
+							{
+								stage = Stage.ArgumentsPending;
+								args.Add(codeLine.Substring(boffset, offset - boffset));
+							}
+							break;
 					}
 					offset++;
 				}
-				if (stage == Stage.CommentRunning)
+				if (stage == Stage.OperationRunning || stage==Stage.LabelRunning)
+				{
+					i.Operation = codeLine.Substring(boffset);
+				}
+				else if (stage == Stage.CommentRunning)
 				{
 					i.Comment = codeLine.Substring(boffset);
 				}
@@ -129,23 +149,132 @@ namespace AbaSim.Core.Compiler.Lexing
 				i.SourceLine = lineCounter;
 				yield return i;
 				lineCounter++;
+
+
+
+
+				//var codeLine = line.TrimStart(WhiteSpace);
+				//if (codeLine.StartsWith("//") || codeLine.StartsWith("#"))
+				//{
+				//	continue;
+				//}
+				//int offset = 0;
+				//int boffset = 0;
+				//Stage stage = Stage.LabelPending;
+				//Instruction i = new Instruction();
+				//List<string> args = new List<string>();
+				//i.Arguments = args;
+				//int commentFirstSymbolSeenOffset = -2;
+				//while (offset < codeLine.Length)
+				//{
+				//	bool isWhiteSpace = WhiteSpace.Contains(codeLine[offset]);
+				//	if (isWhiteSpace && stage <= Stage.LabelPending)
+				//	{
+				//		//ignore leading space
+				//		boffset++;
+				//	}
+				//	else if (!isWhiteSpace && stage == Stage.LabelPending)
+				//	{
+				//		stage = Stage.LabelRunning;
+				//	}
+				//	else if (codeLine[offset] == ':' && stage <= Stage.LabelRunning)
+				//	{
+				//		if (offset == 0)
+				//		{
+				//			throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "label name");
+				//		}
+				//		i.Label = codeLine.Substring(boffset, offset - boffset);
+				//		boffset = offset + 1;
+				//		stage = Stage.OperationPending;
+				//	}
+				//	else if (isWhiteSpace && stage == Stage.OperationPending)
+				//	{
+				//		//ignore leading space
+				//		boffset++;
+				//	}
+				//	else if (!isWhiteSpace && stage == Stage.OperationPending)
+				//	{
+				//		stage = Stage.OperationRunning;
+				//	}
+				//	else if (isWhiteSpace && stage <= Stage.OperationRunning)
+				//	{
+				//		i.Operation = codeLine.Substring(boffset, offset - boffset);
+				//		if (i.Operation == string.Empty)
+				//		{
+				//			throw new InvalidSymbolException(codeLine[offset].ToString(), lineCounter, offset, "operation");
+				//		}
+				//		boffset = offset + 1;
+				//		stage = Stage.ArgumentsPending;
+				//	}
+				//	else if (isWhiteSpace && stage <= Stage.ArgumentsPending)
+				//	{
+				//		//ignore leading space
+				//		boffset++;
+				//	}
+				//	else if (!isWhiteSpace && stage == Stage.ArgumentsPending)
+				//	{
+				//		stage = Stage.ArgumentsRunning;
+				//	}
+				//	else if ((codeLine[offset] == ',' || isWhiteSpace || codeLine[offset] == '/') && stage == Stage.ArgumentsRunning)
+				//	{
+				//		if (boffset < offset)
+				//		{
+				//			//argument completed
+				//			args.Add(codeLine.Substring(boffset, offset - boffset));
+				//			boffset = offset + 1;
+				//		}
+				//		else
+				//		{
+				//			//more than one space
+				//			boffset++;
+				//		}
+				//		if (codeLine[offset] == '/')
+				//		{
+				//			if (commentFirstSymbolSeenOffset == offset - 1)
+				//			{
+				//				stage = Stage.CommentRunning;
+				//				boffset = offset + 1;
+				//			}
+				//			else if (commentFirstSymbolSeenOffset == -2)
+				//			{
+				//				commentFirstSymbolSeenOffset = offset;
+				//			}
+				//			else
+				//			{
+				//				throw new InvalidSymbolException("/", lineCounter, offset, "comment start token (\"\")");
+				//			}
+				//		}
+				//	}
+				//	offset++;
+				//}
+				//if (stage == Stage.CommentRunning)
+				//{
+				//	i.Comment = codeLine.Substring(boffset);
+				//}
+				//else if (stage == Stage.ArgumentsRunning)
+				//{
+				//	args.Add(codeLine.Substring(boffset, offset - boffset));
+				//}
+				//i.SourceLine = lineCounter;
+				//yield return i;
+				//lineCounter++;
 			}
 		}
 
 		IEnumerable<Instruction> ICompileStep<string, IEnumerable<Instruction>>.Compile(string input, CompileLog log)
 		{
-			return Lex(input);
+			return Lex(input, log);
 		}
 
 		private enum Stage
 		{
-			LabelPending = 0,
+			//LabelPending = 0,
 			LabelRunning = 1,
 			OperationPending = 2,
 			OperationRunning = 3,
 			ArgumentsPending = 4,
 			ArgumentsRunning = 5,
-			CommentPending = 6,
+			//CommentPending = 6,
 			CommentRunning = 7
 		}
 	}

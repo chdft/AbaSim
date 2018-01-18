@@ -17,12 +17,47 @@ namespace AbaSim.Core.Compiler
 		{
 			ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step);
 
+			ICompilePipelineBuilder<TNextOutput, TInitialInput> Convert<TNextOutput>(Func<TOutput, TNextOutput> converter);
+
+			ICompilePipelineBuilder<TOutput, TInitialInput> Inspect(Action<TOutput, CompileLog> inspector);
+
 			CompilePipeline<TInitialInput, TOutput> Complete();
 		}
 
 		internal interface ICompileStepWrapper<TOutput, TInitialInput>
 		{
 			TOutput GetCompilerResult(TInitialInput initialInput, CompileLog log, bool continueOnCriticalError);
+		}
+
+		private class ConversionCompileStep<TInput, TOutput> : ICompileStep<TInput, TOutput>
+		{
+			public ConversionCompileStep(Func<TInput, TOutput> converter)
+			{
+				Converter = converter;
+			}
+
+			private readonly Func<TInput, TOutput> Converter;
+
+			public TOutput Compile(TInput input, CompileLog log)
+			{
+				return Converter(input);
+			}
+		}
+
+		private class InspectionCompileStep<TInput> : ICompileStep<TInput, TInput>
+		{
+			public InspectionCompileStep(Action<TInput, CompileLog> inspector)
+			{
+				Inspector = inspector;
+			}
+
+			private readonly Action<TInput, CompileLog> Inspector;
+
+			public TInput Compile(TInput input, CompileLog log)
+			{
+				Inspector(input, log);
+				return input;
+			}
 		}
 
 		private class IntermediateCompileStepWrapper<TInput, TOutput, TInitialInput> : ICompileStepWrapper<TOutput, TInitialInput>, ICompilePipelineBuilder<TOutput, TInitialInput>
@@ -41,7 +76,7 @@ namespace AbaSim.Core.Compiler
 			{
 				TInput previousOutput = Previous.GetCompilerResult(initialInput, log, continueOnCriticalError);
 
-				if (log.CriticalErrorOccured && !continueOnCriticalError)
+				if (log.ErrorOccured && !continueOnCriticalError)
 				{
 					//skip this step, because a critical error occurred in a previous step
 					return default(TOutput);
@@ -53,6 +88,16 @@ namespace AbaSim.Core.Compiler
 			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Continue<TNextOutput>(ICompileStep<TOutput, TNextOutput> step)
 			{
 				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInitialInput>(this, step);
+			}
+
+			public ICompilePipelineBuilder<TNextOutput, TInitialInput> Convert<TNextOutput>(Func<TOutput, TNextOutput> converter)
+			{
+				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInitialInput>(this, new ConversionCompileStep<TOutput, TNextOutput>(converter));
+			}
+
+			public ICompilePipelineBuilder<TOutput, TInitialInput> Inspect(Action<TOutput, CompileLog> inspector)
+			{
+				return new IntermediateCompileStepWrapper<TOutput, TOutput, TInitialInput>(this, new InspectionCompileStep<TOutput>(inspector));
 			}
 
 			public CompilePipeline<TInitialInput, TOutput> Complete()
@@ -80,6 +125,16 @@ namespace AbaSim.Core.Compiler
 				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInput>(this, step);
 			}
 
+			public ICompilePipelineBuilder<TNextOutput, TInput> Convert<TNextOutput>(Func<TOutput, TNextOutput> converter)
+			{
+				return new IntermediateCompileStepWrapper<TOutput, TNextOutput, TInput>(this, new ConversionCompileStep<TOutput, TNextOutput>(converter));
+			}
+
+			public ICompilePipelineBuilder<TOutput, TInput> Inspect(Action<TOutput, CompileLog> inspector)
+			{
+				return new IntermediateCompileStepWrapper<TOutput, TOutput, TInput>(this, new InspectionCompileStep<TOutput>(inspector));
+			}
+
 			public CompilePipeline<TInput, TOutput> Complete()
 			{
 				return new CompilePipeline<TInput, TOutput>(this);
@@ -87,7 +142,7 @@ namespace AbaSim.Core.Compiler
 		}
 
 	}
-	public class CompilePipeline<TInput, TOutput>:CompilePipeline
+	public class CompilePipeline<TInput, TOutput> : CompilePipeline
 	{
 		internal CompilePipeline(ICompileStepWrapper<TOutput, TInput> lastStep)
 		{

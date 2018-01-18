@@ -10,22 +10,11 @@ namespace AbaSim.Core.Compiler
 	{
 		private List<CompileLogItem> Items = new List<CompileLogItem>();
 
-		public bool CriticalErrorOccured { get; private set; }
-
-		public void CriticalError(string location, string message, string description)
-		{
-			CriticalErrorOccured = true;
-			Log(new CompileLogItem()
-			{
-				Severity = CompileLogItemSeverity.Error,
-				Message = message,
-				Description = description,
-				Location = location
-			});
-		}
+		public bool ErrorOccured { get; private set; }
 
 		public void Error(string location, string message, string description)
 		{
+			ErrorOccured = true;
 			Log(new CompileLogItem()
 			{
 				Severity = CompileLogItemSeverity.Error,

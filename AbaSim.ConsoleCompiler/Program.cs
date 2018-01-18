@@ -38,7 +38,7 @@ namespace AbaSim.ConsoleCompiler
 
 			var result = pipeline.Compile(sourceCode);
 
-			if (result.Log.CriticalErrorOccured)
+			if (result.Log.ErrorOccured)
 			{
 				Console.WriteLine("Compilation failed.");
 			}
@@ -60,7 +60,7 @@ namespace AbaSim.ConsoleCompiler
 				}
 			}
 
-			if (result.Log.CriticalErrorOccured)
+			if (result.Log.ErrorOccured)
 			{
 				Environment.ExitCode = 2;
 				return;

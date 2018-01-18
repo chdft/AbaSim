@@ -25,8 +25,12 @@ namespace AbaSim.Core.Compiler.Parsing
 
 		public string Dialect { get; set; }
 
-		public ValueRestriction ConstantRestriction { get; set; }
+		public ConstantValueRestriction ConstantRestriction { get; set; }
 
 		public byte FixedConstantValue { get; set; }
+
+		public RegisterReferenceRestriction DestinationRestriction { get; set; }
+
+		public byte FixedDestinationValue { get; set; }
 	}
 }

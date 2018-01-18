@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Compiler.Parsing
 {
-	public enum ConstantValueRestriction
+	public enum RegisterReferenceRestriction
 	{
-		Signed = 0,
-		Unsigned,
+		Unrestricted = 0,
 		Fixed
 	}
 }

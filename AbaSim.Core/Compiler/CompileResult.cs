@@ -20,13 +20,22 @@ namespace AbaSim.Core.Compiler
 		{
 			get
 			{
-				if (Log.CriticalErrorOccured) { throw new CompilerException(); }
+				if (Log.ErrorOccured) { throw new CompilerException(); }
 
 				return _Output;
 			}
 			private set { _Output = value; }
 		}
 		private TOutput _Output;
+
+		/// <summary>
+		/// Like <see cref="Output"/>, but does not throw even if an critical error occurred.
+		/// Note that the result of an <see cref="CompilePipeline"/> may be invalid if a critical error occurred.
+		/// </summary>
+		public TOutput UnsafeOutput
+		{
+			get { return _Output; }
+		}
 
 		public CompileLog Log { get; private set; }
 	}
