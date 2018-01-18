@@ -5,11 +5,17 @@ Note that this library does *not* emulate the actual circuit of an abacus CPU, b
 
 ## Features
 
-- all instructions (excluding vector and synchronization)
+- all instructions (excluding vector instructions)
+	- basic instructions
+	- pseudo instructions
+	- memory synchronization
 - Memory Caching (single- and multi-layer, shared and separate)
-- Debugger API
 - Abacus assembler compiler (API and command line utility)
+	- extendable compile pipeline (enables injection of pre-/post-processing for each compile step - helpful for static analysis)
+	- support for constant based multiplexing (i.e. sync/overflw/...)
 - Abacus binary runner (API and command line utility)
+	- Debugger API
+	- basic endless loop detection
 - Extendibility (many event-based hooks and sensible class hierarchy)
 
 Additional instructions (like vector instructions) are architecturally possible and could be added, but currently not implemented.
