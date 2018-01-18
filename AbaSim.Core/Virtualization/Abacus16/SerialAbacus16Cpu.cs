@@ -179,6 +179,7 @@ namespace AbaSim.Core.Virtualization.Abacus16
 		/// </summary>
 		protected virtual void MemoryAccess()
 		{
+			//CHECK: accessing the memory to check if a write is needed may cause caches to misbehave (i.e. cause uneeded misses, since we are just writing and not interested in the old value)
 			if (OperationUnit.UpdateMemoryAddress != null && DataMemory[OperationUnit.UpdateMemoryAddress.Value] != OperationUnit.UpdateMemoryValue)
 			{
 				DataMemory[OperationUnit.UpdateMemoryAddress.Value] = OperationUnit.UpdateMemoryValue;

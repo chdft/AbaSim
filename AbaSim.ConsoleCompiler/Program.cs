@@ -36,6 +36,16 @@ namespace AbaSim.ConsoleCompiler
 			var pipeline = Core.Compiler.CompilePipeline
 				.Start(new Core.Compiler.Lexing.AssemblerLexer())
 				.Continue(new Core.Compiler.PseudoInstructionSubstitutor())
+				.Inspect((instructions, log) =>
+				{
+					int i = 0;
+					Console.WriteLine("Code after substitution:");
+					foreach (var instruction in instructions)
+					{
+						Console.WriteLine("{0,4}|{2,4}| {1}", i, instruction, instruction.SourceLine);
+						i++;
+					}
+				})
 				.Continue(compiler)
 				.Complete();
 

@@ -178,10 +178,17 @@ namespace AbaSim.ConsoleRunner
 		{
 			if (e.Cpu.ProgramCounter < programMemory.Size)
 			{
-				Word instruction = programMemory[e.Cpu.ProgramCounter];
-				string binRepresentation = instruction.ToString();
+				try
+				{
+					Word instruction = programMemory[e.Cpu.ProgramCounter];
+					string binRepresentation = instruction.ToString();
 
-				Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0,-3}", e.Cpu.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+					Console.WriteLine("Executing: {1,4:X} | {2} {3} @ {0,-3}", e.Cpu.ProgramCounter, instruction.UnsignedValue, binRepresentation.Substring(0, 8), binRepresentation.Substring(8, 8));
+				}
+				catch (MemoryAccessViolationException)
+				{
+					Console.WriteLine("Executing:  [Invalid memory area]  @ {0,-3}", e.Cpu.ProgramCounter);
+				}
 			}
 			else
 			{
@@ -193,7 +200,7 @@ namespace AbaSim.ConsoleRunner
 		{
 			Console.WriteLine("Execution ended due to \"{0}\".", e.Reason.Message);
 			WriteDumps();
-			Console.WriteLine("Press any key to exit.");
+			Console.WriteLine("Press ESC to exit.");
 		}
 
 		static void WriteDumps()
@@ -229,7 +236,7 @@ namespace AbaSim.ConsoleRunner
 		{
 			bool written = false;
 			int lastAddress = 0;
-			foreach (var item in memory.GetDebugDump())
+			foreach (var item in memory.GetDebugDump().OrderBy(item => item.Key))
 			{
 				int address = item.Key;
 				Word value = item.Value;

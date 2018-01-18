@@ -1,3 +1,4 @@
+stackinit 4
 mov $1 9
 call hello
 j end
