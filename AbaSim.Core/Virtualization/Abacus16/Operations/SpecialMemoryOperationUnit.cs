@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sync", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = SyncConstant)]
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("ovf", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = OverflowConstant)]
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mvtm", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = MoveToMaskRegisterConstant)]
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mvtl", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ValueRestriction.Fixed, FixedConstantValue = MoveToVectorLengthRegisterConstant)]
+	[Compiler.Parsing.AssemblyCode("sync", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = Compiler.Parsing.ConstantValueRestriction.Fixed, FixedConstantValue = SyncConstant, DestinationRestriction = Compiler.Parsing.RegisterReferenceRestriction.Fixed, FixedDestinationValue = 0)]
+	[Compiler.Parsing.AssemblyCode("ovf", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = Compiler.Parsing.ConstantValueRestriction.Fixed, FixedConstantValue = OverflowConstant, DestinationRestriction = Compiler.Parsing.RegisterReferenceRestriction.Fixed, FixedDestinationValue = 0)]
+	[Compiler.Parsing.AssemblyCode("mvtm", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = Compiler.Parsing.ConstantValueRestriction.Fixed, FixedConstantValue = MoveToMaskRegisterConstant, DestinationRestriction = Compiler.Parsing.RegisterReferenceRestriction.Fixed, FixedDestinationValue = 0)]
+	[Compiler.Parsing.AssemblyCode("mvtl", OpCode, Compiler.Parsing.InstructionType.Store, ConstantRestriction = Compiler.Parsing.ConstantValueRestriction.Fixed, FixedConstantValue = MoveToVectorLengthRegisterConstant, DestinationRestriction = Compiler.Parsing.RegisterReferenceRestriction.Fixed, FixedDestinationValue = 0)]
 	class SpecialMemoryOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B3 + Bit.B2 + Bit.B1 + Bit.B0;
