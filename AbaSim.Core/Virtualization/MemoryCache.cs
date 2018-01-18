@@ -26,6 +26,8 @@ namespace AbaSim.Core.Virtualization
 
 		public ulong Misses { get; private set; }
 
+		public ulong WriteBacks { get; private set; }
+
 		protected IMemoryProvider<Word> BackingMemoryProvider { get; private set; }
 
 		public void Flush()
@@ -40,5 +42,13 @@ namespace AbaSim.Core.Virtualization
 		{
 			Misses++;
 		}
+
+		protected void NotifyWriteBack()
+		{
+			WriteBacks++;
+		}
+
+
+		public abstract IEnumerable<KeyValuePair<int, Word>> GetDebugDump();
 	}
 }

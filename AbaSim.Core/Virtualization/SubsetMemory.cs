@@ -25,10 +25,18 @@ namespace AbaSim.Core.Virtualization
 		{
 			get
 			{
+				if (index >= Size || index < 0)
+				{
+					throw new MemoryAccessViolationException();
+				}
 				return Source[index + StartAddress];
 			}
 			set
 			{
+				if (index >= Size || index < 0)
+				{
+					throw new MemoryAccessViolationException();
+				}
 				Source[index + StartAddress] = value;
 			}
 		}
@@ -36,6 +44,12 @@ namespace AbaSim.Core.Virtualization
 		public void Flush()
 		{
 			Source.Flush();
+		}
+
+
+		public IEnumerable<KeyValuePair<int, Word>> GetDebugDump()
+		{
+			return Source.GetDebugDump().Where(item => item.Key >= StartAddress && item.Key < StartAddress + Size);
 		}
 	}
 }

@@ -67,5 +67,14 @@ namespace AbaSim.Core.Virtualization
 				Buffer[index] = value;
 			}
 		}
+
+
+		public IEnumerable<KeyValuePair<int, Abacus16.Word>> GetDebugDump()
+		{
+			for (int i = 0; i < Buffer.Length; i++)
+			{
+				yield return new KeyValuePair<int, Abacus16.Word>(i, Buffer[i]);
+			}
+		}
 	}
 }

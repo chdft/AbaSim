@@ -59,6 +59,7 @@
     <Compile Include="Compiler\Parsing\AssemblyCodeAttribute.cs" />
     <Compile Include="Compiler\Parsing\ConstantRestriction.cs" />
     <Compile Include="Compiler\Parsing\InstructionType.cs" />
+    <Compile Include="Compiler\Parsing\RegisterReferenceRestriction.cs" />
     <Compile Include="Compiler\PseudoInstructionSubstitutor.cs" />
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Virtualization\MemoryAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Virtualization\ProgramCounterOutOfBoundsException.cs" />
+    <Compile Include="Virtualization\SparseMemory.cs" />
     <Compile Include="Virtualization\SubsetMemory.cs" />
     <Compile Include="Virtualization\UnknownInstructionException.cs" />
   </ItemGroup>

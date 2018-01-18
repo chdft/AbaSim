@@ -38,5 +38,57 @@ namespace AbaSim.Core
 		{
 			return new byte[] { source[1], source[0] };
 		}
+
+		public static ushort MaskFirstS(byte bitCount)
+		{
+			if (bitCount >= sizeof(ushort) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+
+			return (ushort)(ushort.MaxValue >> (sizeof(ushort)*8 - bitCount));
+		}
+
+		public static int UnsignedUpperBound(byte bitCount)
+		{
+			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+
+			return (int.MaxValue >> (sizeof(int) * 8 - (bitCount + 1)));
+		}
+
+		public static int SignedUpperBound(byte bitCount)
+		{
+			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+
+			return (UnsignedUpperBound(bitCount) >> 1);
+		}
+
+		public static int SignedLowerBound(byte bitCount)
+		{
+			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+
+			return int.MaxValue << bitCount;
+		}
+
+		public static int UpperBound(byte bitCount, bool unsigned)
+		{
+			if (unsigned)
+			{
+				return UnsignedUpperBound(bitCount);
+			}
+			else
+			{
+				return SignedUpperBound(bitCount);
+			}
+		}
+
+		public static int LowerBound(byte bitCount, bool unsigned)
+		{
+			if (unsigned)
+			{
+				return 0;
+			}
+			else
+			{
+				return SignedLowerBound(bitCount);
+			}
+		}
 	}
 }
