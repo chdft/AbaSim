@@ -51,5 +51,24 @@ namespace AbaSim.Core.Virtualization
 		{
 			return Source.GetDebugDump().Where(item => item.Key >= StartAddress && item.Key < StartAddress + Size);
 		}
+
+
+		public Word GetDebugValue(int index)
+		{
+			if (index >= Size || index < 0)
+			{
+				throw new MemoryAccessViolationException();
+			}
+			return Source.GetDebugValue(index + StartAddress);
+		}
+
+		public void SetDebugValue(int index, Word value)
+		{
+			if (index >= Size || index < 0)
+			{
+				throw new MemoryAccessViolationException();
+			}
+			Source.SetDebugValue(index + StartAddress, value);
+		}
 	}
 }

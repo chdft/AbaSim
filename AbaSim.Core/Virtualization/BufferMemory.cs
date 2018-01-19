@@ -76,5 +76,15 @@ namespace AbaSim.Core.Virtualization
 				yield return new KeyValuePair<int, Abacus16.Word>(i, Buffer[i]);
 			}
 		}
+
+		public Abacus16.Word GetDebugValue(int address)
+		{
+			return Buffer[address];
+		}
+
+		public void SetDebugValue(int address, Abacus16.Word value)
+		{
+			Buffer[address] = value;
+		}
 	}
 }

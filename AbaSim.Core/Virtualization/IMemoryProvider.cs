@@ -21,5 +21,9 @@ namespace AbaSim.Core.Virtualization
 		void Flush();
 
 		IEnumerable<KeyValuePair<int, Word>> GetDebugDump();
+
+		Word GetDebugValue(int index);
+
+		void SetDebugValue(int index, Word value);
 	}
 }

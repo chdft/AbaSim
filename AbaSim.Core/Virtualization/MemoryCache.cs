@@ -28,6 +28,8 @@ namespace AbaSim.Core.Virtualization
 
 		public ulong WriteBacks { get; private set; }
 
+		public ulong Hits { get; private set; }
+
 		protected IMemoryProvider<Word> BackingMemoryProvider { get; private set; }
 
 		public void Flush()
@@ -48,7 +50,17 @@ namespace AbaSim.Core.Virtualization
 			WriteBacks++;
 		}
 
+		protected void NotifyCacheHit()
+		{
+			Hits++;
+		}
 
 		public abstract IEnumerable<KeyValuePair<int, Word>> GetDebugDump();
+
+		public abstract IEnumerable<KeyValuePair<int, Word>> GetLocalDebugDump();
+
+		public abstract Word GetDebugValue(int index);
+
+		public abstract void SetDebugValue(int index, Word value);
 	}
 }

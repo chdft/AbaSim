@@ -72,5 +72,15 @@ namespace AbaSim.Core.Virtualization
 		{
 			return BackingStore;
 		}
+
+		public Word GetDebugValue(int index)
+		{
+			return this[index];
+		}
+
+		public void SetDebugValue(int index, Word value)
+		{
+			this[index] = value;
+		}
 	}
 }

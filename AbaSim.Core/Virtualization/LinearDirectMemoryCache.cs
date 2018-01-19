@@ -21,6 +21,7 @@ namespace AbaSim.Core.Virtualization
 				var item = Cache[index % Cache.Length];
 				if (item.SourceAddress == index && item.Valid)
 				{
+					NotifyCacheHit();
 					return item.Value;
 				}
 				else
@@ -57,6 +58,8 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
+		private CacheItem[] Cache;
+
 		protected override void FlushToBackingMemory()
 		{
 			foreach (var item in Cache)
@@ -65,17 +68,19 @@ namespace AbaSim.Core.Virtualization
 			}
 		}
 
-		private CacheItem[] Cache;
-
-		protected struct CacheItem
+		public override Word GetDebugValue(int index)
 		{
-			public bool Valid;
-			public Word Value;
-			public int SourceAddress;
+			return BackingMemoryProvider.GetDebugValue(index);
+		}
+
+		public override void SetDebugValue(int index, Word value)
+		{
+			BackingMemoryProvider.SetDebugValue(index, value);
 		}
 
 		public override IEnumerable<KeyValuePair<int, Word>> GetDebugDump()
 		{
+			//merge updated local values with changes in cache
 			return BackingMemoryProvider.GetDebugDump().Select(item =>
 			{
 				var citem = Cache.FirstOrDefault(i => i.SourceAddress == item.Key);
@@ -88,6 +93,18 @@ namespace AbaSim.Core.Virtualization
 					return new KeyValuePair<int,Word>(citem.SourceAddress, citem.Value);
 				}
 			});
+		}
+
+		public override IEnumerable<KeyValuePair<int, Word>> GetLocalDebugDump()
+		{
+			return Cache.Where(item => item.Valid).Select(item => new KeyValuePair<int, Word>(item.SourceAddress, item.Value));
+		}
+
+		protected struct CacheItem
+		{
+			public bool Valid;
+			public Word Value;
+			public int SourceAddress;
 		}
 	}
 }

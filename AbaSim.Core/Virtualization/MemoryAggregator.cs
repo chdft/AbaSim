@@ -98,5 +98,21 @@ namespace AbaSim.Core.Virtualization
 				}
 			}
 		}
+
+		public Word GetDebugValue(int index)
+		{
+			var mapping = ResolveMapping(index);
+			if (mapping == null) { throw new MemoryAccessViolationException(); }
+
+			return mapping.Provider.GetDebugValue(index - mapping.StartIndex);
+		}
+
+		public void SetDebugValue(int index, Word value)
+		{
+			var mapping = ResolveMapping(index);
+			if (mapping == null) { throw new MemoryAccessViolationException(); }
+
+			mapping.Provider.SetDebugValue(index - mapping.StartIndex, value);
+		}
 	}
 }
