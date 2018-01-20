@@ -34,6 +34,43 @@ namespace AbaSim.Core
 		public const ushort S14 = 0x4000;
 		public const ushort S15 = 0x8000;
 
+		private static readonly int[] Bounds = new int[]
+		{
+			0,
+			1,
+			2,
+			4,
+			8,
+			16,
+			32,
+			64,
+			128,
+			256,
+			512,
+			1024,
+			2048,
+			4096,
+			8191,
+			16383,
+			32767,
+			65535,
+			131071,
+			262143,
+			524287,
+			1048575,
+			2097151,
+			4194303,
+			9388607,
+			16777215,
+			33554431,
+			67108863,
+			134217727,
+			268435455,
+			536870911,
+			1073741823,
+			2147483647
+		};
+
 		public static byte[] SwapHighLow(byte[] source)
 		{
 			return new byte[] { source[1], source[0] };
@@ -43,28 +80,31 @@ namespace AbaSim.Core
 		{
 			if (bitCount >= sizeof(ushort) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
 
-			return (ushort)(ushort.MaxValue >> (sizeof(ushort)*8 - bitCount));
+			return (ushort)(ushort.MaxValue >> (sizeof(ushort) * 8 - bitCount));
 		}
 
 		public static int UnsignedUpperBound(byte bitCount)
 		{
-			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+			if (bitCount + 1 >= Bounds.Length) { throw new ArgumentOutOfRangeException("bitCount"); }
 
-			return (int.MaxValue >> (sizeof(int) * 8 - (bitCount + 1)));
+			return (Bounds[bitCount + 1]) - 1;
+			//return (-1 >> (sizeof(int) * 8 - (bitCount)));
 		}
 
 		public static int SignedUpperBound(byte bitCount)
 		{
-			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+			if (bitCount >= Bounds.Length) { throw new ArgumentOutOfRangeException("bitCount"); }
 
-			return (UnsignedUpperBound(bitCount) >> 1);
+			return Bounds[bitCount] - 1;
+			//return (UnsignedUpperBound(bitCount) >> 1);
 		}
 
 		public static int SignedLowerBound(byte bitCount)
 		{
-			if (bitCount >= sizeof(int) * 8) { throw new ArgumentOutOfRangeException("bitCount"); }
+			if (bitCount >= Bounds.Length) { throw new ArgumentOutOfRangeException("bitCount"); }
 
-			return int.MaxValue << bitCount;
+			return (-1 * Bounds[bitCount]);
+			//return -1 << (bitCount);
 		}
 
 		public static int UpperBound(byte bitCount, bool unsigned)

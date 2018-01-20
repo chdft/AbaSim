@@ -1,9 +1,10 @@
-stackinit 4
-mov $1 9
-call hello
+stackinit 4 //start stack at Data[4]
+mov $1 9 //do something (but don't ever touch $0)
+call hello //call a method
+//note how $1 still contains 6, even though hello has changed the value
 j end
 
 hello: method
-mov $1 4
+addi $1 $1 4 //note that $1 contains 0 before and 4 after the addition
 end hello
 end:nop

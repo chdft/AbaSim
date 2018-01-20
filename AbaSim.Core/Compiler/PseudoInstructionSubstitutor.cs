@@ -95,29 +95,29 @@ namespace AbaSim.Core.Compiler
 			Substitutions.Add(new InstructionSubstitution("bge", new ReplacementInstruction("sge", 0, 1, 2), new ReplacementInstruction("bnz", 0, 3)));
 			Substitutions.Add(new InstructionSubstitution("bgeu", new ReplacementInstruction("sgeu", 0, 1, 2), new ReplacementInstruction("bnz", 0, 3)));
 			//easter egg
-			Substitutions.Add(new InstructionSubstitution("helloworld",
-				new ReplacementInstruction("mov", "$4", "0"),
-				new ReplacementInstruction("mov", "$0", "72"),//H
-				new ReplacementInstruction("mov", "$1", "101"),//e
-				new ReplacementInstruction("mov", "$2", "108"),//l
-				new ReplacementInstruction("mov", "$3", "111"),//o
-				new ReplacementInstruction("mov", "$5", "87"),//W
-				new ReplacementInstruction("mov", "$6", "114"),//r
-				new ReplacementInstruction("mov", "$7", "100"),//d
-				new ReplacementInstruction("sti", "$0", "$4", "0"),
-				new ReplacementInstruction("sti", "$1", "$4", "1"),
-				new ReplacementInstruction("sti", "$2", "$4", "2"),
-				new ReplacementInstruction("sti", "$2", "$4", "3"),
-				new ReplacementInstruction("sti", "$3", "$4", "4"),
-				new ReplacementInstruction("sti", "$5", "$4", "6"),
-				new ReplacementInstruction("sti", "$3", "$4", "7"),
-				new ReplacementInstruction("sti", "$6", "$4", "8"),
-				new ReplacementInstruction("sti", "$2", "$4", "9"),
-				new ReplacementInstruction("sti", "$7", "$4", "10"),
+			//Substitutions.Add(new InstructionSubstitution("helloworld",
+			//	new ReplacementInstruction("mov", "$4", "0"),
+			//	new ReplacementInstruction("mov", "$0", "72"),//H=72
+			//	new ReplacementInstruction("mov", "$1", "101"),//e=101
+			//	new ReplacementInstruction("mov", "$2", "108"),//l=108
+			//	new ReplacementInstruction("mov", "$3", "111"),//o=111
+			//	new ReplacementInstruction("mov", "$5", "87"),//W=87
+			//	new ReplacementInstruction("mov", "$6", "114"),//r=114
+			//	new ReplacementInstruction("mov", "$7", "100"),//d=100
+			//	new ReplacementInstruction("sti", "$0", "$4", "0"),
+			//	new ReplacementInstruction("sti", "$1", "$4", "1"),
+			//	new ReplacementInstruction("sti", "$2", "$4", "2"),
+			//	new ReplacementInstruction("sti", "$2", "$4", "3"),
+			//	new ReplacementInstruction("sti", "$3", "$4", "4"),
+			//	new ReplacementInstruction("sti", "$5", "$4", "6"),
+			//	new ReplacementInstruction("sti", "$3", "$4", "7"),
+			//	new ReplacementInstruction("sti", "$6", "$4", "8"),
+			//	new ReplacementInstruction("sti", "$2", "$4", "9"),
+			//	new ReplacementInstruction("sti", "$7", "$4", "10"),
 
-				new ReplacementInstruction("mov", "$0", "32"),//Space
-				new ReplacementInstruction("sti", "$0", "$4", "5")
-				));
+			//	new ReplacementInstruction("mov", "$0", "32"),//Space
+			//	new ReplacementInstruction("sti", "$0", "$4", "5")
+			//	));
 
 			//Substitutions.Add(new InstructionSubstitution("", new ReplacementInstruction("")));
 		}

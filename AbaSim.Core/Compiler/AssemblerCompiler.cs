@@ -384,17 +384,20 @@ namespace AbaSim.Core.Compiler
 							string.Format("Labels must be unique, however the label {0} was declared in line {1} and {2}.", instruction.Label, instruction.SourceLine, labels[instruction.Label]));
 					}
 					labels.Add(instruction.Label.Trim(), instructionCounter + 1);
-					if (string.IsNullOrWhiteSpace(instruction.Operation) && Dialect != Parsing.Dialects.ChDFT)
+					if (string.IsNullOrWhiteSpace(instruction.Operation))
 					{
-						log.Error(instruction.SourceLine.ToString(), 
-							"Labels may only decorate Operations", 
-							"Labels may only be used on lines where an operation is declared. Consider using j 1 or nop if you need to declare a label separately.");
-					}
-					else
-					{
-						log.Information(instruction.SourceLine.ToString(), 
-							"Label without Operation", 
-							"A label was declared on a line without an operation.");
+						if (Dialect != Parsing.Dialects.ChDFT)
+						{
+							log.Error(instruction.SourceLine.ToString(),
+								"Labels may only decorate Operations",
+								"Labels may only be used on lines where an operation is declared. Consider using j 1 or nop if you need to declare a label separately.");
+						}
+						else
+						{
+							log.Information(instruction.SourceLine.ToString(),
+								"Label without Operation",
+								"A label was declared on a line without an operation.");
+						}
 					}
 				}
 				if (!string.IsNullOrWhiteSpace(instruction.Operation))

@@ -45,6 +45,8 @@ namespace AbaSim.Core.Compiler.Lexing
 					continue;
 				}
 				Instruction i = new Instruction();
+				List<string> args = new List<string>();
+				i.Arguments = args;
 				if (codeLine.StartsWith(CommentSeparator.ToString() + CommentSeparator.ToString()))
 				{
 					i.Comment = codeLine.Substring(2);
@@ -54,8 +56,6 @@ namespace AbaSim.Core.Compiler.Lexing
 				int offset = 0;
 				int boffset = 0;
 				Stage stage = Stage.LabelRunning;
-				List<string> args = new List<string>();
-				i.Arguments = args;
 				int commentFirstSymbolSeenOffset = -2;
 				bool seenArgumentSeparatorSymbol = true; //set initially to true, as first argument does not need to be comma separated
 
@@ -112,6 +112,7 @@ namespace AbaSim.Core.Compiler.Lexing
 									else if (commentFirstSymbolSeenOffset == offset - 1)
 									{
 										stage = Stage.CommentRunning;
+										boffset = offset+1;
 									}
 									else
 									{

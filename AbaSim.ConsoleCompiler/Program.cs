@@ -38,12 +38,15 @@ namespace AbaSim.ConsoleCompiler
 				.Continue(new Core.Compiler.PseudoInstructionSubstitutor())
 				.Inspect((instructions, log) =>
 				{
-					int i = 0;
-					Console.WriteLine("Code after substitution:");
-					foreach (var instruction in instructions)
+					if (destinationFile != null)
 					{
-						Console.WriteLine("{0,4}|{2,4}| {1}", i, instruction, instruction.SourceLine);
-						i++;
+						int i = 0;
+						Console.WriteLine("Code after substitution:");
+						foreach (var instruction in instructions)
+						{
+							Console.WriteLine("{0,4}|{2,4}| {1}", i, instruction, instruction.SourceLine);
+							i++;
+						}
 					}
 				})
 				.Continue(compiler)
