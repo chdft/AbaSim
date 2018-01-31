@@ -14,7 +14,11 @@ namespace AbaSim.Core.Compiler.Abacus16
 
 		public string LineSperator { get; set; }
 
-		public string Dialect { get; set; }
+		//public string Dialect { get; set; }
+
+		public bool AllowStandaloneLabels { get; set; }
+
+		public bool AllowPrefixlessRegisterLiterals { get; set; }
 
 		//protected Dictionary<string, int> Labels = new Dictionary<string, int>();
 
@@ -298,14 +302,14 @@ namespace AbaSim.Core.Compiler.Abacus16
 			return binary;
 		}
 
-		public virtual void LoadMappings()
+		public virtual void LoadMappings(string dialect = null)
 		{
 			Mappings = new Dictionary<string, InstructionMapping>();
 			foreach (var type in typeof(AssemblerCompiler).Assembly.GetTypes())
 			{
 				foreach (var mappingAttribute in type.GetCustomAttributes<Abacus16.AssemblyCodeAttribute>())
 				{
-					if (mappingAttribute.Dialect == null || mappingAttribute.Dialect == Dialect)
+					if (mappingAttribute.Dialect == null || mappingAttribute.Dialect == dialect)
 					{
 						Mappings.Add(mappingAttribute.FriendlyName, new InstructionMapping()
 						{
@@ -332,6 +336,13 @@ namespace AbaSim.Core.Compiler.Abacus16
 			if (rawRegister.StartsWith("$"))
 			{
 				rawRegister = rawRegister.Substring(1);
+			}
+			else
+			{
+				if (!AllowPrefixlessRegisterLiterals)
+				{
+					//TODO: log!
+				}
 			}
 
 			int registerIndex;
@@ -384,20 +395,14 @@ namespace AbaSim.Core.Compiler.Abacus16
 							string.Format("Labels must be unique, however the label {0} was declared in line {1} and {2}.", instruction.Label, instruction.SourceLine, labels[instruction.Label]));
 					}
 					labels.Add(instruction.Label.Trim(), instructionCounter + 1);
-					if (string.IsNullOrWhiteSpace(instruction.Operation))
+					if (string.IsNullOrWhiteSpace(instruction.Operation) && !AllowStandaloneLabels)
 					{
-						if (Dialect != Abacus16.Dialects.ChDFT)
-						{
 							log.Error(instruction.SourceLine.ToString(),
 								"Labels may only decorate Operations",
 								"Labels may only be used on lines where an operation is declared. Consider using j 1 or nop if you need to declare a label separately.");
-						}
-						else
-						{
-							log.Information(instruction.SourceLine.ToString(),
-								"Label without Operation",
-								"A label was declared on a line without an operation.");
-						}
+							//log.Information(instruction.SourceLine.ToString(),
+							//	"Label without Operation",
+							//	"A label was declared on a line without an operation.");
 					}
 				}
 				if (!string.IsNullOrWhiteSpace(instruction.Operation))

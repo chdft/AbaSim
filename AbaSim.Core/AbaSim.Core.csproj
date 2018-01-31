@@ -56,11 +56,17 @@
     <Compile Include="Compiler\Abacus16\AssemblerLexer.cs" />
     <Compile Include="Compiler\Abacus16\AssemblyCodeAttribute.cs" />
     <Compile Include="Compiler\Abacus16\ConstantRestriction.cs" />
+    <Compile Include="Compiler\MiniC\MiniCApplication.cs" />
+    <Compile Include="Compiler\MiniC\MiniCCompiler.cs" />
+    <Compile Include="Compiler\MiniC\MiniCParser.cs" />
+    <Compile Include="Compiler\MiniC\MiniCStatement.cs" />
+    <Compile Include="Compiler\MiniC\MiniCToken.cs" />
     <Compile Include="Compiler\Parsing\Dialects.cs" />
     <Compile Include="Compiler\Abacus16\InstructionType.cs" />
     <Compile Include="Compiler\Abacus16\RegisterReferenceRestriction.cs" />
     <Compile Include="Compiler\Abacus16\PseudoInstructionSubstitutor.cs" />
     <Compile Include="Compiler\TACode\TACodeCompiler.cs" />
+    <Compile Include="Compiler\TACode\TACodeInstruction.cs" />
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
     <Compile Include="Virtualization\LinearDirectMemoryCache.cs" />
@@ -138,9 +144,7 @@
     <Compile Include="Virtualization\SubsetMemory.cs" />
     <Compile Include="Virtualization\UnknownInstructionException.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Compiler\MiniC\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

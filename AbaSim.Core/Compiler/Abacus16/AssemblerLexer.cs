@@ -28,6 +28,8 @@ namespace AbaSim.Core.Compiler.Abacus16
 
 		public char CommentSeparator { get; set; }
 
+		public bool AllowWhitespaceArgumentSeparation { get; set; }
+
 		private static readonly Regex InstructionExpression = new Regex(@"^\s*(([^:]+):)?\s*([^\s]+)(\s+([^\s,]+)(\s*,\s*([^\s,]))*)?\s*(\/\/(.*))?$", RegexOptions.CultureInvariant);
 
 		public IEnumerable<AssemblerInstruction> Lex(string sourceCode, CompileLog log)
@@ -123,10 +125,11 @@ namespace AbaSim.Core.Compiler.Abacus16
 								{
 									boffset = offset;
 									stage = Stage.ArgumentsRunning;
-									if (!seenArgumentSeparatorSymbol)
+									if (!seenArgumentSeparatorSymbol && !AllowWhitespaceArgumentSeparation)
 									{
 										log.Warning(location, "Arguments are separated by whitespace instead of \"" + ArgumentSeparator.ToString() + "\"", "According to the language standard, arguments must be separated by an argument separator character and optionally additional whitespace.");
 									}
+									//CHECK: should we reset seenArgumentSeparatorSymbol to false?
 								}
 							}
 							break;

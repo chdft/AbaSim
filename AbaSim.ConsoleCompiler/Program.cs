@@ -28,14 +28,14 @@ namespace AbaSim.ConsoleCompiler
 			}
 
 
-			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler()
+			Core.Compiler.Abacus16.AssemblerCompiler compiler = new Core.Compiler.Abacus16.AssemblerCompiler()
 			{
-				Dialect = Core.Compiler.Abacus16.Dialects.ChDFT
+				AllowStandaloneLabels = true
 			};
 			compiler.LoadMappings();
 			var pipeline = Core.Compiler.CompilePipeline
-				.Start(new Core.Compiler.Lexing.AssemblerLexer())
-				.Continue(new Core.Compiler.PseudoInstructionSubstitutor())
+				.Start(new Core.Compiler.Abacus16.AssemblerLexer())
+				.Continue(new Core.Compiler.Abacus16.PseudoInstructionSubstitutor())
 				.Inspect((instructions, log) =>
 				{
 					if (destinationFile != null)
