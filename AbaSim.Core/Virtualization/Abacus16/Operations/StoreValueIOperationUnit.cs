@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sti", OpCode, Compiler.Parsing.InstructionType.Immediate)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("sti", OpCode, Compiler.Abacus16.InstructionType.Immediate)]
 	class StoreValueIOperationUnit : ImmediateOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B1 + Bit.B0;

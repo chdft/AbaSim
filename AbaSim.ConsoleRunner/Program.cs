@@ -131,7 +131,7 @@ namespace AbaSim.ConsoleRunner
 				Word instruction = e.Instruction;
 				string binRepresentation = instruction.ToString();
 				string friendlyOperationName = "███";
-				var operationAttribute = e.OperationUnit.GetType().GetCustomAttributes<Core.Compiler.Parsing.AssemblyCodeAttribute>().FirstOrDefault();
+				var operationAttribute = e.OperationUnit.GetType().GetCustomAttributes<Core.Compiler.Abacus16.AssemblyCodeAttribute>().FirstOrDefault();
 				if (operationAttribute != null)
 				{
 					//TODO: handle fixed constants?

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sne", OpCode, Compiler.Parsing.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("sne", OpCode, Compiler.Abacus16.InstructionType.Register)]
 	class SetNotEqualOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B4 + Bit.B2 + Bit.B0;

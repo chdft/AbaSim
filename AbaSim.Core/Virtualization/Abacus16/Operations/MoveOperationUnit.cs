@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("mov", OpCode, Compiler.Parsing.InstructionType.Store)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("mov", OpCode, Compiler.Abacus16.InstructionType.Store)]
 	class MoveOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B4 + Bit.B2 + Bit.B1;

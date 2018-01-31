@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public class PseudoInstructionSubstitutor : ICompileStep<IEnumerable<Lexing.Instruction>, IEnumerable<Lexing.Instruction>>
+	public class PseudoInstructionSubstitutor : ICompileStep<IEnumerable<AssemblerInstruction>, IEnumerable<AssemblerInstruction>>
 	{
 		public PseudoInstructionSubstitutor()
 		{
@@ -124,7 +124,7 @@ namespace AbaSim.Core.Compiler
 
 		private List<InstructionSubstitution> Substitutions { get; set; }
 
-		public IEnumerable<Lexing.Instruction> Compile(IEnumerable<Lexing.Instruction> input, CompileLog log)
+		public IEnumerable<AssemblerInstruction> Compile(IEnumerable<AssemblerInstruction> input, CompileLog log)
 		{
 			foreach (var instruction in input)
 			{
@@ -139,7 +139,7 @@ namespace AbaSim.Core.Compiler
 						{
 							arguments.Add(parameterSource.Resolve(instruction, log));
 						}
-						yield return new Lexing.Instruction()
+						yield return new AssemblerInstruction()
 						{
 							Operation = replacementInstruction.Operation,
 							Arguments = arguments,
@@ -198,7 +198,7 @@ namespace AbaSim.Core.Compiler
 			public int Index;
 			public string Value;
 
-			public string Resolve(Lexing.Instruction original, CompileLog log)
+			public string Resolve(AssemblerInstruction original, CompileLog log)
 			{
 				if (Value == null)
 				{

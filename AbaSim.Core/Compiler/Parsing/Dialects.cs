@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Parsing
+namespace AbaSim.Core.Compiler.Abacus16
 {
+	[Obsolete]
 	public static class Dialects
 	{
 		public const string Default = null;

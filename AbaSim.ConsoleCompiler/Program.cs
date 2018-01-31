@@ -30,7 +30,7 @@ namespace AbaSim.ConsoleCompiler
 
 			Core.Compiler.AssemblerCompiler compiler = new Core.Compiler.AssemblerCompiler()
 			{
-				Dialect = Core.Compiler.Parsing.Dialects.ChDFT
+				Dialect = Core.Compiler.Abacus16.Dialects.ChDFT
 			};
 			compiler.LoadMappings();
 			var pipeline = Core.Compiler.CompilePipeline

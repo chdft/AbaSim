@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Lexing
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public class Instruction
+	public class AssemblerInstruction
 	{
 		public string Label { get; set; }
 		public string Operation { get; set; }

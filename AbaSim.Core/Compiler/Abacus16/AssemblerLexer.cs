@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Lexing
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public class AssemblerLexer : ICompileStep<string, IEnumerable<Instruction>>
+	public class AssemblerLexer : ICompileStep<string, IEnumerable<AssemblerInstruction>>
 	{
 		public AssemblerLexer()
 		{
@@ -30,7 +30,7 @@ namespace AbaSim.Core.Compiler.Lexing
 
 		private static readonly Regex InstructionExpression = new Regex(@"^\s*(([^:]+):)?\s*([^\s]+)(\s+([^\s,]+)(\s*,\s*([^\s,]))*)?\s*(\/\/(.*))?$", RegexOptions.CultureInvariant);
 
-		public IEnumerable<Instruction> Lex(string sourceCode, CompileLog log)
+		public IEnumerable<AssemblerInstruction> Lex(string sourceCode, CompileLog log)
 		{
 			string[] lines = sourceCode.Split(new string[] { LineSperator }, StringSplitOptions.None);
 			int lineCounter = 0;
@@ -44,7 +44,7 @@ namespace AbaSim.Core.Compiler.Lexing
 						"AbaSim.Compiler does not support compiler directives. You have to configure the runtime separately to change runtime settings.");
 					continue;
 				}
-				Instruction i = new Instruction();
+				AssemblerInstruction i = new AssemblerInstruction();
 				List<string> args = new List<string>();
 				i.Arguments = args;
 				if (codeLine.StartsWith(CommentSeparator.ToString() + CommentSeparator.ToString()))
@@ -267,7 +267,7 @@ namespace AbaSim.Core.Compiler.Lexing
 			}
 		}
 
-		IEnumerable<Instruction> ICompileStep<string, IEnumerable<Instruction>>.Compile(string input, CompileLog log)
+		IEnumerable<AssemblerInstruction> ICompileStep<string, IEnumerable<AssemblerInstruction>>.Compile(string input, CompileLog log)
 		{
 			return Lex(input, log);
 		}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sft", OpCode, Compiler.Parsing.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("sft", OpCode, Compiler.Abacus16.InstructionType.Register)]
 	class LeftShiftOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B4 + Bit.B3 + Bit.B2;

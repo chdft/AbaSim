@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AbaSim.Core.Virtualization.Abacus16;
 
-namespace AbaSim.Core.Compiler.Parsing
+namespace AbaSim.Core.Compiler.Abacus16
 {
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 	public sealed class AssemblyCodeAttribute : Attribute

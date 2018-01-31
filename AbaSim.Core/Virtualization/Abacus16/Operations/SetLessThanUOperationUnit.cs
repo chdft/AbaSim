@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sltu", OpCode, Compiler.Parsing.InstructionType.Register, ConstantRestriction = AbaSim.Core.Compiler.Parsing.ConstantValueRestriction.Unsigned)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("sltu", OpCode, Compiler.Abacus16.InstructionType.Register, ConstantRestriction = AbaSim.Core.Compiler.Abacus16.ConstantValueRestriction.Unsigned)]
 	class SetLessThanUOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B4 + Bit.B0;

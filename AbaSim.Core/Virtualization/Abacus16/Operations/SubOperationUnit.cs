@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("sub", OpCode, Compiler.Parsing.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("sub", OpCode, Compiler.Abacus16.InstructionType.Register)]
 	class SubOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B2;

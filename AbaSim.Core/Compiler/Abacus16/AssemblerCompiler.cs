@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Reflection;
 using AbaSim.Core.Virtualization.Abacus16;
 
-namespace AbaSim.Core.Compiler
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public class AssemblerCompiler : ICompileStep<IEnumerable<Lexing.Instruction>, byte[]>
+	public class AssemblerCompiler : ICompileStep<IEnumerable<AssemblerInstruction>, byte[]>
 	{
 		public AssemblerCompiler() { }
 
@@ -26,9 +26,9 @@ namespace AbaSim.Core.Compiler
 			throw new NotImplementedException();
 		}
 
-		public byte[] Compile(IEnumerable<Lexing.Instruction> instructions, CompileLog log)
+		public byte[] Compile(IEnumerable<AssemblerInstruction> instructions, CompileLog log)
 		{
-			List<Lexing.Instruction> instructionsList = instructions.ToList();
+			List<AssemblerInstruction> instructionsList = instructions.ToList();
 
 			List<Word> nativeInstructions = new List<Word>();
 
@@ -49,8 +49,8 @@ namespace AbaSim.Core.Compiler
 
 						switch (mapping.Type)
 						{
-							case AbaSim.Core.Compiler.Parsing.InstructionType.Register:
-							case AbaSim.Core.Compiler.Parsing.InstructionType.VRegister:
+							case AbaSim.Core.Compiler.Abacus16.InstructionType.Register:
+							case AbaSim.Core.Compiler.Abacus16.InstructionType.VRegister:
 								if (instruction.Arguments.Count == 3)
 								{
 									//rd
@@ -65,7 +65,7 @@ namespace AbaSim.Core.Compiler
 									int rr = ParseRawRegister(instruction.Arguments[1]);
 									nativeInstruction |= ((((Word)rr) & ((Word)Bit.MaskFirstS(3))) << 1);
 
-									if (mapping.Type == Parsing.InstructionType.VRegister)
+									if (mapping.Type == Abacus16.InstructionType.VRegister)
 									{
 										nativeInstruction |= ((Word)Bit.S0);
 									}
@@ -79,12 +79,12 @@ namespace AbaSim.Core.Compiler
 									//throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
 								}
 								break;
-							case AbaSim.Core.Compiler.Parsing.InstructionType.Store:
+							case AbaSim.Core.Compiler.Abacus16.InstructionType.Store:
 								{
 									byte constantSize = 7;
 									int constant = 0;
 									int rd = 0;
-									if (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Parsing.RegisterReferenceRestriction.Fixed)
+									if (mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										constant = mapping.FixedConstantValue;
 										rd = mapping.FixedDestinationValue;
@@ -95,7 +95,7 @@ namespace AbaSim.Core.Compiler
 												"Fixed store instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They do not accept any parameters.");
 										}
 									}
-									else if (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction != Parsing.RegisterReferenceRestriction.Fixed)
+									else if (mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction != Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										constant = mapping.FixedConstantValue;
 										rd = ParseRawRegister(instruction.Arguments[0]);
@@ -106,7 +106,7 @@ namespace AbaSim.Core.Compiler
 												"Constant-fixed store instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They accept exactly 1 parameter (rd).");
 										}
 									}
-									else if (mapping.ConstantRestriction != Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Parsing.RegisterReferenceRestriction.Fixed)
+									else if (mapping.ConstantRestriction != Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										constant = ParseRawConstant(instruction.Arguments[1], instructionCounter, labels);
 										rd = mapping.FixedDestinationValue;
@@ -130,8 +130,8 @@ namespace AbaSim.Core.Compiler
 										//throw new IllegalArgumentListException(instruction.Operation, instruction.Arguments, mapping.Type);
 									}
 
-									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
-									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
+									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
+									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
 									if (constant < constantMin || constant > constantMax)
 									{
 										log.Error(instruction.SourceLine.ToString(),
@@ -144,13 +144,13 @@ namespace AbaSim.Core.Compiler
 
 								}
 								break;
-							case AbaSim.Core.Compiler.Parsing.InstructionType.Immediate:
+							case AbaSim.Core.Compiler.Abacus16.InstructionType.Immediate:
 								{
 									byte constantSize = 4;
 									int constant = 0;
 									int rd = 0;
 									int rl = 0;
-									if (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Parsing.RegisterReferenceRestriction.Fixed)
+									if (mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										constant = mapping.FixedConstantValue;
 										rd = mapping.FixedDestinationValue;
@@ -162,7 +162,7 @@ namespace AbaSim.Core.Compiler
 												"Fixed immediate instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They do not accept any parameters.");
 										}
 									}
-									else if (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction != Parsing.RegisterReferenceRestriction.Fixed)
+									else if (mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction != Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										if (instruction.Arguments.Count == 1)
 										{
@@ -177,7 +177,7 @@ namespace AbaSim.Core.Compiler
 												"Constant-fixed immediate instructions use the constant part of the binary instruction to multiplex between multiple logical instructions. They accept exactly 1 parameter (rd).");
 										}
 									}
-									else if (mapping.ConstantRestriction != Parsing.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Parsing.RegisterReferenceRestriction.Fixed)
+									else if (mapping.ConstantRestriction != Abacus16.ConstantValueRestriction.Fixed && mapping.DestinationRestriction == Abacus16.RegisterReferenceRestriction.Fixed)
 									{
 										if (instruction.Arguments.Count == 1)
 										{
@@ -214,8 +214,8 @@ namespace AbaSim.Core.Compiler
 									//bounds validation
 									//int constantMin = (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned ? 0 : -1 * (int)constantMask / 2);
 									//int constantMax = (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned ? (int)constantMask : (int)constantMask / 2);
-									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
-									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
+									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
+									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
 									if (constant < constantMin || constant > constantMax)
 									{
 										log.Error(instruction.SourceLine.ToString(),
@@ -228,11 +228,11 @@ namespace AbaSim.Core.Compiler
 									nativeInstruction |= ((((Word)rl) & ((Word)Bit.MaskFirstS(3))) << 4);
 								}
 								break;
-							case AbaSim.Core.Compiler.Parsing.InstructionType.Jump:
+							case AbaSim.Core.Compiler.Abacus16.InstructionType.Jump:
 								{
 									byte constantSize = 10;
 									int constant = 0;
-									if (mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Fixed)
+									if (mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Fixed)
 									{
 										if (instruction.Arguments.Count == 0)
 										{
@@ -263,8 +263,8 @@ namespace AbaSim.Core.Compiler
 									}
 
 									nativeInstruction |= (((Word)constant) & Bit.MaskFirstS(constantSize));
-									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
-									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Parsing.ConstantValueRestriction.Unsigned);
+									int constantMin = Bit.LowerBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
+									int constantMax = Bit.UpperBound(constantSize, mapping.ConstantRestriction == Abacus16.ConstantValueRestriction.Unsigned);
 									if (constant < constantMin || constant > constantMax)
 									{
 										log.Error(instruction.SourceLine.ToString(),
@@ -303,7 +303,7 @@ namespace AbaSim.Core.Compiler
 			Mappings = new Dictionary<string, InstructionMapping>();
 			foreach (var type in typeof(AssemblerCompiler).Assembly.GetTypes())
 			{
-				foreach (var mappingAttribute in type.GetCustomAttributes<Parsing.AssemblyCodeAttribute>())
+				foreach (var mappingAttribute in type.GetCustomAttributes<Abacus16.AssemblyCodeAttribute>())
 				{
 					if (mappingAttribute.Dialect == null || mappingAttribute.Dialect == Dialect)
 					{
@@ -368,7 +368,7 @@ namespace AbaSim.Core.Compiler
 			return constant;
 		}
 
-		private Dictionary<string, int> IndexInstructions(List<Lexing.Instruction> instructions, CompileLog log)
+		private Dictionary<string, int> IndexInstructions(List<AssemblerInstruction> instructions, CompileLog log)
 		{
 			int instructionCounter = -1;
 			var labels = new Dictionary<string, int>();
@@ -386,7 +386,7 @@ namespace AbaSim.Core.Compiler
 					labels.Add(instruction.Label.Trim(), instructionCounter + 1);
 					if (string.IsNullOrWhiteSpace(instruction.Operation))
 					{
-						if (Dialect != Parsing.Dialects.ChDFT)
+						if (Dialect != Abacus16.Dialects.ChDFT)
 						{
 							log.Error(instruction.SourceLine.ToString(),
 								"Labels may only decorate Operations",
@@ -410,17 +410,17 @@ namespace AbaSim.Core.Compiler
 
 		protected struct InstructionMapping
 		{
-			public Parsing.InstructionType Type { get; set; }
+			public Abacus16.InstructionType Type { get; set; }
 
 			public byte OpCode { get; set; }
 
 			public string Dialect { get; set; }
 
-			public Parsing.ConstantValueRestriction ConstantRestriction { get; set; }
+			public Abacus16.ConstantValueRestriction ConstantRestriction { get; set; }
 
 			public byte FixedConstantValue { get; set; }
 
-			public Parsing.RegisterReferenceRestriction DestinationRestriction { get; set; }
+			public Abacus16.RegisterReferenceRestriction DestinationRestriction { get; set; }
 
 			public byte FixedDestinationValue { get; set; }
 		}

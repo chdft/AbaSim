@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("addi", OpCode, Compiler.Parsing.InstructionType.Immediate)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("addi", OpCode, Compiler.Abacus16.InstructionType.Immediate)]
 	class AddIOperationUnit : ImmediateOperationUnit
 	{
 		public const byte OpCode = Bit.B1;

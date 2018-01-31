@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Parsing
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public enum InstructionType
+	public enum RegisterReferenceRestriction
 	{
-		Register,
-		VRegister,
-		Store,
-		Immediate,
-		Jump
+		Unrestricted = 0,
+		Fixed
 	}
 }

@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Parsing
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public enum RegisterReferenceRestriction
+	public enum ConstantValueRestriction
 	{
-		Unrestricted = 0,
+		Signed = 0,
+		Unsigned,
 		Fixed
 	}
 }

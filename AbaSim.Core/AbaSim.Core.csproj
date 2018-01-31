@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="Bit.cs" />
     <Compile Include="Compiler\CompileResult.cs" />
-    <Compile Include="Compiler\AssemblerCompiler.cs" />
+    <Compile Include="Compiler\Abacus16\AssemblerCompiler.cs" />
     <Compile Include="Compiler\CompileLog.cs" />
     <Compile Include="Compiler\CompileLogItem.cs" />
     <Compile Include="Compiler\CompileLogItemSeverity.cs" />
@@ -52,16 +52,15 @@
     <Compile Include="Compiler\IllegalLabelReferenceException.cs" />
     <Compile Include="Compiler\IllegalRegisterReferenceException.cs" />
     <Compile Include="Compiler\IllegalValueException.cs" />
-    <Compile Include="Compiler\Lexing\InvalidSymbolException.cs" />
-    <Compile Include="Compiler\Lexing\Instruction.cs" />
-    <Compile Include="Compiler\Lexing\AssemblerLexer.cs" />
-    <Compile Include="Compiler\Lexing\LexerException.cs" />
-    <Compile Include="Compiler\Parsing\AssemblyCodeAttribute.cs" />
-    <Compile Include="Compiler\Parsing\ConstantRestriction.cs" />
+    <Compile Include="Compiler\Abacus16\AssemblerInstruction.cs" />
+    <Compile Include="Compiler\Abacus16\AssemblerLexer.cs" />
+    <Compile Include="Compiler\Abacus16\AssemblyCodeAttribute.cs" />
+    <Compile Include="Compiler\Abacus16\ConstantRestriction.cs" />
     <Compile Include="Compiler\Parsing\Dialects.cs" />
-    <Compile Include="Compiler\Parsing\InstructionType.cs" />
-    <Compile Include="Compiler\Parsing\RegisterReferenceRestriction.cs" />
-    <Compile Include="Compiler\PseudoInstructionSubstitutor.cs" />
+    <Compile Include="Compiler\Abacus16\InstructionType.cs" />
+    <Compile Include="Compiler\Abacus16\RegisterReferenceRestriction.cs" />
+    <Compile Include="Compiler\Abacus16\PseudoInstructionSubstitutor.cs" />
+    <Compile Include="Compiler\TACode\TACodeCompiler.cs" />
     <Compile Include="Compiler\UnmappedOperationException.cs" />
     <Compile Include="Compiler\IllegalReferenceException.cs" />
     <Compile Include="Virtualization\LinearDirectMemoryCache.cs" />
@@ -139,7 +138,9 @@
     <Compile Include="Virtualization\SubsetMemory.cs" />
     <Compile Include="Virtualization\UnknownInstructionException.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Compiler\MiniC\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

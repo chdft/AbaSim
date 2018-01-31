@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("addu", OpCode, Compiler.Parsing.InstructionType.Register)]
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("vaddu", OpCode, Compiler.Parsing.InstructionType.VRegister)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("addu", OpCode, Compiler.Abacus16.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("vaddu", OpCode, Compiler.Abacus16.InstructionType.VRegister)]
 	class AddUOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B0;

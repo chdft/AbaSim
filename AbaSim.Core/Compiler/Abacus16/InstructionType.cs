@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AbaSim.Core.Compiler.Parsing
+namespace AbaSim.Core.Compiler.Abacus16
 {
-	public enum ConstantValueRestriction
+	public enum InstructionType
 	{
-		Signed = 0,
-		Unsigned,
-		Fixed
+		Register,
+		VRegister,
+		Store,
+		Immediate,
+		Jump
 	}
 }

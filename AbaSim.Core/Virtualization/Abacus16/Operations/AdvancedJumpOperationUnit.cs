@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("jmp", OpCode, Compiler.Parsing.InstructionType.Store, FixedConstantValue = 0, ConstantRestriction = Compiler.Parsing.ConstantValueRestriction.Fixed)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("jmp", OpCode, Compiler.Abacus16.InstructionType.Store, FixedConstantValue = 0, ConstantRestriction = Compiler.Abacus16.ConstantValueRestriction.Fixed)]
 	class AdvancedJumpOperationUnit : StoreOperationUnit
 	{
 		public const byte OpCode = Bit.B5 + Bit.B1;

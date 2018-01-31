@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AbaSim.Core.Virtualization.Abacus16.Operations
 {
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("div", OpCode, Compiler.Parsing.InstructionType.Register)]
-	[AbaSim.Core.Compiler.Parsing.AssemblyCode("vdiv", OpCode, Compiler.Parsing.InstructionType.VRegister)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("div", OpCode, Compiler.Abacus16.InstructionType.Register)]
+	[AbaSim.Core.Compiler.Abacus16.AssemblyCode("vdiv", OpCode, Compiler.Abacus16.InstructionType.VRegister)]
 	class DivideOperationUnit : RegisterOperationUnit
 	{
 		public const byte OpCode = Bit.B3 + Bit.B2;
