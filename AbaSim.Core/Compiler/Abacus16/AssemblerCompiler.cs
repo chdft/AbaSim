@@ -14,21 +14,11 @@ namespace AbaSim.Core.Compiler.Abacus16
 
 		public string LineSperator { get; set; }
 
-		//public string Dialect { get; set; }
-
 		public bool AllowStandaloneLabels { get; set; }
 
 		public bool AllowPrefixlessRegisterLiterals { get; set; }
 
-		//protected Dictionary<string, int> Labels = new Dictionary<string, int>();
-
 		protected Dictionary<string, InstructionMapping> Mappings;
-
-		[Obsolete("use Lexing.AssemblerLexer.Lex(string) instead; consider piping the output using a CompilerPipeline", true)]
-		public byte[] Compile(string sourceCode)
-		{
-			throw new NotImplementedException();
-		}
 
 		public byte[] Compile(IEnumerable<AssemblerInstruction> instructions, CompileLog log)
 		{
