@@ -35,6 +35,20 @@ namespace AbaSim.ConsoleCompiler
 			compiler.LoadMappings();
 			var pipeline = Core.Compiler.CompilePipeline
 				.Start(new Core.Compiler.Abacus16.AssemblerLexer())
+				.Inspect((instructions, log) =>
+				{
+					if (destinationFile != null)
+					{
+						int i = 0;
+						Console.WriteLine("Code before substitution:");
+						Console.WriteLine("instruction index | line | instruction");
+						foreach (var instruction in instructions)
+						{
+							Console.WriteLine("{0,4}|{2,4}| {1}", i, instruction, instruction.SourceLine);
+							i++;
+						}
+					}
+				})
 				.Continue(new Core.Compiler.Abacus16.PseudoInstructionSubstitutor())
 				.Inspect((instructions, log) =>
 				{
